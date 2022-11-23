@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2022. This code has an author and the author is Viacheslav Mikhailov, which is me.
+ * You may contact me via EMail taleskeeper@yandex.ru
+ */
+
 package matrix;
 
 import matrix.exception.MatrixException;
@@ -7,6 +12,15 @@ import java.util.List;
 
 public class DoubleMatrixCalc {
 
+    /**
+     * The method multiplies the argument matrix on a 64-bit floating point number
+     * The method does not modify the original matrix object
+     *
+     * @param matrix - the original matrix object
+     * @param multiplier - the number to multiply the matrix on
+     * @return a new matrix object which is a result of multiplication
+     * @throws MatrixException - if matrix is malformed
+     */
     public static double[][] multiplyMatrixOnNumber(double[][] matrix, double multiplier) throws MatrixException {
         validateMatrix(matrix);
         double[][] result = new double[matrix.length][matrix[0].length];
@@ -19,6 +33,36 @@ public class DoubleMatrixCalc {
         return result;
     }
 
+    /**
+     * The method multiplies the argument matrix (on the left) on a vector-column (a single column matrix, on the right)
+     * The method does not modify the original matrix object
+     *
+     * @param matrix - the original matrix object
+     * @param column - the vector-column to multiply on
+     * @return a new matrix object which is a result of multiplication
+     * @throws MatrixException - if matrix is malformed
+     */
+    public static double[] multiplyMatrixOnColumn(double[][] matrix, double[] column) throws MatrixException {
+        validateMatrix(matrix);
+        if (matrix[0].length != column.length) throw new MatrixException("If you're about to multiply a matrix from the left on a vector-column from the right, the matrix should have same row length as the vector-column's amount of elements ");
+        double[] result = new double[matrix[0].length];
+        for (int rowNum = 0; rowNum < matrix.length; rowNum++) {
+            for (int colNum = 0; colNum < matrix[rowNum].length; colNum++) {
+                result[rowNum] = result[rowNum] + matrix[rowNum][colNum] * column[colNum];
+            }
+        }
+        return result;
+    }
+
+    /**
+     * The method multiplies the two argument matrices
+     * The method does not modify the original matrix object
+     *
+     * @param matrixLeft - the matrix on the left of the multiplication equation
+     * @param matrixRight- the matrix on the right of the multiplication equation
+     * @return a new matrix object which is a result of multiplication
+     * @throws MatrixException - if the matrix is malformed
+     */
     public static double[][] multiplyMatrices(double[][] matrixLeft, double[][] matrixRight) throws MatrixException {
         if (!canMultiply(matrixLeft, matrixRight))
             throw new MatrixException("In order to multiply matrices, the one on the left should have same row length as the column length of the one on the right");
@@ -33,7 +77,15 @@ public class DoubleMatrixCalc {
         return result;
     }
 
-    public static double[][] transpondMatrix(double[][] matrix) throws MatrixException {
+    /**
+     * The method transposes the matrix passed as an argument
+     * The method does not modify the original matrix object
+     *
+     * @param matrix - the original matrix object to transpose
+     * @return a new matrix object which is a result of matrix transposition
+     * @throws MatrixException - if the matrix is malformed
+     */
+    public static double[][] transposeMatrix(double[][] matrix) throws MatrixException {
         validateMatrix(matrix);
         double[][] result = new double[matrix[0].length][matrix.length];
         for (int row = 0; row < matrix.length; row++)
@@ -42,6 +94,13 @@ public class DoubleMatrixCalc {
         return result;
     }
 
+    /**
+     * The method calculates a determinant of the matrix passed as an argument
+     *
+     * @param matrix - the original matrix object
+     * @return the determinant of the matrix
+     * @throws MatrixException - if the matrix is malformed
+     */
     public static double det(double[][] matrix) throws MatrixException {
         validateSquareMatrix(matrix);
         double result = Double.MAX_VALUE;
@@ -55,24 +114,55 @@ public class DoubleMatrixCalc {
         return result;
     }
 
+    /**
+     * This method calculates a determinant of the 3x3 matrix by Sarrus method
+     *
+     * @param matrix - the original matrix object
+     * @return the determinant of the matrix
+     * @throws MatrixException - if the matrix is malformed
+     */
     public static double detSarrus(double[][] matrix) throws MatrixException {
         validateSquareMatrix(matrix);
+        if (matrix.length != 3 || matrix[2].length != 3) throw new MatrixException("Sarrus method is only applicable to 3x3 matrices");
         return matrix[0][0] * matrix[1][1] * matrix[2][2] + matrix[0][1] * matrix[1][2] * matrix[2][0] + matrix[1][0] * matrix[2][1] * matrix[0][2] - matrix[0][2] * matrix[1][1] * matrix[2][0] - matrix[1][0] * matrix[0][1] * matrix[2][2] - matrix[2][1] * matrix[1][2] * matrix[0][0];
 
     }
 
+    /**
+     * The method calculates a reversed matrix of the provided one as an argument
+     * The method does not modify the original matrix object
+     *
+     * @param matrix - the original matrix object
+     * @return a new matrix object which is a reversed matrix passed as an argument
+     * @throws MatrixException - if the matrix is malformed
+     */
     public static double[][] reverse(double[][] matrix) throws MatrixException {
         double det = validateCramerAndReturnDeterminant(matrix);
-        return multiplyMatrixOnNumber(transpondMatrix(cofactorsMatrix(matrix)), 1.0d / det);
+        return multiplyMatrixOnNumber(transposeMatrix(cofactorsMatrix(matrix)), 1.0d / det);
     }
 
     /**
-     * BEWARE: row and col are not Java array's indices but math matrix' row and column numbers instead, from 1 to matrix.length
+     * The method calculates a cofactor for an element of the given matrix which is situated on the intersection of the given row and column
+     * The method does not modify the original matrix object
+     * BEWARE: row and col are not Java array's indices but math matrix row and column numbers instead, from 1 to 'matrix.length', inclusive
+     *
+     * @param matrix - the original matrix object
+     * @param row - the given row number (index + 1) of the element
+     * @param col - the given column number (index + 1) of the element
+     * @return - the cofactor for the element of the matrix which is on the intersection of the given row and column
+     * @throws MatrixException - if the matrix is malformed
      */
     public static double cofactor(double[][] matrix, int row, int col) throws MatrixException {
         return (Math.pow(-1.0f, row + col)) * det(excludeColumnAndRow(matrix, row, col));
     }
 
+    /**
+     * This method calculates a cofactor matrix for all the elements of the original one
+     *
+     * @param matrix - the original matrix object
+     * @return a new matrix object with cofactors instead of the original elements
+     * @throws MatrixException - if the matrix is malformed
+     */
     public static double[][] cofactorsMatrix(double[][] matrix) throws MatrixException {
         double[][] result = new double[matrix.length][matrix.length];
         for (int row = 1; row <= matrix.length; row++)
@@ -370,7 +460,7 @@ public class DoubleMatrixCalc {
         double[][] result = new double[nonZeroRowIndices.size()][matrix[0].length];
         int rowNum = 0;
         for (Integer row : nonZeroRowIndices) {
-            for (int c = 0; c < matrix[0].length; c++) result[rowNum][c] = matrix[row][c];
+            System.arraycopy(matrix[row], 0, result[rowNum], 0, matrix[0].length);
             rowNum++;
         }
         return result;
@@ -382,7 +472,7 @@ public class DoubleMatrixCalc {
         for (int rowNum = 0; rowNum < matrix.length; rowNum++) {
             for (int colNum = 0; colNum < matrix[rowNum].length; colNum++) {
                 if (colNum == 0) sb.append("| ");
-                sb.append(" ").append(String.valueOf(matrix[rowNum][colNum])).append(" ");
+                sb.append(" ").append(matrix[rowNum][colNum]).append(" ");
                 for (int j = 0; j <= columnWiths[colNum] - String.valueOf(matrix[rowNum][colNum]).length(); j++) {
                     sb.append(" ");
                 }
@@ -409,22 +499,19 @@ public class DoubleMatrixCalc {
     }
 
     public static boolean isEmpty(double[][] matrix) {
-        if (matrix.length < 1 || matrix[0].length < 1) return true;
-        return false;
+        return matrix.length < 1 || matrix[0].length < 1;
     }
 
     public static boolean canMultiply(double[][] matrixLeft, double[][] matrixRight) throws MatrixException {
         validateMatrix(matrixLeft);
         validateMatrix(matrixRight);
-        if (matrixLeft[0].length == matrixRight.length) return true;
-        return false;
+        return matrixLeft[0].length == matrixRight.length;
     }
 
     public static boolean canSum(double[][] matrix1, double[][] matrix2) throws MatrixException {
         validateMatrix(matrix1);
         validateMatrix(matrix2);
-        if (matrix1.length != matrix2.length || matrix1[0].length != matrix2[0].length) return false;
-        return true;
+        return matrix1.length == matrix2.length && matrix1[0].length == matrix2[0].length;
     }
 
     public static double validateCramerAndReturnDeterminant(double[][] matrix) throws MatrixException {
