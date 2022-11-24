@@ -1,3 +1,3 @@
-module app {
+module test {
 	requires linear;
 }
