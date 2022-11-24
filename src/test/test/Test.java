@@ -3,7 +3,7 @@
  * You may contact me via EMail taleskeeper@yandex.ru
  */
 
-package app;
+package test;
 
 import equation.DoubleCramerLinearEquationSystem;
 import equation.exception.LinearEquationException;
@@ -11,7 +11,7 @@ import matrix.DoubleMatrixCalc;
 import matrix.exception.MatrixException;
 
 //This class exists for test purposes only
-public class App {
+public class Test {
 
     public static void main(String... argz) throws MatrixException {
 
