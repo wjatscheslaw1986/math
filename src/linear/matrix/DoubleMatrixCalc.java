@@ -16,7 +16,7 @@ public class DoubleMatrixCalc {
      * The method multiplies the argument matrix on a 64-bit floating point number
      * The method does not modify the original matrix object
      *
-     * @param matrix - the original matrix object
+     * @param matrix     - the original matrix object
      * @param multiplier - the number to multiply the matrix on
      * @return a new matrix object which is a result of multiplication
      * @throws MatrixException - if matrix is malformed
@@ -44,7 +44,8 @@ public class DoubleMatrixCalc {
      */
     public static double[] multiplyMatrixOnColumn(double[][] matrix, double[] column) throws MatrixException {
         validateMatrix(matrix);
-        if (matrix[0].length != column.length) throw new MatrixException("If you're about to multiply a matrix from the left on a vector-column from the right, the matrix should have same row length as the vector-column's amount of elements ");
+        if (matrix[0].length != column.length)
+            throw new MatrixException("If you're about to multiply a matrix from the left on a vector-column from the right, the matrix should have same row length as the vector-column's amount of elements ");
         double[] result = new double[matrix[0].length];
         for (int rowNum = 0; rowNum < matrix.length; rowNum++) {
             for (int colNum = 0; colNum < matrix[rowNum].length; colNum++) {
@@ -58,7 +59,7 @@ public class DoubleMatrixCalc {
      * The method multiplies the two argument matrices
      * The method does not modify the original matrix object
      *
-     * @param matrixLeft - the matrix on the left of the multiplication equation
+     * @param matrixLeft   - the matrix on the left of the multiplication equation
      * @param matrixRight- the matrix on the right of the multiplication equation
      * @return a new matrix object which is a result of multiplication
      * @throws MatrixException - if the matrix is malformed
@@ -123,8 +124,21 @@ public class DoubleMatrixCalc {
      */
     public static double detSarrus(double[][] matrix) throws MatrixException {
         validateSquareMatrix(matrix);
-        if (matrix.length != 3 || matrix[2].length != 3) throw new MatrixException("Sarrus method is only applicable to 3x3 matrices");
-        return matrix[0][0] * matrix[1][1] * matrix[2][2] + matrix[0][1] * matrix[1][2] * matrix[2][0] + matrix[1][0] * matrix[2][1] * matrix[0][2] - matrix[0][2] * matrix[1][1] * matrix[2][0] - matrix[1][0] * matrix[0][1] * matrix[2][2] - matrix[2][1] * matrix[1][2] * matrix[0][0];
+        if (matrix.length != 3 || matrix[2].length != 3)
+            throw new MatrixException("Sarrus method is only applicable to 3x3 matrices");
+//        System.out.println(
+//                "DET: " + matrix[0][0] * matrix[1][1] * matrix[2][2] + " + " +
+//                matrix[0][1] * matrix[1][2] * matrix[2][0] + " + " +
+//                matrix[1][0] * matrix[2][1] * matrix[0][2] + " - " +
+//                matrix[0][2] * matrix[1][1] * matrix[2][0]  + " - " +
+//                matrix[1][0] * matrix[0][1] * matrix[2][2] + " - " +
+//                matrix[2][1] * matrix[1][2] * matrix[0][0]);
+        return matrix[0][0] * matrix[1][1] * matrix[2][2] +
+                matrix[0][1] * matrix[1][2] * matrix[2][0] +
+                matrix[1][0] * matrix[2][1] * matrix[0][2] -
+                matrix[0][2] * matrix[1][1] * matrix[2][0] -
+                matrix[1][0] * matrix[0][1] * matrix[2][2] -
+                matrix[2][1] * matrix[1][2] * matrix[0][0];
 
     }
 
@@ -147,8 +161,8 @@ public class DoubleMatrixCalc {
      * BEWARE: row and col are not Java array's indices but math matrix row and column numbers instead, from 1 to 'matrix.length', inclusive
      *
      * @param matrix - the original matrix object
-     * @param row - the given row number (index + 1) of the element
-     * @param col - the given column number (index + 1) of the element
+     * @param row    - the given row number (index + 1) of the element
+     * @param col    - the given column number (index + 1) of the element
      * @return - the cofactor for the element of the matrix which is on the intersection of the given row and column
      * @throws MatrixException - if the matrix is malformed
      */
@@ -231,7 +245,7 @@ public class DoubleMatrixCalc {
         for (int r = 0; r < matrix.length; r++) System.arraycopy(matrix[r], 0, result[r], 0, matrix[0].length);
         for (int row = 0; row < matrix.length; row++)
             for (int col = 0; col < matrix[0].length; col++)
-                if (col == colNum-1) result[row][col] = column[row];
+                if (col == colNum - 1) result[row][col] = column[row];
         return result;
     }
 
@@ -334,13 +348,15 @@ public class DoubleMatrixCalc {
             int maxSwitchRowNumber = result.length - 1, maxSwitchColNumber = result[0].length - 1;
             while (maxSwitchRowNumber + maxSwitchColNumber > 0 && result[i][i] == .0d) {
                 if (maxSwitchRowNumber > 0)
-                    result = switchRows(result, i+1, (maxSwitchRowNumber--)+1);
-                 else if (maxSwitchColNumber > 0)
-                    result = switchColumns(result, i+1, (maxSwitchColNumber--)+1);
+                    result = switchRows(result, i + 1, (maxSwitchRowNumber--) + 1);
+                else if (maxSwitchColNumber > 0)
+                    result = switchColumns(result, i + 1, (maxSwitchColNumber--) + 1);
             }
-            if (result[i][i] == .0d) return matrix; // current matrix may not have a trapezoid form. Return the original one
+            if (result[i][i] == .0d)
+                return matrix; // current matrix may not have a trapezoid form. Return the original one
             for (int j = i + 1; j < result.length; j++)
-                if (result[j][i] != .0d) result = addMultipliedRow(result, j+1, i+1, (-1)*result[j][i]/result[i][i]);
+                if (result[j][i] != .0d)
+                    result = addMultipliedRow(result, j + 1, i + 1, (-1) * result[j][i] / result[i][i]);
             result = truncateZeroRows(result);
             shortestSideLength = Math.min(result.length, result[0].length);
         }
@@ -351,27 +367,27 @@ public class DoubleMatrixCalc {
     /**
      * Adds values of one row to another one, previously multiplied by a floating point number
      *
-     * @param matrix - the original matrix
-     * @param rowNumber - row number (index + 1) of a row which gets summed with rowNumberMultiplied
+     * @param matrix              - the original matrix
+     * @param rowNumber           - row number (index + 1) of a row which gets summed with rowNumberMultiplied
      * @param rowNumberMultiplied - row number (index + 1) of a row which gets multiplied and then added to row #rowNumber
-     * @param multiplicator - floating point number to multiply values of row #rowNumberMultiplied
+     * @param multiplicator       - floating point number to multiply values of row #rowNumberMultiplied
      * @return new matrix which is the original one after the operation
      */
     public static double[][] addMultipliedRow(double[][] matrix, int rowNumber, int rowNumberMultiplied, double multiplicator) {
         double[][] result = new double[matrix.length][matrix[0].length];
         for (int r = 0; r < matrix.length; r++) System.arraycopy(matrix[r], 0, result[r], 0, matrix.length);
-        for (int col = 0; col < result[rowNumber-1].length; col++)
-            result[rowNumber-1][col] = result[rowNumber-1][col] + result[rowNumberMultiplied-1][col] * multiplicator;
+        for (int col = 0; col < result[rowNumber - 1].length; col++)
+            result[rowNumber - 1][col] = result[rowNumber - 1][col] + result[rowNumberMultiplied - 1][col] * multiplicator;
         return result;
     }
 
     /**
      * Adds values of one column to another one, previously multiplied by a floating point number
      *
-     * @param matrix - the original matrix
-     * @param colNumber - column number (index + 1) of a column which gets summed with colNumberMultiplied
+     * @param matrix              - the original matrix
+     * @param colNumber           - column number (index + 1) of a column which gets summed with colNumberMultiplied
      * @param colNumberMultiplied - col number (index + 1) of a column which gets multiplied and then added to column #colNumber
-     * @param multiplicator - floating point number to multiply values of column #columnNumberMultiplied
+     * @param multiplicator       - floating point number to multiply values of column #columnNumberMultiplied
      * @return new matrix which is the original one after the operation
      */
     public static double[][] addMultipliedColumn(double[][] matrix, int colNumber, int colNumberMultiplied, double multiplicator) {
@@ -483,6 +499,21 @@ public class DoubleMatrixCalc {
         return sb.toString();
     }
 
+    public static String print(double[] column) {
+        double columnWith = getPrintedColumnWiths(column);
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < column.length; i++) {
+            sb.append("| ");
+            sb.append(" ").append(column[i]).append(" ");
+            for (int j = 0; j <= columnWith - String.valueOf(column[i]).length(); j++) {
+                sb.append(" ");
+            }
+            sb.append(" |");
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
+
     public static void validateSquareMatrix(double[][] matrix) throws MatrixException {
         validateMatrix(matrix);
         if (matrix.length < 2 || matrix.length != matrix[0].length) throw new MatrixException("Not a square matrix");
@@ -529,6 +560,15 @@ public class DoubleMatrixCalc {
                 int stringLength = String.valueOf(matrix[rowNum][colNum]).length();
                 if (stringLength > result[colNum]) result[colNum] = stringLength;
             }
+        }
+        return result;
+    }
+
+    private static double getPrintedColumnWiths(double[] matrix) {
+        double result = 0.0d;
+        for (int i = 0; i < matrix.length; i++) {
+            int stringLength = String.valueOf(matrix[i]).length();
+            if (stringLength > result) result = stringLength;
         }
         return result;
     }
