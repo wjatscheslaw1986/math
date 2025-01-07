@@ -281,23 +281,6 @@ public class DoubleMatrixCalc {
         }
         return result;
     }
-    
-    /**
-	 * Вычесть матрицу 'b' из матрицы 'a'.
-	 * 
-	 * @param a первая матрица
-	 * @param b вторая матрица
-	 * @return результат вычитания матрицы 'b' из матрицы 'a'
-	 */
-    public static double[][] subtract(double[][] a, double[][] b) throws MatrixException {
-        if (!isEqualDimensions(a, b))
-            throw new MatrixException("Matrices need to be of equal size if you want to subtract them");
-        double[][] result = new double[a.length][a[0].length];
-        for (int row = 0; row < a.length; row++)
-            for (int col = 0; col < a[0].length; col++)
-                result[row][col] = a[row][col] - b[row][col];
-        return result;
-    }
 
     /**
 	 * Сложить матрицы 'b' и 'a'.
@@ -314,6 +297,17 @@ public class DoubleMatrixCalc {
             for (int col = 0; col < a[0].length; col++)
                 result[row][col] = a[row][col] + b[row][col];
         return result;
+    }
+    
+    /**
+	 * Вычесть матрицу 'b' из матрицы 'a'.
+	 * 
+	 * @param a первая матрица
+	 * @param b вторая матрица
+	 * @return результат вычитания матрицы 'b' из матрицы 'a'
+	 */
+    public static double[][] subtract(double[][] a, double[][] b) throws MatrixException {
+        return sum(a, multiplyMatrixByNumber(b, -1.0d));
     }
 
     public static int rank(double[][] matrix) throws MatrixException {
