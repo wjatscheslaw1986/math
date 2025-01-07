@@ -3,7 +3,7 @@
  * You may contact me via EMail taleskeeper@yandex.ru
  */
 
-package matrix.exception;
+package linear.matrix.exception;
 
 public class MatrixException extends Exception {
     public MatrixException(String s) {

@@ -4,10 +4,16 @@
  ≈ You may contact me via EMail taleskeeper@yandex.ru
  ≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈*/
 
-package spatial.exception;
+package linear.spatial;
 
-public class VectorException extends Exception {
-    public VectorException(String message) {
-        super(message);
+public class Vector {
+    private double[] coordinates;
+
+    public Vector(double[] coordinates) {
+        this.coordinates = coordinates;
+    }
+
+    public double[] getCoordinates() {
+        return coordinates;
     }
 }

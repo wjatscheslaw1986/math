@@ -3,9 +3,9 @@
  * You may contact me via EMail taleskeeper@yandex.ru
  */
 
-package matrix;
+package linear.matrix;
 
-import matrix.exception.MatrixException;
+import linear.matrix.exception.MatrixException;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -103,7 +103,8 @@ public class DoubleMatrixCalc {
      * @throws MatrixException - if the matrix is malformed
      */
     public static double det(double[][] matrix) throws MatrixException {
-        validateSquareMatrix(matrix);
+        if (matrix.length > 1) validateSquareMatrix(matrix);
+        else return matrix[0][0];
         double result = Double.MAX_VALUE;
         if (matrix.length == 2) return matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0];
         if (matrix.length == 3) return detSarrus(matrix);
@@ -167,6 +168,7 @@ public class DoubleMatrixCalc {
      * @throws MatrixException - if the matrix is malformed
      */
     public static double cofactor(double[][] matrix, int row, int col) throws MatrixException {
+    	if (matrix.length == 1) return matrix[0][0];
         return (Math.pow(-1.0f, row + col)) * det(excludeColumnAndRow(matrix, row, col));
     }
 
@@ -516,7 +518,9 @@ public class DoubleMatrixCalc {
 
     public static void validateSquareMatrix(double[][] matrix) throws MatrixException {
         validateMatrix(matrix);
-        if (matrix.length < 2 || matrix.length != matrix[0].length) throw new MatrixException("Not a square matrix");
+        if (matrix.length < 2 || matrix.length != matrix[0].length) {
+        	throw new MatrixException("Not a square matrix");
+        }
     }
 
     public static void validateMatrix(double[][] matrix) throws MatrixException {
