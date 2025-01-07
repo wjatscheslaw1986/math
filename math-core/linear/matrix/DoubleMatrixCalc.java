@@ -11,7 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class DoubleMatrixCalc {
-
+	
     /**
      * The method multiplies the argument matrix on a 64-bit floating point number
      * The method does not modify the original matrix object
@@ -21,7 +21,7 @@ public class DoubleMatrixCalc {
      * @return a new matrix object which is a result of multiplication
      * @throws MatrixException - if matrix is malformed
      */
-    public static double[][] multiplyMatrixOnNumber(double[][] matrix, double multiplier) throws MatrixException {
+    public static double[][] multiplyMatrixByNumber(double[][] matrix, double multiplier) throws MatrixException {
         validateMatrix(matrix);
         double[][] result = new double[matrix.length][matrix[0].length];
         for (int rowNum = 0; rowNum < matrix.length; rowNum++) {
@@ -42,7 +42,7 @@ public class DoubleMatrixCalc {
      * @return a new matrix object which is a result of multiplication
      * @throws MatrixException - if matrix is malformed
      */
-    public static double[] multiplyMatrixOnColumn(double[][] matrix, double[] column) throws MatrixException {
+    public static double[] multiplyMatrixByColumn(double[][] matrix, double[] column) throws MatrixException {
         validateMatrix(matrix);
         if (matrix[0].length != column.length)
             throw new MatrixException("If you're about to multiply a matrix from the left on a vector-column from the right, the matrix should have same row length as the vector-column's amount of elements ");
@@ -153,7 +153,7 @@ public class DoubleMatrixCalc {
      */
     public static double[][] reverse(double[][] matrix) throws MatrixException {
         double det = validateCramerAndReturnDeterminant(matrix);
-        return multiplyMatrixOnNumber(transposeMatrix(cofactorsMatrix(matrix)), 1.0d / det);
+        return multiplyMatrixByNumber(transposeMatrix(cofactorsMatrix(matrix)), 1.0d / det);
     }
 
     /**
@@ -281,14 +281,38 @@ public class DoubleMatrixCalc {
         }
         return result;
     }
+    
+    /**
+	 * Вычесть матрицу 'b' из матрицы 'a'.
+	 * 
+	 * @param a первая матрица
+	 * @param b вторая матрица
+	 * @return результат вычитания матрицы 'b' из матрицы 'a'
+	 */
+    public static double[][] subtract(double[][] a, double[][] b) throws MatrixException {
+        if (!isEqualDimensions(a, b))
+            throw new MatrixException("Matrices need to be of equal size if you want to subtract them");
+        double[][] result = new double[a.length][a[0].length];
+        for (int row = 0; row < a.length; row++)
+            for (int col = 0; col < a[0].length; col++)
+                result[row][col] = a[row][col] - b[row][col];
+        return result;
+    }
 
-    public static double[][] sumMatrices(double[][] matrix1, double[][] matrix2) throws MatrixException {
-        if (!canSum(matrix1, matrix2))
-            throw new MatrixException("Matrices need to be of equal size if you want to sum them up");
-        double[][] result = new double[matrix1.length][matrix1[0].length];
-        for (int row = 0; row < matrix1.length; row++)
-            for (int col = 0; col < matrix1[0].length; col++)
-                result[row][col] = matrix1[row][col] + matrix2[row][col];
+    /**
+	 * Сложить матрицы 'b' и 'a'.
+	 * 
+	 * @param a первая матрица
+	 * @param b вторая матрица
+	 * @return результат сложения матриц 'b' и 'a'
+	 */
+    public static double[][] sum(double[][] a, double[][] b) throws MatrixException {
+        if (!isEqualDimensions(a, b))
+            throw new MatrixException("Matrices need to be of equal size if you want to get their sum");
+        double[][] result = new double[a.length][a[0].length];
+        for (int row = 0; row < a.length; row++)
+            for (int col = 0; col < a[0].length; col++)
+                result[row][col] = a[row][col] + b[row][col];
         return result;
     }
 
@@ -340,7 +364,7 @@ public class DoubleMatrixCalc {
      *
      * @param matrix - a link to original matrix argument object
      * @return trapezoid for of matrix argument or null if the method failed to form a trapezoid matrix
-     * @throws MatrixException
+     * @throws MatrixException in case of a malformed matrix
      */
     public static double[][] tryTrapezoid(double[][] matrix) throws MatrixException {
         double[][] result = new double[matrix.length][matrix[0].length];
@@ -543,7 +567,7 @@ public class DoubleMatrixCalc {
         return matrixLeft[0].length == matrixRight.length;
     }
 
-    public static boolean canSum(double[][] matrix1, double[][] matrix2) throws MatrixException {
+    public static boolean isEqualDimensions(double[][] matrix1, double[][] matrix2) throws MatrixException {
         validateMatrix(matrix1);
         validateMatrix(matrix2);
         return matrix1.length == matrix2.length && matrix1[0].length == matrix2[0].length;
@@ -554,6 +578,35 @@ public class DoubleMatrixCalc {
         double det = det(matrix);
         if (det == .0d) throw new MatrixException("The matrix is degenerate, so cannot have an inverted one");
         return det;
+    }
+    
+    /**
+     * Сравнивает между собой две матрицы.
+     * 
+     * @param a первая матрица
+     * @param b вторая матрица
+     * @return true если матрицы равны, иначе false
+     */
+    public static boolean equals(final double[][] a, double[][] b) {
+    	for (int i = 0; i < a.length; i++)
+    		for (int j = 0; j < a[i].length; j++)
+    			if (Double.compare(a[i][j], b[i][j]) != 0)
+    				return false;
+    	return true;
+    }
+    
+    /**
+     * Сравнивает размерности матриц между собой.
+     * 
+     * @param a первая матрица
+     * @param b вторая матрица
+     * @return true если матрицы равных размерностей, иначе false
+     */
+    public static boolean equalDimensions(final double[][] a, double[][] b) {
+    	if (a.length != b.length) return false;
+    	for (int i = 0; i < a.length; i++)
+    		if (a[i].length != b[i].length) return false;
+    	return true;
     }
 
     private static double[] getPrintedColumnWiths(double[][] matrix) throws MatrixException {
