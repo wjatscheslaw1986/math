@@ -7,3 +7,7 @@ classes
 
 *.iml
 
+/bin/
+/testout/
+/out-core/
+/out-test/

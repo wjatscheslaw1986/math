@@ -3,10 +3,10 @@
  * You may contact me via EMail taleskeeper@yandex.ru
  */
 
-package equation;
+package linear.equation;
 
-import equation.exception.LinearEquationException;
-import matrix.exception.MatrixException;
+import linear.equation.exception.LinearEquationException;
+import linear.matrix.exception.MatrixException;
 
 public class DoubleCramerLinearEquationSystem {
 

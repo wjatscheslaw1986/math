@@ -4,9 +4,9 @@
  ≈ You may contact me via EMail taleskeeper@yandex.ru
  ≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈*/
 
-package spatial;
+package linear.spatial;
 
-import spatial.exception.VectorException;
+import linear.spatial.exception.VectorException;
 
 public class DoubleVectorCalc {
 

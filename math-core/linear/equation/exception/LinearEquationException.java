@@ -3,7 +3,7 @@
  * You may contact me via EMail taleskeeper@yandex.ru
  */
 
-package equation.exception;
+package linear.equation.exception;
 
 public class LinearEquationException extends Exception {
     public LinearEquationException(String textual) {
