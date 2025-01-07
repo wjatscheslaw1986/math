@@ -29,6 +29,6 @@ public class DoubleLinearEquationCalc {
     }
 
     public static double[] resolveByReverseMatrixMethod(double[][] coefficients, double[] freeMembers) throws MatrixException {
-        return DoubleMatrixCalc.multiplyMatrixOnColumn(DoubleMatrixCalc.reverse(coefficients), freeMembers);
+        return DoubleMatrixCalc.multiplyMatrixByColumn(DoubleMatrixCalc.reverse(coefficients), freeMembers);
     }
 }
