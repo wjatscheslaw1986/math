@@ -1,6 +1,5 @@
-/*
- * Copyright (c) 2022. This code has an author and the author is Viacheslav Mikhailov, which is me.
- * You may contact me via EMail taleskeeper@yandex.ru
+/**
+ * Wjatscheslaw Michailov (taleskeeper@yandex.com) All rights reserved © 2025.
  */
 package linear.matrix.exception;
 

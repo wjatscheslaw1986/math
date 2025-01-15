@@ -11,3 +11,8 @@ classes
 /testout/
 /out-core/
 /out-test/
+
+
+.classpath
+.project
+

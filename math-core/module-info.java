@@ -1,3 +1,6 @@
+/**
+ * Wjatscheslaw Michailov <taleskeeper@yandex.com> All rights reserved © 2025.
+ */
 module math {
 	exports linear.equation;
 	exports linear.spatial.exception;
@@ -5,6 +8,7 @@ module math {
 	exports linear.equation.exception;
 	exports linear.matrix;
 	exports linear.spatial;
+	exports combinatoric;
 //	opens linear.equation to testing;
 //	opens linear.spatial.exception to testing;
 //	opens linear.matrix.exception to testing;

@@ -1,3 +1,6 @@
+/**
+ * Wjatscheslaw Michailov (taleskeeper@yandex.com) All rights reserved © 2025.
+ */
 package test;
 
 import java.util.random.RandomGenerator;
