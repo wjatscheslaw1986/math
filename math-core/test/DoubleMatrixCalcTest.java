@@ -1,3 +1,6 @@
+/**
+ * Wjatscheslaw Michailov <taleskeeper@yandex.com> All rights reserved © 2025.
+ */
 package test;
 
 import org.junit.jupiter.api.Assertions;
@@ -11,7 +14,7 @@ public class DoubleMatrixCalcTest {
 
 	@BeforeAll
 	static void before() {
-		System.out.println(String.format("Running tests in %s.class", DoubleMatrixCalcTest.class));
+		System.out.printf("Running tests in %s.class", DoubleMatrixCalcTest.class);
 	}
 
 	@Test
