@@ -3,9 +3,12 @@
  */
 package combinatoric;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.BiConsumer;
 
 /**
  * A utility class for generating all possible permutations of values of a given array.
@@ -19,50 +22,45 @@ public final class CyclicShiftIndexPermutationsGenerator {
     }
 
     /**
-     * @return Number of possible permutations.
+     * Print permutations for a size of array to the given OutputStream.
+     * 
+     * @param size a size of an array of indices, starting with 0;
+     * @param out  an implementation of the OutputStream
      */
-    public static long getNumberOfPossiblePermutations(int arrayLength) {
-        return factorial(arrayLength);
+    public static void print(final OutputStream out, final int size) {
+        process(size, getPrintSingleSetFunction(out));
     }
 
     /**
-     * Print permutations for a size of array.
+     * Generate permutations for a size of array.
      * 
      * @param size a size of array of indices, starting with 0;
-     * @return list of arrays of all possible permutations of values in the given array.
+     * @return list of arrays of all possible permutations of values in the array of the given size.
      */
-    public static void print(final int size) {
-        var result = new ArrayList<int[]>();
-        final int[] array = generateArrayOfSize(size);
-        int k = array.length - 1;
-        int n = k;
-        System.out.println(Arrays.toString(array));
-        for (; k > 0;) {
-            leftShift(array, k);
-            if (array[k] != k) {
-                System.out.println(Arrays.toString(array));
-                k = n;
-            } else
-                k--;
-        }
+    public static List<int[]> generate(final int size) {
+        return process(size,
+                       (final ArrayList<int[]> list, final int[] currentPermutation) -> list.add(currentPermutation));
     }
-    
+
     /**
      * Generate permutations for a size of array.
      * 
      * @param size a size of array of indices, starting with 0;
      * @return list of arrays of all possible permutations of values in the given array.
      */
-    public static List<int[]> generate(final int size) {
-        var result = new ArrayList<int[]>();
+    private static List<int[]> process(final int size, final BiConsumer<ArrayList<int[]>, int[]> func) {
+        if (size < 0) {
+            throw new ArrayIndexOutOfBoundsException("Negative indices aren't supported.");
+        }
+        final var result = new ArrayList<int[]>();
         final int[] array = generateArrayOfSize(size);
         int k = array.length - 1;
         int n = k;
-        storePermutationInList(result, array);
+        func.accept(result, array);
         for (; k > 0;) {
             leftShift(array, k);
             if (array[k] != k) {
-                storePermutationInList(result, array);
+                func.accept(result, array);
                 k = n;
             } else
                 k--;
@@ -70,25 +68,11 @@ public final class CyclicShiftIndexPermutationsGenerator {
         return result;
     }
 
-    private static void leftShift(int[] array, int k) {
+    private static void leftShift(final int[] array, final int k) {
         int temp = array[0];
         for (int i = 0; i < k; i++)
             array[i] = array[i + 1];
         array[k] = temp;
-    }
-
-    private static void storePermutationInList(final List<int[]> list, int[] currentPermutation) {
-        final int[] copy = new int[currentPermutation.length];
-        System.arraycopy(currentPermutation, 0, copy, 0, currentPermutation.length);
-        list.add(copy);
-    }
-
-    private static long factorial(final int n) {
-        int result = 1;
-        for (int i = 1; i <= n; i++) {
-            result *= i;
-        }
-        return result;
     }
 
     private static int[] generateArrayOfSize(final int size) {
@@ -97,5 +81,16 @@ public final class CyclicShiftIndexPermutationsGenerator {
             array[i] = i;
         }
         return array;
+    }
+
+    private final static BiConsumer<ArrayList<int[]>, int[]> getPrintSingleSetFunction(final OutputStream o) {
+        return (final ArrayList<int[]> l, final int[] currentPermutation) -> {
+            try {
+                o.write(Arrays.toString(currentPermutation).getBytes());
+                o.write(System.lineSeparator().getBytes());
+            } catch (IOException e) {
+                System.err.print(e.getLocalizedMessage());
+            }
+        };
     }
 }
