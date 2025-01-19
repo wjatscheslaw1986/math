@@ -19,7 +19,7 @@ public class DoubleMatrixGenerator {
 		final RandomGenerator rnd = RandomGeneratorFactory.getDefault().create();
 		for (int i = 0; i < n; i++)
 			for (int j = 0; j < m; j++)
-				result[i][j] = rnd.nextDouble();
+				result[i][j] = rnd.nextDouble(-10000.0d, 10000.0d);
 		return result;		
 	}
 }

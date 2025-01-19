@@ -3,6 +3,8 @@
  */
 package test;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.random.RandomGenerator;
 import java.util.random.RandomGeneratorFactory;
 
@@ -76,8 +78,8 @@ public final class IntegrationTest {
 	}
 
 	/**
-	 * Транспонированное произведение любых двух матриц (A * B)_t должно быть равно
-	 * произведению транспонированных B_t * A_t, то есть, в обратном порядке.
+	 * Транспонирование произведения любых двух матриц  должно быть равно
+	 * произведению транспонированных этих двух матриц, т.е. (A * B)_t == B_t * A_t.
 	 * 
 	 * Примеры приведены по книге А.С.Киркинский - "Линейная Алгебра и Аналитическая
 	 * Геометрия" - 2006
@@ -89,7 +91,6 @@ public final class IntegrationTest {
 		final RandomGenerator rnd = RandomGeneratorFactory.getDefault().create();
 
 		for (int i = 0; i < 100; i++) {
-
 			final int n = rnd.nextInt(1, 100);
 			final int m = rnd.nextInt(1, 100);
 			final double[][] a = DoubleMatrixGenerator.generateRandomMatrix(n, m);
@@ -98,11 +99,8 @@ public final class IntegrationTest {
 			final double[][] at_bt = DoubleMatrixCalc.multiplyMatrices(DoubleMatrixCalc.transposeMatrix(b),
 					DoubleMatrixCalc.transposeMatrix(a));
 
-//			if (!DoubleMatrixCalc.equals(abt, at_bt)) {
-//				System.out.println("i = " + i);
-//				System.out.println("ABt = " + DoubleMatrixCalc.print(abt));
-//				System.out.println("At * Bt = " + DoubleMatrixCalc.print(at_bt));
-//			}
+			assertTrue(DoubleMatrixCalc.equals(abt, at_bt));
+			assertTrue(DoubleMatrixCalc.equals(at_bt, abt));
 		}
 	}
 	
