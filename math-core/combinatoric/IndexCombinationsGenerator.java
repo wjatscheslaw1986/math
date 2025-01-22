@@ -18,7 +18,7 @@ import java.util.function.BiConsumer;
 public final class IndexCombinationsGenerator {
 
     private IndexCombinationsGenerator() {
-        super();
+        // static context only
     }
 
     /**

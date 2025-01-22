@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import combinatoric.Calc;
+import combinatoric.CombinatoricsCalc;
 
 public class CalcTest {
 
@@ -16,26 +16,26 @@ public class CalcTest {
 
     @Test
     void getNumberOfVariations() {
-        assertEquals(6, Calc.getNumberOfVariations(6, 1));
-        assertEquals(60, Calc.getNumberOfVariations(5, 3));
-        assertEquals(120, Calc.getNumberOfVariations(5, 4));
-        assertEquals(720, Calc.getNumberOfVariations(6, 5));
+        assertEquals(6, CombinatoricsCalc.getNumberOfVariations(6, 1));
+        assertEquals(60, CombinatoricsCalc.getNumberOfVariations(5, 3));
+        assertEquals(120, CombinatoricsCalc.getNumberOfVariations(5, 4));
+        assertEquals(720, CombinatoricsCalc.getNumberOfVariations(6, 5));
     }
 
     @Test
     void factorial() {
-        assertEquals(1L, Calc.factorial(0));
-        assertEquals(1L, Calc.factorial(1));
-        assertEquals(2L, Calc.factorial(2));
-        assertEquals(6L, Calc.factorial(3));
-        assertEquals(24L, Calc.factorial(4));
-        assertEquals(120L, Calc.factorial(5));
-        assertEquals(720L, Calc.factorial(6));
-        assertEquals(5040L, Calc.factorial(7));
-        assertEquals(3628800L, Calc.factorial(10));
+        assertEquals(1L, CombinatoricsCalc.factorial(0));
+        assertEquals(1L, CombinatoricsCalc.factorial(1));
+        assertEquals(2L, CombinatoricsCalc.factorial(2));
+        assertEquals(6L, CombinatoricsCalc.factorial(3));
+        assertEquals(24L, CombinatoricsCalc.factorial(4));
+        assertEquals(120L, CombinatoricsCalc.factorial(5));
+        assertEquals(720L, CombinatoricsCalc.factorial(6));
+        assertEquals(5040L, CombinatoricsCalc.factorial(7));
+        assertEquals(3628800L, CombinatoricsCalc.factorial(10));
 
         // TODO what to do with negatives?
-        assertEquals(1L, Calc.factorial(-1));
-        assertEquals(1L, Calc.factorial(-15));
+        assertEquals(1L, CombinatoricsCalc.factorial(-1));
+        assertEquals(1L, CombinatoricsCalc.factorial(-15));
     }
 }

@@ -6,12 +6,14 @@ package test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.random.RandomGenerator;
+import java.util.random.RandomGeneratorFactory;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import linear.matrix.DoubleMatrixCalc;
-import linear.matrix.MatrixRankByChatGPT;
 import linear.matrix.exception.MatrixException;
 
 public class DoubleMatrixCalcTest {
@@ -127,18 +129,56 @@ public class DoubleMatrixCalcTest {
     }
 
     /**
+     * Given a matrix, calculate it's submatrix.
+     * 
+     * @throws MatrixException in case of a malformed matrix
+     */
+    @Test
+    public void squareSubmatrix() throws MatrixException {
+        final double[][] matrix0 = new double[][]{{0.0d, 2.0d, -4.0d}, {-1.0d, -4.0d, 5.0d}, {3.0d, 1.0d, 7.0d},
+                                                  {0.0d, 5.0d, -10.0d}};
+
+        final double[][] matrix1 = new double[][]{{0.0d, 2.0d, -4.0d}, {-1.0d, -4.0d, 5.0d}, {3.0d, 1.0d, 7.0d}};
+
+        final double[][] matrix2 = new double[][]{{-1.0d, -4.0d, 5.0d}, {3.0d, 1.0d, 7.0d}, {0.0d, 5.0d, -10.0d}};
+
+//        System.out.println(DoubleMatrixCalc.print(DoubleMatrixCalc.squareSubmatrix(matrix0, 0, 0, 3)));
+//        System.out.println(DoubleMatrixCalc.print(DoubleMatrixCalc.squareSubmatrix(matrix0, 1, 0, 3)));
+         assertTrue(DoubleMatrixCalc.equals(matrix1, DoubleMatrixCalc.squareSubmatrix(matrix0, 0, 0, 3)));
+         assertTrue(DoubleMatrixCalc.equals(matrix2, DoubleMatrixCalc.squareSubmatrix(matrix0, 1, 0, 3)));
+    }
+
+    /**
      * Given a matrix, calculate it's rank.
      * Примеры приведены по книге А.С.Киркинский - "Линейная Алгебра и Аналитическая
      * Геометрия" - 2006
      * 
      * @throws MatrixException in case of a malformed matrix
      */
+    @SuppressWarnings("deprecation")
     @Test
     public void rank() throws MatrixException {
         final double[][] matrix = new double[][]{{0.0d, 2.0d, -4.0d}, {-1.0d, -4.0d, 5.0d}, {3.0d, 1.0d, 7.0d},
                                                  {0.0d, 5.0d, -10.0d}};
 
         assertEquals(2, DoubleMatrixCalc.rank(matrix));
+        assertEquals(2, DoubleMatrixCalc.rankByMinors(matrix));
+    }
+    
+    /**
+     * Given a matrix, convert it to a trapezoidal matrix. TODO
+     * 
+     * @throws MatrixException in case of a malformed matrix
+     */
+    @Test
+    public void tryTrapezoid() throws MatrixException {
+        final RandomGenerator rnd = RandomGeneratorFactory.getDefault().create();
+        for (int i = 0; i < 10; i++) {
+            var matrix = MatrixGenerator.generateRandomDoubleMatrix(rnd.nextInt(3, 7), rnd.nextInt(3, 7));
+            // TODO трапецевидную форму
+            // assertFalse(DoubleMatrixCalc.isTrapezoid(matrix));
+            // assertTrue(DoubleMatrixCalc.isTrapezoid(DoubleMatrixCalc.tryTrapezoid(matrix)));
+        }
     }
 
     /**
@@ -154,5 +194,4 @@ public class DoubleMatrixCalcTest {
                                                  {0.0d, 0.0d, 2.0d, 0.0d}};
         assertTrue(DoubleMatrixCalc.isTrapezoid(matrix));
     }
-
 }
