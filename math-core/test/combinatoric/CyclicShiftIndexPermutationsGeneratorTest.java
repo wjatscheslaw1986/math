@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import combinatoric.Calc;
+import combinatoric.CombinatoricsCalc;
 import combinatoric.CyclicShiftIndexPermutationsGenerator;
 
 public class CyclicShiftIndexPermutationsGeneratorTest {
@@ -22,7 +22,7 @@ public class CyclicShiftIndexPermutationsGeneratorTest {
     void generate() {
         for (int arraySize = 0; arraySize < 7; arraySize++) {
             var result = CyclicShiftIndexPermutationsGenerator.generate(arraySize);
-            Assertions.assertEquals(Calc.getNumberOfPermutations(arraySize),
+            Assertions.assertEquals(CombinatoricsCalc.getNumberOfPermutations(arraySize),
                                     result.size());
             for (var permutation : result)
                 Assertions.assertEquals(arraySize, permutation.length);

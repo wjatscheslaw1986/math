@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import combinatoric.Calc;
+import combinatoric.CombinatoricsCalc;
 import combinatoric.IndexCombinationsGenerator;
 
 public class IndexCombinationsGeneratorTest {
@@ -19,7 +19,7 @@ public class IndexCombinationsGeneratorTest {
         final int n = 10;
         for (int k = 0; k < n; k++) {
             var result = IndexCombinationsGenerator.generate(n, k);
-            Assertions.assertEquals(Calc.binomialCoefficient(n, k), result.size());
+            Assertions.assertEquals(CombinatoricsCalc.binomialCoefficient(n, k), result.size());
             for (var choice : result)
                 Assertions.assertEquals(k, choice.length);
 

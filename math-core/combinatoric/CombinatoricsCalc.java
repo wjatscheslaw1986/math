@@ -1,6 +1,18 @@
+/**
+ * Wjatscheslaw Michailov <taleskeeper@yandex.com> All rights reserved © 2025.
+ */
 package combinatoric;
 
-public final class Calc {
+/**
+ * An API for calculating stereotypical tasks in combinatorics.
+ * 
+ * @author vaclav
+ */
+public final class CombinatoricsCalc {
+
+    private CombinatoricsCalc() {
+        // static context only
+    }
 
     /**
      * Number of variations. I.e. number of ways to choose a subset of <b>k</b> elements
@@ -42,13 +54,19 @@ public final class Calc {
         return factorial(arrayLength);
     }
 
-    /*
+    /**
+     * I have no idea why they still didn't add it to {@linkplain java.lang.Math}
+     * 
      * @return a factorial of a number.
      */
     public static long factorial(final int n) {
-        long result = 1;
-        for (long i = 1L; i <= n; i++) {
+        if (n < 0)
+            throw new ArithmeticException("A factorial of a negative number doesn't exist.");
+        long result = 1L;
+        for (int i = 1; i <= n; i++) {
             result *= i;
+            if (result < 0)
+                throw new ArithmeticException(String.format("A long overflow has happened while counting a %n! on the number %n", n, i));
         }
         return result;
     }

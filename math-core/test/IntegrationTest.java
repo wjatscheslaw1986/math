@@ -93,8 +93,8 @@ public final class IntegrationTest {
 		for (int i = 0; i < 100; i++) {
 			final int n = rnd.nextInt(1, 100);
 			final int m = rnd.nextInt(1, 100);
-			final double[][] a = DoubleMatrixGenerator.generateRandomMatrix(n, m);
-			final double[][] b = DoubleMatrixGenerator.generateRandomMatrix(m, n);
+			final double[][] a = MatrixGenerator.generateRandomDoubleMatrix(n, m);
+			final double[][] b = MatrixGenerator.generateRandomDoubleMatrix(m, n);
 			final double[][] abt = DoubleMatrixCalc.transposeMatrix(DoubleMatrixCalc.multiplyMatrices(a, b));
 			final double[][] at_bt = DoubleMatrixCalc.multiplyMatrices(DoubleMatrixCalc.transposeMatrix(b),
 					DoubleMatrixCalc.transposeMatrix(a));
