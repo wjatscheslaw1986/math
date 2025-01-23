@@ -228,7 +228,7 @@ public class DoubleMatrixCalc {
 
     /**
      * This method returns a matrix 1 column lesser than the original one, excluding
-     * one column
+     * one column.
      *
      * @param matrix - the original matrix
      * @param col    - number (index + 1) of a column to exclude
@@ -262,14 +262,13 @@ public class DoubleMatrixCalc {
      * @return new matrix of same size but with one of its columns substituted by
      *         'column'
      */
-    public static double[][] substituteColumn(double[][] matrix, double[] column, int colNum) {
-        double[][] result = new double[matrix.length][matrix[0].length];
-        for (int r = 0; r < matrix.length; r++)
-            System.arraycopy(matrix[r], 0, result[r], 0, matrix[0].length);
+    public static double[][] substituteColumn(final double[][] matrix, final double[] column, final int colNum) {
+        if (matrix[0].length <= colNum)
+            throw new ArrayIndexOutOfBoundsException(String
+                .format("Column index %n is out of matrix columns size of %n", colNum - 1, matrix[0].length));
+        final double[][] result = MatrixUtil.copy(matrix);
         for (int row = 0; row < matrix.length; row++)
-            for (int col = 0; col < matrix[0].length; col++)
-                if (col == colNum - 1)
-                    result[row][col] = column[row];
+            result[row][colNum - 1] = column[row];
         return result;
     }
 
@@ -617,14 +616,14 @@ public class DoubleMatrixCalc {
     }
 
     public static String print(double[][] matrix) throws MatrixException {
-        double[] columnWiths = getPrintedColumnWiths(matrix);
+        double[] columnWidths = getPrintedColumnWidths(matrix);
         StringBuilder sb = new StringBuilder();
         for (int rowNum = 0; rowNum < matrix.length; rowNum++) {
             for (int colNum = 0; colNum < matrix[rowNum].length; colNum++) {
                 if (colNum == 0)
                     sb.append("| ");
                 sb.append(" ").append(matrix[rowNum][colNum]).append(" ");
-                for (int j = 0; j <= columnWiths[colNum] - String.valueOf(matrix[rowNum][colNum]).length(); j++) {
+                for (int j = 0; j <= columnWidths[colNum] - String.valueOf(matrix[rowNum][colNum]).length(); j++) {
                     sb.append(" ");
                 }
                 if (colNum == matrix[rowNum].length - 1)
@@ -636,18 +635,22 @@ public class DoubleMatrixCalc {
     }
 
     public static String print(double[] column) {
-        double columnWith = getPrintedColumnWiths(column);
+        double columnWidth = getPrintedColumnWidths(column);
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < column.length; i++) {
             sb.append("| ");
             sb.append(" ").append(column[i]).append(" ");
-            for (int j = 0; j <= columnWith - String.valueOf(column[i]).length(); j++) {
+            for (int j = 0; j <= columnWidth - String.valueOf(column[i]).length(); j++) {
                 sb.append(" ");
             }
             sb.append(" |");
             sb.append("\n");
         }
         return sb.toString();
+    }
+    
+    public static boolean isSquare(double[][] matrix) {
+        return !isEmpty(matrix) && matrix.length == matrix[0].length;
     }
 
     public static void validateSquareMatrix(double[][] matrix) throws MatrixException {
@@ -660,9 +663,9 @@ public class DoubleMatrixCalc {
     public static void validateMatrix(double[][] matrix) throws MatrixException {
         if (isEmpty(matrix))
             throw new MatrixException("Not a matrix argument. A matrix must have at least one element");
-        int colNum = matrix[0].length;
+        int colCount = matrix[0].length;
         for (int i = 1; i < matrix.length; i++) {
-            if (matrix[i].length != colNum)
+            if (matrix[i].length != colCount)
                 throw new MatrixException("Malformed matrix argument. All rows of the matrix must be of equal length");
         }
     }
@@ -698,31 +701,27 @@ public class DoubleMatrixCalc {
      * @param b вторая матрица
      * @return true если матрицы равны, иначе false
      */
-    public static boolean equals(final double[][] a, double[][] b) {
+    public static boolean equals(final double[][] a, final double[][] b) {
         for (int i = 0; i < a.length; i++)
-            for (int j = 0; j < a[i].length; j++)
+            for (int j = 0; j < a[0].length; j++)
                 if (Double.compare(a[i][j], b[i][j]) != 0)
                     return false;
         return true;
     }
 
     /**
-     * Сравнивает размерности матриц между собой.
+     * Checks the equality of dimensions of the two given valid matrixes.
+     * It is up to you to check for the validity of the arguments.
      * 
-     * @param a первая матрица
-     * @param b вторая матрица
-     * @return true если матрицы равных размерностей, иначе false
+     * @param a matrix A
+     * @param b matrix B
+     * @return true if the dimensions are equal, false otherwise
      */
     public static boolean equalDimensions(final double[][] a, double[][] b) {
-        if (a.length != b.length)
-            return false;
-        for (int i = 0; i < a.length; i++)
-            if (a[i].length != b[i].length)
-                return false;
-        return true;
+        return a.length == b.length && a[0].length == b[0].length;
     }
 
-    private static double[] getPrintedColumnWiths(double[][] matrix) throws MatrixException {
+    private static double[] getPrintedColumnWidths(double[][] matrix) throws MatrixException {
         validateMatrix(matrix);
         double[] result = new double[matrix[0].length];
         for (int rowNum = 0; rowNum < matrix.length; rowNum++) {
@@ -735,7 +734,7 @@ public class DoubleMatrixCalc {
         return result;
     }
 
-    private static double getPrintedColumnWiths(double[] matrix) {
+    private static double getPrintedColumnWidths(double[] matrix) {
         double result = 0.0d;
         for (int i = 0; i < matrix.length; i++) {
             int stringLength = String.valueOf(matrix[i]).length();
