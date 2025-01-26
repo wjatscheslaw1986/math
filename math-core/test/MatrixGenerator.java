@@ -21,7 +21,7 @@ public class MatrixGenerator {
 		final RandomGenerator rnd = RandomGeneratorFactory.getDefault().create();
 		for (int i = 0; i < n; i++)
 			for (int j = 0; j < m; j++)
-				result[i][j] = rnd.nextDouble(-10000.0d, 10000.0d);
+				result[i][j] = rnd.nextDouble(-10.0d, 10.0d);
 		return result;		
 	}
 	

@@ -11,8 +11,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 import combinatoric.IndexCombinationsGenerator;
+import static linear.matrix.MatrixUtil.*;
 
-public class DoubleMatrixCalc {
+public class MatrixCalc {
 
     /**
      * The method multiplies the argument matrix on a 64-bit floating point number
@@ -100,18 +101,17 @@ public class DoubleMatrixCalc {
     }
 
     /**
-     * The method calculates a determinant of the matrix passed as an argument
+     * The method calculates a determinant of the given matrix.
      *
-     * @param matrix - the original matrix object
+     * @param matrix - the given matrix
      * @return the determinant of the matrix
      * @throws MatrixException - if the matrix is malformed
      */
     public static double det(double[][] matrix) throws MatrixException {
-        if (matrix.length > 1)
-            validateSquareMatrix(matrix);
-        else
-            return matrix[0][0];
+        validateSquareMatrix(matrix);
         double result = Double.MAX_VALUE;
+        if (matrix.length < 2)
+            return matrix[0][0];
         if (matrix.length == 2)
             return matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0];
         if (matrix.length == 3)
@@ -252,8 +252,8 @@ public class DoubleMatrixCalc {
     }
 
     /**
-     * This method substitutes one column of an original matrix (the one in the
-     * argument) with another one, at a certain position 'colNum'
+     * This method substitutes one column of a given matrix with another one,
+     * at a certain position 'colNum'.
      *
      * @param matrix - the original matrix
      * @param column - an array of same column values, from top to bottom
@@ -424,7 +424,7 @@ public class DoubleMatrixCalc {
      *         diagonal values are all zeroes, otherwise false
      * @throws MatrixException if argument matrix is malformed
      */
-    public static boolean isTrapezoid(double[][] matrix) {
+    public static boolean isTrapezoidForm(double[][] matrix) {
         int rows = matrix.length;
         int cols = matrix[0].length;
 
@@ -462,43 +462,209 @@ public class DoubleMatrixCalc {
      * @param matrix - a link to original matrix argument object
      * @return a trapezoid form of a given <i>matrix</i> argument, or the original matrix if trapezoid
      *         can not be found for this matrix.
+     * @throws MatrixException
      */
-    public static double[][] tryTrapezoid(double[][] matrix) {
+    public static double[][] tryTrapezoid(double[][] matrix) throws MatrixException {
         double[][] result = MatrixUtil.copy(matrix);
         int shortestSideLength = Math.min(result.length, result[0].length);
         for (int i = 0; i < shortestSideLength; i++) {
             int maxSwitchRowNumber = result.length - 1, maxSwitchColNumber = result[0].length - 1;
             while (maxSwitchRowNumber + maxSwitchColNumber > 0 && result[i][i] == .0d) {
                 if (maxSwitchRowNumber > 0)
-                    result = switchRows(result, i + 1, (maxSwitchRowNumber--) + 1);
+                    result = swapRows(result, i + 1, (maxSwitchRowNumber--) + 1);
                 else if (maxSwitchColNumber > 0)
-                    result = switchColumns(result, i + 1, (maxSwitchColNumber--) + 1);
+                    result = swapColumns(result, i + 1, (maxSwitchColNumber--) + 1);
             }
             if (result[i][i] == .0d)
                 return matrix; // current matrix may not have a trapezoid form. Return the original one
             for (int j = i + 1; j < result.length; j++)
                 if (result[j][i] != .0d)
                     result = addMultipliedRow(result, j + 1, i + 1, (-1) * result[j][i] / result[i][i]);
-            result = truncateZeroRows(result);
+            result = MatrixUtil.shrinkZeroColumns(matrix);
             shortestSideLength = Math.min(result.length, result[0].length);
         }
-        if (isTrapezoid(result))
+        if (isRowEchelonForm(result))
             return result;
         return matrix;
     }
 
     /**
+     * Produce a row echelon form matrix of a given one.
+     * The matrix is in row echelon form, as it satisfies the next necessary conditions:
+     * <ul>
+     * <li>The leading entries move progressively to the right.</li>
+     * <li>Entries below each leading entry are zero.</li>
+     * <li>There are no zero rows, so no violation occurs.</li>
+     * </ul>
+     * This method does not modify the original matrix object.
+     *
+     * @param matrix given
+     * @return a new object which is a row echelon form <i>matrix</i> for the original one
+     */
+    public static double[][] toRowEchelonForm(final double[][] matrix) {
+
+        if (matrix.length < 2)
+            return matrix;
+
+        int firstNonZeroColumnIndex = -1;
+
+        Outer : for (int col = 0; col < matrix[0].length; col++) {
+            for (int row = 0; row < matrix.length; row++) {
+                if (matrix[row][col] != .0d) {
+                    firstNonZeroColumnIndex = col;
+                    break Outer;
+                }
+            }
+        }
+
+        // Zero matrix is a row echelon form matrix
+        if (firstNonZeroColumnIndex < 0)
+            return matrix;
+
+        double[][] result = MatrixUtil.copy(matrix);
+        MatrixUtil.clean(result);
+
+        // If there are zero rows they must be at the bottom
+        for (int row = 0, end = result.length; row < end; row++) {
+            if (isZeroRow(result, row)) {
+                try {
+                    result = swapRows(result, row + 1, end--);
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    System.err.println("dslkfj");
+                }
+            }
+        }
+
+        for (int col = firstNonZeroColumnIndex, row = 0; col < result[0].length;) {
+
+            // if the presumably pivot element is zero, we need to perform Gaussian elimination until it is not
+            if (result[row][col] == .0d) {
+
+                // find a non-zero value in this column
+                int nonZeroValueRowIndex = -1;
+                for (int r = result.length - 1; r >= 0; r--) {
+                    if (result[r][col] != .0d) {
+                        nonZeroValueRowIndex = r;
+                        break;
+                    }
+                }
+
+                // this column consists of zeroes only, we go one step to the right
+                if (nonZeroValueRowIndex < 0) {
+                    col++;
+                    continue;
+                }
+
+                result = swapRows(result, row + 1, nonZeroValueRowIndex + 1);
+
+            }
+
+            // All entries below each pivot must be zeroes.
+            for (int r = row + 1; r < result.length; r++) {
+                if (result[r][col] != .0d) {
+                    result = addMultipliedRow(result, r + 1, row + 1, -1 * result[r][col] / result[row][col]);
+                }
+            }
+
+            col++;
+            row++;
+
+            if (row == result.length) {
+                break;
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Checks if this matrix is in the row echelon form.
+     * The matrix is in row echelon form, as it satisfies the next necessary conditions:
+     * <ul>
+     * <li>The leading entries move progressively to the right.</li>
+     * <li>Entries below each leading entry are zero.</li>
+     * <li>Zero rows must be at the bottom</li>
+     * </ul>
+     *
+     * @param matrix given
+     * @return true if the matrix is in row echelon form, otherwise false
+     * @throws MatrixException if the given matrix is malformed
+     */
+    public static boolean isRowEchelonForm(double[][] matrix) throws MatrixException {
+        final int rows = matrix.length;
+        final int cols = matrix[0].length;
+
+        // Keeps track of the number of leading zeros in the previous row
+        int previousLeadingZeros = -1;
+
+        for (int row = 0; row < rows; row++) {
+            int currentLeadingZeros = 0;
+            boolean pivotFound = false;
+
+            int col = 0;
+            // Count leading zeros in the current row
+            for (; col < cols; col++) {
+                if (matrix[row][col] == 0) {
+                    currentLeadingZeros++;
+                } else {
+                    pivotFound = true;
+                    break;
+                }
+            }
+
+            // In row echelon form, each pivot must be strictly to the right of the pivot in the row above.
+            if (pivotFound && currentLeadingZeros <= previousLeadingZeros) {
+                return false;
+            }
+
+            // Update the number of leading zeros in the previous row
+            previousLeadingZeros = currentLeadingZeros;
+
+        }
+
+        // In row echelon form, all zero rows must be at the bottom.
+        int lastZeroRow = Integer.MAX_VALUE;
+        for (int row = 0; row < rows; row++) {
+            if (isZeroRow(matrix, row))
+                lastZeroRow = row;
+            else if (row > lastZeroRow)
+                return false;
+        }
+
+        // In row echelon form, all entries below each pivot must be zeroes.
+        int lastPivotRow = -1;
+        for (int c = 0; c < cols; c++) {
+            boolean pivotFound = false;
+
+            for (int r = lastPivotRow + 1; r < rows; r++) {
+                if (matrix[r][c] != 0) {
+                    if (pivotFound)
+                        return false;
+                    else {
+                        pivotFound = true;
+                        lastPivotRow = r;
+                    }
+                }
+            }
+            
+            pivotFound = false;
+        }
+
+        return true;
+    }
+
+    /**
      * Adds values of one row to another one, previously multiplied by a floating
-     * point number
+     * point number.
      *
      * @param matrix              - the original matrix
-     * @param rowNumber           - row number (index + 1) of a row which gets
+     * @param rowNumber           - the row number (index + 1) of a row which gets
      *                            summed with rowNumberMultiplied
-     * @param rowNumberMultiplied - row number (index + 1) of a row which gets
+     * @param rowNumberMultiplied - the row number (index + 1) of a row which gets
      *                            multiplied and then added to row #rowNumber
-     * @param multiplicator       - floating point number to multiply values of row
+     * @param multiplicator       - a floating point number to multiply values of row
      *                            #rowNumberMultiplied
-     * @return new matrix which is the original one after the operation
+     * @return a new matrix which is the original one after the operation
      */
     public static double[][] addMultipliedRow(double[][] matrix, int rowNumber, int rowNumberMultiplied,
             double multiplicator) {
@@ -533,84 +699,39 @@ public class DoubleMatrixCalc {
     }
 
     /**
-     * Switches columns of the matrix. Does not change the original matrix object,
-     * but returns a new one instead
+     * Swaps columns of the matrix. Does not change the original matrix object,
+     * but returns a new one instead.
      *
      * @param matrix  - original matrix
      * @param colNum1 - column 1 number (index + 1)
      * @param colNum2 - column 2 number (index + 1)
      * @return matrix with switched columns
      */
-    public static double[][] switchColumns(double[][] matrix, int colNum1, int colNum2) {
-        double[][] result = new double[matrix.length][matrix[0].length];
-        for (int r = 0; r < matrix.length; r++) {
-            final double row[] = new double[matrix[r].length];
-            System.arraycopy(matrix[r], 0, row, 0, matrix[r].length);
-            result[r] = row;
-            result[r][colNum1 - 1] = matrix[r][colNum2 - 1];
-            result[r][colNum2 - 1] = matrix[r][colNum1 - 1];
+    public static double[][] swapColumns(double[][] matrix, int colNum1, int colNum2) {
+        double[][] result = MatrixUtil.copy(matrix);
+        for (int row = 0; row < matrix.length; row++) {
+            var temp = result[row][colNum1 - 1];
+            result[row][colNum1 - 1] = matrix[row][colNum2 - 1];
+            result[row][colNum2 - 1] = temp;
         }
         return result;
     }
 
     /**
-     * Switches rows of the matrix. Does not change the original matrix object, but
-     * returns a new one instead
+     * Swaps rows of the matrix. Does not change the original matrix object, but
+     * returns a new one instead.
      *
      * @param matrix  - original matrix
      * @param rowNum1 - row 1 number (index + 1)
      * @param rowNum2 - row 2 number (index + 1)
      * @return matrix with switched columns
      */
-    public static double[][] switchRows(double[][] matrix, int rowNum1, int rowNum2) {
-        double[][] result = new double[matrix.length][matrix[0].length];
-        for (int r = 0; r < matrix.length; r++) {
-            final double row[] = new double[matrix[r].length];
-            System.arraycopy(matrix[r], 0, row, 0, matrix[r].length);
-            result[r] = row;
-        }
+    public static double[][] swapRows(double[][] matrix, int rowNum1, int rowNum2) {
+        double[][] result = MatrixUtil.copy(matrix);
         for (int c = 0; c < matrix[0].length; c++) {
+            var temp = result[rowNum1 - 1][c];
             result[rowNum1 - 1][c] = matrix[rowNum2 - 1][c];
-            result[rowNum2 - 1][c] = matrix[rowNum1 - 1][c];
-        }
-        return result;
-    }
-
-    public static double[][] truncateZeroColumns(double[][] matrix) {
-        List<Integer> nonZeroColumnIndices = new LinkedList<>();
-        Outer : for (int c = 0; c < matrix[0].length; c++) {
-            for (int r = 0; r < matrix.length; r++) {
-                if (matrix[r][c] != .0d) {
-                    nonZeroColumnIndices.add(c);
-                    continue Outer;
-                }
-            }
-        }
-        double[][] result = new double[matrix.length][nonZeroColumnIndices.size()];
-        int colNum = 0;
-        for (Integer col : nonZeroColumnIndices) {
-            for (int r = 0; r < matrix.length; r++)
-                result[r][colNum] = matrix[r][col];
-            colNum++;
-        }
-        return result;
-    }
-
-    public static double[][] truncateZeroRows(double[][] matrix) {
-        List<Integer> nonZeroRowIndices = new LinkedList<>();
-        Outer : for (int r = 0; r < matrix.length; r++) {
-            for (int c = 0; c < matrix[0].length; c++) {
-                if (matrix[r][c] != .0d) {
-                    nonZeroRowIndices.add(r);
-                    continue Outer;
-                }
-            }
-        }
-        double[][] result = new double[nonZeroRowIndices.size()][matrix[0].length];
-        int rowNum = 0;
-        for (Integer row : nonZeroRowIndices) {
-            System.arraycopy(matrix[row], 0, result[rowNum], 0, matrix[0].length);
-            rowNum++;
+            result[rowNum2 - 1][c] = temp;
         }
         return result;
     }
@@ -648,16 +769,33 @@ public class DoubleMatrixCalc {
         }
         return sb.toString();
     }
-    
+
     public static boolean isSquare(double[][] matrix) {
         return !isEmpty(matrix) && matrix.length == matrix[0].length;
     }
 
     public static void validateSquareMatrix(double[][] matrix) throws MatrixException {
         validateMatrix(matrix);
-        if (matrix.length < 2 || matrix.length != matrix[0].length) {
+        if (matrix.length != matrix[0].length) {
             throw new MatrixException("Not a square matrix");
         }
+    }
+
+    /**
+     * Checks if the given matrix object is valid.
+     * 
+     * @param matrix given
+     * @return true if the matrix is valid, false otherwise.
+     */
+    public static boolean isValid(double[][] matrix) {
+        if (isEmpty(matrix))
+            return false;
+        int colCount = matrix[0].length;
+        for (int i = 1; i < matrix.length; i++) {
+            if (matrix[i].length != colCount)
+                return false;
+        }
+        return true;
     }
 
     public static void validateMatrix(double[][] matrix) throws MatrixException {

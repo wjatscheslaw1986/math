@@ -1,6 +1,7 @@
 package test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -35,7 +36,7 @@ public class CalcTest {
         assertEquals(3628800L, CombinatoricsCalc.factorial(10));
 
         // TODO what to do with negatives?
-        assertEquals(1L, CombinatoricsCalc.factorial(-1));
-        assertEquals(1L, CombinatoricsCalc.factorial(-15));
+        assertThrows(ArithmeticException.class, () -> CombinatoricsCalc.factorial(-1));
+        assertThrows(ArithmeticException.class, () -> CombinatoricsCalc.factorial(-15));
     }
 }
