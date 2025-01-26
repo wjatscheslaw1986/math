@@ -16,8 +16,8 @@ public final class CombinatoricsCalc {
 
     /**
      * Number of variations. I.e. number of ways to choose a subset of <b>k</b> elements
-     * from of a set of <b>n</b> elements, summarizing all possible mutual permutations
-     * of each chosen subset of <b>k</b> elements as separate variations.
+     * from a set of <b>n</b> elements, summarizing all possible mutual permutations (orderings)
+     * for each chosen subset of <b>k</b> elements, i.e. counting each ordering as a separate variation.
      * 
      * @param n size of a given set of all elements
      * @param k size of a single choice, i.e. a subset of <b>n</b>
@@ -66,7 +66,7 @@ public final class CombinatoricsCalc {
         for (int i = 1; i <= n; i++) {
             result *= i;
             if (result < 0)
-                throw new ArithmeticException(String.format("A long overflow has happened while counting a %n! on the number %n", n, i));
+                throw new ArithmeticException(String.format("An long overflow has happened while counting a %n! on the number %n", n, i));
         }
         return result;
     }
