@@ -156,16 +156,12 @@ public final class IntegrationTest {
     @Test
     public void rowEchelonFormTest() throws MatrixException {
         final RandomGenerator rnd = RandomGeneratorFactory.getDefault().create();
-        for (int i = 0; i < 100; i++) {
-            final int n = rnd.nextInt(1, 5);
-            final int m = rnd.nextInt(1, 5);
+        for (int i = 0; i < 35; i++) {
+            final int n = rnd.nextInt(1, 15);
+            final int m = rnd.nextInt(1, 15);
             var matrix = MatrixGenerator.generateRandomDoubleMatrix(n, m);
-            var re = MatrixCalc.toRowEchelonForm(matrix);
-            if (!MatrixCalc.isRowEchelonForm(re)) {
-                //TODO test fails!
-                System.err.println("ke");
-            }
-            assertTrue(MatrixCalc.isRowEchelonForm(re));
+            var refMatrix = MatrixCalc.toRowEchelonForm(matrix);
+            assertTrue(MatrixCalc.isRowEchelonForm(refMatrix));
         }
     }
 }
