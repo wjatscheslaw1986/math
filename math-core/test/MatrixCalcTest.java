@@ -143,10 +143,10 @@ public class MatrixCalcTest {
 
         final double[][] matrix2 = new double[][]{{-1.0d, -4.0d, 5.0d}, {3.0d, 1.0d, 7.0d}, {0.0d, 5.0d, -10.0d}};
 
-//        System.out.println(DoubleMatrixCalc.print(DoubleMatrixCalc.squareSubmatrix(matrix0, 0, 0, 3)));
-//        System.out.println(DoubleMatrixCalc.print(DoubleMatrixCalc.squareSubmatrix(matrix0, 1, 0, 3)));
-         assertTrue(MatrixCalc.equals(matrix1, MatrixCalc.squareSubmatrix(matrix0, 0, 0, 3)));
-         assertTrue(MatrixCalc.equals(matrix2, MatrixCalc.squareSubmatrix(matrix0, 1, 0, 3)));
+        // System.out.println(DoubleMatrixCalc.print(DoubleMatrixCalc.squareSubmatrix(matrix0, 0, 0, 3)));
+        // System.out.println(DoubleMatrixCalc.print(DoubleMatrixCalc.squareSubmatrix(matrix0, 1, 0, 3)));
+        assertTrue(MatrixCalc.equals(matrix1, MatrixCalc.squareSubmatrix(matrix0, 0, 0, 3)));
+        assertTrue(MatrixCalc.equals(matrix2, MatrixCalc.squareSubmatrix(matrix0, 1, 0, 3)));
     }
 
     /**
@@ -165,7 +165,7 @@ public class MatrixCalcTest {
         assertEquals(2, MatrixCalc.rank(matrix));
         assertEquals(2, MatrixCalc.rankByMinors(matrix));
     }
-    
+
     /**
      * Given a matrix, convert it to a trapezoidal matrix. TODO
      * 
@@ -195,7 +195,7 @@ public class MatrixCalcTest {
                                                  {0.0d, 0.0d, 2.0d, 0.0d}};
         assertTrue(MatrixCalc.isTrapezoidForm(matrix));
     }
-    
+
     /**
      * Given a matrix, check if it is a row echelon form.
      * 
@@ -204,35 +204,46 @@ public class MatrixCalcTest {
     @Test
     public void isRowEchelonForm() throws MatrixException {
         double[][] matrix = new double[][]{{1.0d, -3.0d, -5.0d, -3.0d}, {0.0d, 4.0d, 11.0d, 7.0d},
-                                                 {0.0d, 0.0d, 2.0d, 0.0d}};
+                                           {0.0d, 0.0d, 2.0d, 0.0d}};
+        var rowEchelonMatrix = MatrixCalc.toRowEchelonForm(matrix);
         assertTrue(MatrixCalc.isRowEchelonForm(matrix));
-        
+        assertTrue(MatrixCalc.isRowEchelonForm(rowEchelonMatrix));
+
+        // In general, row echelon form (non-reduced) is not unique. But in the case when matrix is in REF already, it
+        // should not change.
+        assertTrue(MatrixCalc.equals(rowEchelonMatrix, matrix));
+
         matrix = new double[][]{{-5.4d, -3.8d, -5.42d}};
-        var mx = MatrixCalc.toRowEchelonForm(matrix);
+        rowEchelonMatrix = MatrixCalc.toRowEchelonForm(matrix);
         assertTrue(MatrixCalc.isRowEchelonForm(matrix));
-        assertTrue(MatrixCalc.isRowEchelonForm(mx));
-        
+        assertTrue(MatrixCalc.isRowEchelonForm(rowEchelonMatrix));
+        assertTrue(MatrixCalc.equals(rowEchelonMatrix, matrix));
+
         matrix = new double[][]{{1.1883620478410215d, 4.084346689561142d, 0.175702923175848d, -6.932205740519737}};
-        mx = MatrixCalc.toRowEchelonForm(matrix);
+        rowEchelonMatrix = MatrixCalc.toRowEchelonForm(matrix);
         assertTrue(MatrixCalc.isRowEchelonForm(matrix));
-        assertTrue(MatrixCalc.isRowEchelonForm(mx));
-        
-        matrix = new double[][]{
-            {-3.4408949597421845d, 2.94181514630203d},
-            { 2.490922186823001d, -8.99332700307957d},
-            {4.740206117048821d,-6.958867337177139},
-            {8.154390360529227d,-1.0613990534676798}
-            };
-        mx = new double[][]{
-            {8.154390360529227d, 0.0d},
-            {0.0d, 2.94181514630203d},
-            {0.0d,0.0d},
-            {0.0d,0.0d}
-            };
-            var mx1 = MatrixCalc.toRowEchelonForm(matrix);
-            
+        assertTrue(MatrixCalc.isRowEchelonForm(rowEchelonMatrix));
+        assertTrue(MatrixCalc.equals(rowEchelonMatrix, matrix));
+
+        matrix = new double[][]{{-3.4408949597421845d, 2.94181514630203d}, {2.490922186823001d, -8.99332700307957d},
+                                {4.740206117048821d, -6.958867337177139},
+                                {8.154390360529227d, -1.0613990534676798}};
+        rowEchelonMatrix = new double[][]{{8.154390360529227d, 0.0d}, {0.0d, 2.94181514630203d}, {0.0d, 0.0d},
+                                          {0.0d, 0.0d}};
+        var rowEchelonMatrix_ = MatrixCalc.toRowEchelonForm(matrix);
         assertFalse(MatrixCalc.isRowEchelonForm(matrix));
-        assertTrue(MatrixCalc.equals(mx, mx1));
-        assertTrue(MatrixCalc.isRowEchelonForm(mx1));
+        assertTrue(MatrixCalc.isRowEchelonForm(rowEchelonMatrix));
+        assertTrue(MatrixCalc.isRowEchelonForm(rowEchelonMatrix_));
+
+        // The row echelon form (non-reduced) is not unique.
+        assertFalse(MatrixCalc.equals(rowEchelonMatrix, rowEchelonMatrix_));
+
+        matrix = new double[][]{{1.0096634218430616d, -8.772286757703684d, -0.44083720521676284d, 0.8588440971684381d},
+                                {6.418590743167737d, -6.420896947702297d, 3.5253331532074323d, 4.864061213084703d},
+                                {4.846333023426332d, -8.178851479847493d, -7.092716530960487d, -4.478958333291305d},
+                                {-1.2029012827902505d, 5.915048574621862d, 5.584530663132492d, 2.962818038754156d}};
+        rowEchelonMatrix = MatrixCalc.toRowEchelonForm(matrix);
+        assertFalse(MatrixCalc.isRowEchelonForm(matrix));
+        assertTrue(MatrixCalc.isRowEchelonForm(rowEchelonMatrix));
     }
 }

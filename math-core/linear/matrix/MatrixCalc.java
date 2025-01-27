@@ -559,10 +559,13 @@ public class MatrixCalc {
 
             }
 
-            // All entries below each pivot must be zeroes.
-            for (int r = row + 1; r < result.length; r++) {
-                if (result[r][col] != .0d) {
-                    result = addMultipliedRow(result, r + 1, row + 1, -1 * result[r][col] / result[row][col]);
+            // All entries below each pivot must be zeroes. The pivot != 0
+            if (result[row][col] != .0d) {
+                for (int r = row + 1; r < result.length; r++) {
+                    if (result[r][col] != .0d) {
+                        result = addMultipliedRow(result, r + 1, row + 1, -1 * (result[r][col] / result[row][col]));
+                        MatrixUtil.clean(result);
+                    }
                 }
             }
 
@@ -646,7 +649,7 @@ public class MatrixCalc {
                     }
                 }
             }
-            
+
             pivotFound = false;
         }
 
