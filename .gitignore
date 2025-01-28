@@ -4,7 +4,7 @@ classes
 
 .DS_Store
 .idea
-
+.idea/*
 *.iml
 
 /bin/
@@ -15,4 +15,8 @@ classes
 
 .classpath
 .project
+.settings
 
+/target/
+/out/
+/out-test/
