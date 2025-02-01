@@ -9,11 +9,13 @@ import linear.equation.exception.LinearEquationSystemException;
 import linear.matrix.MatrixCalc;
 import linear.matrix.MatrixUtil;
 import linear.matrix.exception.MatrixException;
+
 import static linear.matrix.MatrixUtil.*;
+import static linear.matrix.Validation.canMultiply;
 
 /**
  * A utility class for solving linear equation systems.
- * 
+ *
  * @author Wjatscheslaw Michailov
  */
 public final class LinearEquationSystemUtil {
@@ -23,31 +25,15 @@ public final class LinearEquationSystemUtil {
     }
 
     /**
-     * Checks if the given matrix of linear equations system's coefficients
-     * is a square non-degenerate matrix. If it is, then the equations system
-     * can be solved using Cramer method.
-     * 
-     * @param matrix the given matrix
-     * @return true if the given matrix is a 'Cramer' matrix, false otherwise
-     */
-    public static boolean isCramer(final double[][] matrix) throws LinearEquationSystemException {
-        try {
-            return isSquare(matrix) && MatrixCalc.det(matrix) == .0d;
-        } catch (MatrixException me) {
-            throw new LinearEquationSystemException(me.getLocalizedMessage());
-        }
-    }
-
-    /**
-     * @param coefficients
-     * @param freeMembers
+     * Resolve linear equation system using Cramer method.
+     *
+     * @param coefficients matrix made of left part of equations
+     * @param freeMembers vector made of right part of equations
      * @return a vector of variable values (answers) for the equations, regarding their order in the equation.
-     * @throws MatrixException
      */
-    public static double[] resolveUsingCramerMethod(final double[][] coefficients, final double[] freeMembers)
-            throws MatrixException {
-        double determinant = MatrixCalc.det(coefficients);
-        var resolved = new double[freeMembers.length];
+    public static double[] resolveUsingCramerMethod(final double[][] coefficients, final double[] freeMembers) {
+        final var resolved = new double[freeMembers.length];
+        final double determinant = MatrixCalc.det(coefficients);
         for (int i = 0; i < freeMembers.length; i++)
             resolved[i] = MatrixCalc.det(substituteColumn(coefficients, freeMembers, i + 1))
                     / determinant;
@@ -56,20 +42,18 @@ public final class LinearEquationSystemUtil {
 
     /**
      * Resolve given linear equations system using reverse matrix method.
-     * 
+     *
      * @param coefficients a square matrix of coefficients of the left parts of each equation
      * @param freeMembers  a vector of free members (i.e. right parts of each equasion)
      * @return a vector of variable values (answers) for the equations, regarding their order in the equation.
-     * @throws MatrixException
      */
-    public static double[] resolveUsingReverseMatrixMethod(double[][] coefficients, double[] freeMembers)
-            throws MatrixException {
-        return MatrixCalc.multiply(MatrixCalc.reverse(coefficients), freeMembers);
+    public static double[] resolveUsingReverseMatrixMethod(double[][] coefficients, double[] freeMembers) {
+return MatrixCalc.multiply(MatrixCalc.reverse(coefficients), freeMembers);
     }
 
     /**
      * Resolve given linear equations system using Jordan-Gauss method.
-     * 
+     *
      * @param equations linear equations matrix including both sides of each equation
      * @param solution  the modifiable vector for a single solution
      * @return number of solutions for the system. Integer.MAX_VALUE for infinite number of solutions.
@@ -128,7 +112,7 @@ public final class LinearEquationSystemUtil {
 
         return 1; // Unique solution
     }
-    
+
     /*
      * This method substitutes one column of a given matrix with another one,
      * at a certain position 'colNum'.
@@ -141,9 +125,9 @@ public final class LinearEquationSystemUtil {
      *         'column'
      */
     static double[][] substituteColumn(final double[][] matrix, final double[] column, final int colNum) {
-        if (matrix[0].length <= colNum)
+        if (matrix[0].length < colNum)
             throw new ArrayIndexOutOfBoundsException(String
-                .format("Column index %n is out of matrix columns size of %n", colNum - 1, matrix[0].length));
+                    .format("Column index %d is out of matrix columns size of %d", colNum - 1, matrix[0].length));
         final double[][] result = MatrixUtil.copy(matrix);
         for (int row = 0; row < matrix.length; row++)
             result[row][colNum - 1] = column[row];

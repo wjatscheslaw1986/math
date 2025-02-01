@@ -29,16 +29,6 @@ public final class MatrixUtil {
     }
 
     /**
-     * Checks if this matrix is a square matrix.
-     * 
-     * @param matrix given
-     * @return true if this matrix is a square matrix, false otherwise
-     */
-    public static boolean isSquare(final double[][] matrix) {
-        return !Validation.isValid(matrix) && matrix.length == matrix[0].length;
-    }
-
-    /**
      * Checks if this matrix is empty.
      * 
      * @param matrix checked

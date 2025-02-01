@@ -8,6 +8,7 @@ import static linear.matrix.MatrixUtil.excludeColumnAndRow;
 import static linear.matrix.MatrixUtil.isEqualDimensions;
 
 import java.util.ArrayDeque;
+import java.util.Arrays;
 import java.util.Deque;
 
 import combinatorics.IndexCombinationsGenerator;
@@ -15,7 +16,7 @@ import linear.matrix.exception.MatrixException;
 
 /**
  * Matrix calculator util class.
- * 
+ *
  * @author Wjatscheslaw Michailov
  */
 public final class MatrixCalc {
@@ -31,10 +32,8 @@ public final class MatrixCalc {
      * @param matrix     - the original matrix object
      * @param multiplier - the number to multiply the matrix on
      * @return a new matrix object which is a result of multiplication
-     * @throws MatrixException - if matrix is malformed
      */
-    public static double[][] multiply(double[][] matrix, double multiplier) throws MatrixException {
-        Validation.validateMatrix(matrix);
+    public static double[][] multiply(double[][] matrix, double multiplier) {
         double[][] result = new double[matrix.length][matrix[0].length];
         for (int rowNum = 0; rowNum < matrix.length; rowNum++) {
             System.arraycopy(matrix[rowNum], 0, result[rowNum], 0, matrix[rowNum].length);
@@ -53,12 +52,10 @@ public final class MatrixCalc {
      * @param matrix - the original matrix object
      * @param column - the vector-column to multiply on
      * @return a new matrix object which is a result of multiplication
-     * @throws MatrixException - if matrix is malformed
      */
-    public static double[] multiply(double[][] matrix, double[] column) throws MatrixException {
-        Validation.validateMatrix(matrix);
+    public static double[] multiply(double[][] matrix, double[] column) {
         if (matrix[0].length != column.length)
-            throw new MatrixException("If you're about to multiply a matrix from the left on a vector-column from the right, the matrix should have same row length as the vector-column's amount of elements ");
+            throw new IllegalArgumentException("If you're about to multiply a matrix from the left on a vector-column from the right, the matrix should have same row length as the vector-column's amount of elements ");
         double[] result = new double[matrix[0].length];
         for (int rowNum = 0; rowNum < matrix.length; rowNum++) {
             for (int colNum = 0; colNum < matrix[rowNum].length; colNum++) {
@@ -106,7 +103,7 @@ public final class MatrixCalc {
                 result[col][row] = matrix[row][col];
         return result;
     }
-    
+
     /**
      * The method calculates a cofactor for an element of the given matrix which is
      * situated on the intersection of the given row and column.
@@ -118,13 +115,13 @@ public final class MatrixCalc {
      * @param rowNum - the given row number (index + 1) of the element
      * @param colNum - the given column number (index + 1) of the element
      * @return - the cofactor for the element of the matrix which is on the
-     *         intersection of the given row and column
+     * intersection of the given row and column
      * @throws MatrixException - if the matrix is malformed
      */
-    public static double cofactor(double[][] matrix, int rowNum, int colNum) throws MatrixException {
+    public static double cofactor(double[][] matrix, int rowNum, int colNum) {
         return (Math.pow(-1.0f, rowNum + colNum)) * det(excludeColumnAndRow(matrix, rowNum, colNum));
     }
-    
+
     /**
      * This method calculates a cofactor matrix for the given one.
      * Does not modify the original matrix passed as a parameter.
@@ -133,7 +130,7 @@ public final class MatrixCalc {
      * @return a new matrix object with cofactors instead of the original elements
      * @throws MatrixException - if the matrix is malformed
      */
-    public static double[][] cofactors(final double[][] matrix) throws MatrixException {
+    public static double[][] cofactors(final double[][] matrix) {
         final double[][] result = new double[matrix.length][matrix.length];
         for (int row = 1; row <= matrix.length; row++)
             for (int col = 1; col <= matrix.length; col++)
@@ -143,13 +140,13 @@ public final class MatrixCalc {
 
     /**
      * The method calculates a determinant of the given matrix.
+     * Only a square matrix may have a determinant.
      *
      * @param matrix - the given matrix
      * @return the determinant of the matrix
      * @throws MatrixException - if the matrix is malformed
      */
-    public static double det(final double[][] matrix) throws MatrixException {
-        Validation.validateSquareMatrix(matrix);
+    public static double det(final double[][] matrix) {
         double result = Double.MAX_VALUE;
         if (matrix.length < 2)
             return matrix[0][0];
@@ -182,9 +179,10 @@ public final class MatrixCalc {
      *
      * @param matrix - the original matrix object
      * @return a new matrix object which is a reversed matrix passed as an argument
-     * @throws MatrixException - if the matrix is malformed
      */
-    public static double[][] reverse(final double[][] matrix) throws MatrixException {
+    public static double[][] reverse(final double[][] matrix) {
+        var det = det(matrix);
+        if (det == 0) throw new IllegalArgumentException("You cannot have a reverse matrix for a degenerate one!");
         return multiply(transpose(cofactors(matrix)), 1.0d / det(matrix));
     }
 
@@ -194,9 +192,9 @@ public final class MatrixCalc {
      * one column.
      *
      * @param matrix - the original matrix
-     * 
+     *
      * @param col - number (index + 1) of a column to exclude
-     * 
+     *
      * @return a matrix one row one column less in size. The column to exclude are
      * provided as an argument
      */
@@ -219,7 +217,7 @@ public final class MatrixCalc {
     /**
      * Вырезать квадратную подматрицу (не путать с алгебраическим дополнением!) для данной матрицы.
      * Подходит для оконного алгоритма.
-     * 
+     *
      * @param matrix         исходная матрица
      * @param rowOffset      индекс ряда исходной матрицы, который будет нулевым для вырезаемой
      * @param colOffset      индекс колонки исходной матрицы, который будет нулевым для вырезаемой
@@ -241,7 +239,7 @@ public final class MatrixCalc {
 
     /**
      * Сложить матрицы 'b' и 'a'.
-     * 
+     *
      * @param a первая матрица
      * @param b вторая матрица
      * @return результат сложения матриц 'b' и 'a'
@@ -259,7 +257,7 @@ public final class MatrixCalc {
 
     /**
      * Вычесть матрицу 'b' из матрицы 'a'.
-     * 
+     *
      * @param a первая матрица
      * @param b вторая матрица
      * @return результат вычитания матрицы 'b' из матрицы 'a'
@@ -271,8 +269,8 @@ public final class MatrixCalc {
 
     /**
      * Calculate rank of a given matrix.
-     * Source: {@link https://cp-algorithms.com/linear_algebra/rank-matrix.html}
-     * 
+     * Source: {@linkplain https://cp-algorithms.com/linear_algebra/rank-matrix.html}
+     *
      * @param originalMatrix is the given matrix for finding its rank
      * @return rank
      * @throws MatrixException if given matrix is malformed
@@ -315,12 +313,12 @@ public final class MatrixCalc {
      * Calculate a rank of a given matrix using a determinant
      * method (i.e. rank equals to the max non-degenerate minor, or zero).
      * The most straightforward approach.
-     * 
+     *
      * @param matrix is the given matrix for finding its rank
      * @return rank a rank of the given matrix
      * @throws MatrixException if given matrix is malformed
      * @deprecated the approach from {@linkplain https://cp-algorithms.com/linear_algebra/rank-matrix.html} seems
-     *             to be more preferable
+     * to be more preferable
      */
     @Deprecated
     public static int rankByMinors(final double[][] matrix) throws MatrixException {
@@ -359,16 +357,25 @@ public final class MatrixCalc {
 
     /**
      * Checks if the two given matrices are equal.
-     * 
+     *
      * @param a matrix A
      * @param b matrix B
      * @return true if matrices are equal, false otherwise
      */
     public static boolean areEqual(final double[][] a, final double[][] b) {
         for (int i = 0; i < a.length; i++)
-            for (int j = 0; j < a[0].length; j++)
-                if (Double.compare(a[i][j], b[i][j]) != 0)
-                    return false;
+            if (!areEqual(a[i], b[i])) return false;
         return true;
+    }
+
+    /**
+     * Checks if the two given vectors are equal.
+     *
+     * @param a vector A
+     * @param b vector B
+     * @return true if vectors are equal, false otherwise
+     */
+    public static boolean areEqual(final double[] a, final double[] b) {
+        return Arrays.equals(a, b);
     }
 }
