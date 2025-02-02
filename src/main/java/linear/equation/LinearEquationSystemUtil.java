@@ -3,15 +3,13 @@
  */
 package linear.equation;
 
-import java.util.Arrays;
-
-import linear.equation.exception.LinearEquationSystemException;
 import linear.matrix.MatrixCalc;
 import linear.matrix.MatrixUtil;
-import linear.matrix.exception.MatrixException;
 
-import static linear.matrix.MatrixUtil.*;
-import static linear.matrix.Validation.canMultiply;
+import java.util.Arrays;
+
+import static linear.matrix.MatrixUtil.EPS;
+import static linear.matrix.MatrixUtil.swapValue;
 
 /**
  * A utility class for solving linear equation systems.
@@ -26,9 +24,11 @@ public final class LinearEquationSystemUtil {
 
     /**
      * Resolve linear equation system using Cramer method.
+     * <p>Only applicable to Cramer matrices. Use {@link linear.matrix.Validation}.isCramer() method
+     * beforehand to be sure you aren't getting wrong results.</p>
      *
      * @param coefficients matrix made of left part of equations
-     * @param freeMembers vector made of right part of equations
+     * @param freeMembers  vector made of right part of equations
      * @return a vector of variable values (answers) for the equations, regarding their order in the equation.
      */
     public static double[] resolveUsingCramerMethod(final double[][] coefficients, final double[] freeMembers) {
@@ -42,13 +42,17 @@ public final class LinearEquationSystemUtil {
 
     /**
      * Resolve given linear equations system using reverse matrix method.
+     * <p>Only applicable to Cramer matrices. Use {@link linear.matrix.Validation}.isCramer() method
+     * beforehand to be sure you aren't getting wrong results.</p>
      *
      * @param coefficients a square matrix of coefficients of the left parts of each equation
-     * @param freeMembers  a vector of free members (i.e. right parts of each equasion)
+     * @param freeMembers  a vector of free members (i.e. right parts of each equation)
      * @return a vector of variable values (answers) for the equations, regarding their order in the equation.
      */
     public static double[] resolveUsingReverseMatrixMethod(double[][] coefficients, double[] freeMembers) {
-return MatrixCalc.multiply(MatrixCalc.reverse(coefficients), freeMembers);
+        var solution = MatrixCalc.multiply(MatrixCalc.reverse(coefficients), freeMembers);
+        MatrixUtil.eliminateEpsilon(solution);
+        return solution;
     }
 
     /**
@@ -132,5 +136,19 @@ return MatrixCalc.multiply(MatrixCalc.reverse(coefficients), freeMembers);
         for (int row = 0; row < matrix.length; row++)
             result[row][colNum - 1] = column[row];
         return result;
+    }
+
+    /**
+     * Check if the given system of linear equations solvable,
+     * using Rouché–Capelli (Kronecker–Capelli) theorem:
+     * <p>A system of linear equations has a solution if and only if its
+     * coefficient matrix A and its augmented matrix [A|b] have the same rank.</p>
+     *
+     * @param augmentedMatrix a matrix of vectors. Each vector represents an equation
+     *                        with its last element being the right side of the equation
+     * @return true if the given system of linear equations is solvable, false otherwise
+     */
+    public static boolean isSolvable(final double[][] augmentedMatrix) {
+        return MatrixCalc.rank(MatrixUtil.removeMarginalColumn(augmentedMatrix, false)) == MatrixCalc.rank(augmentedMatrix);
     }
 }

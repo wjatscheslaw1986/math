@@ -1,6 +1,7 @@
+/**
+ * Wjatscheslaw Michailov (taleskeeper@yandex.com) All rights reserved © 2025.
+ */
 package linear.matrix;
-
-import static linear.matrix.MatrixUtil.isEmpty;
 
 /**
  * A utility class that provides checks for different matrix properties.
@@ -33,8 +34,9 @@ public final class Validation {
      * @return true if both matrices are of same dimensions, false otherwise
      */
     public static boolean isEqualDimensions(double[][] matrix1, double[][] matrix2) {
-        return isMatrix(matrix1) && isMatrix(matrix2)
-                && (matrix1.length == matrix2.length && matrix1[0].length == matrix2[0].length);
+        if (!(isMatrix(matrix1) && isMatrix(matrix2)))
+            throw new IllegalArgumentException("Empty matrices may not have dimensions.");
+        return matrix1.length == matrix2.length && matrix1[0].length == matrix2[0].length;
     }
 
     /**
@@ -44,7 +46,9 @@ public final class Validation {
      * @return true if the given matrix is a square matrix, false otherwise
      */
     public static boolean isSquareMatrix(double[][] matrix) {
-        return isMatrix(matrix) && (matrix.length == matrix[0].length);
+        if (!isMatrix(matrix))
+            throw new IllegalArgumentException("Empty matrices may not be checked for being a square matrix.");
+        return matrix.length == matrix[0].length;
     }
 
     /**
@@ -64,6 +68,16 @@ public final class Validation {
                 return false;
         }
         return true;
+    }
+
+    /**
+     * Checks if this matrix is empty.
+     *
+     * @param matrix checked
+     * @return true if matrix is empty, false otherwise
+     */
+    public static boolean isEmpty(double[][] matrix) {
+        return matrix.length < 1 || matrix[0].length < 1;
     }
 
     /**

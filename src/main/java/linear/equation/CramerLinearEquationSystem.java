@@ -58,5 +58,6 @@ public class CramerLinearEquationSystem {
                             .add(MatrixUtil.print(this.coefficients))));
 
         this.resolved = method.apply(coefficients, freeMembers);
+        MatrixUtil.eliminateEpsilon(this.resolved);
     }
 }

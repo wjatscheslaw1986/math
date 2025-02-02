@@ -17,28 +17,6 @@ public final class MatrixUtil {
     }
 
     /**
-     * Checks the equality of dimensions of the two given valid matrixes.
-     * It is up to you to check for the validity of the arguments.
-     * 
-     * @param a matrix A
-     * @param b matrix B
-     * @return true if the dimensions are equal, false otherwise
-     */
-    public static boolean isEqualDimensions(final double[][] a, final double[][] b) {
-        return a.length == b.length && a[0].length == b[0].length;
-    }
-
-    /**
-     * Checks if this matrix is empty.
-     * 
-     * @param matrix checked
-     * @return true if matrix is empty, false otherwise
-     */
-    public static boolean isEmpty(double[][] matrix) {
-        return matrix.length < 1 || matrix[0].length < 1;
-    }
-
-    /**
      * Copy the given matrix. The given matrix must have the same amount of columns for each row.
      * 
      * @return the copy of the matrix passed as an argument
@@ -58,22 +36,15 @@ public final class MatrixUtil {
      * 
      * @param matrix given
      */
-    public static void eliminateEpsilon(final double[][] matrix) {
+    public static void eliminateEpsilon(final double[]... matrix) {
         for (int r = 0; r < matrix.length; r++)
-            for (int c = 0; c < matrix[0].length; c++)
-                if (Math.abs(matrix[r][c]) < EPS)
-                    matrix[r][c] = .0d;
-    }
-
-    /**
-     * Modifies the given vector by assigning 0 value to any value less than EPS.
-     * 
-     * @param vector given
-     */
-    public static void eliminateEpsilon(final double[] vector) {
-        for (int c = 0; c < vector.length; c++)
-            if (Math.abs(.0d - vector[c]) < EPS)
-                vector[c] = .0d;
+            for (int c = 0; c < matrix[0].length; c++) {
+                var abs = Math.abs(matrix[r][c]);
+                var absRound = Math.round(abs);
+                if (Math.abs(abs - absRound) < EPS) {
+                    matrix[r][c] = Math.round(matrix[r][c]);
+                }
+            }
     }
 
     /**
@@ -90,7 +61,7 @@ public final class MatrixUtil {
                 modified = true;
                 result = copy(matrix);
             }
-            result = removeLeftmostColumn(result);
+            result = removeMarginalColumn(result, true);
         }
         return result;
     }
@@ -124,19 +95,20 @@ public final class MatrixUtil {
     }
 
     /**
-     * Remove column on the left from this matrix.
+     * Remove a column either from the left or from the right side of this matrix.
      * 
      * @param matrix given
+     * @param left true if the left column to be removed, false if the right column should be removed
      * @return the modified matrix
      */
-    public static double[][] removeLeftmostColumn(final double[][] matrix) {
+    public static double[][] removeMarginalColumn(final double[][] matrix, final boolean left) {
         if (matrix[0].length < 2) {
             return new double[][]{{}};
         }
         final double[][] copy = new double[matrix.length][matrix[0].length - 1];
         for (int r = 0; r < matrix.length; r++) {
-            final double row[] = new double[matrix[r].length];
-            System.arraycopy(matrix[r], 1, row, 0, matrix[r].length - 1);
+            final double[] row = new double[matrix[r].length];
+            System.arraycopy(matrix[r], left ? 1 : 0, row, 0, matrix[r].length - 1);
             copy[r] = row;
         }
         return copy;
@@ -277,4 +249,6 @@ public final class MatrixUtil {
         }
         return result;
     }
+
+
 }
