@@ -24,7 +24,7 @@ public class CramerLinearEquationSystemTest {
     }
 
     @Test
-    public void testReverseMatrixSolution() throws LinearEquationSystemException {
+    public void testReverseMatrixSolution() {
         var matrix = new double[][]{{2,1,1,2},{1,3,1,5},{1,1,5,-7}};
         var leftParts = new double[][]{{2,1,1},{1,3,1},{1,1,5}};
         var rightParts = new double[]{2,5,-7};
@@ -32,7 +32,6 @@ public class CramerLinearEquationSystemTest {
         var equationSystem = new CramerLinearEquationSystem(LinearEquationSystemUtil::resolveUsingReverseMatrixMethod, matrix);
         assertTrue(MatrixCalc.areEqual(equationSystem.getCoefficients(), leftParts));
         assertTrue(MatrixCalc.areEqual(equationSystem.getFreeMembers(), rightParts));
-        // TODO approximate double values to < EPS
-//        assertTrue(MatrixCalc.areEqual(equationSystem.getResolved(), solutions));
+        assertTrue(MatrixCalc.areEqual(equationSystem.getResolved(), solutions));
     }
 }

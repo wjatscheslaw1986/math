@@ -263,7 +263,6 @@ public final class RowEchelonFormUtil {
                 break;
             }
         }
-        eliminateEpsilon(result);
         return result;
     }
 

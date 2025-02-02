@@ -1,28 +1,34 @@
 /**
- * Wjatscheslaw Michailov <taleskeeper@yandex.com> All rights reserved © 2025.
+ * Wjatscheslaw Michailov (taleskeeper@yandex.com) All rights reserved © 2025.
  */
-package linear;
+package linear.matrix;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static linear.matrix.MatrixUtil.*;
-import static linear.matrix.MatrixCalc.*;
-import static linear.matrix.RowEchelonFormUtil.*;
-import java.util.random.RandomGenerator;
-import java.util.random.RandomGeneratorFactory;
-
+import linear.MatrixGenerator;
+import linear.matrix.exception.MatrixException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import linear.matrix.exception.MatrixException;
+import java.util.random.RandomGenerator;
+import java.util.random.RandomGeneratorFactory;
 
+import static linear.matrix.MatrixCalc.*;
+import static linear.matrix.RowEchelonFormUtil.*;
+import static linear.matrix.RowEchelonFormUtil.isRowEchelonForm;
+import static linear.matrix.Validation.isEqualDimensions;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+/**
+ * Tests for {@linkplain linear.matrix.MatrixCalc} class.
+ *
+ * @author Wjatscheslaw Michailov
+ */
 public class MatrixCalcTest {
 
     @BeforeAll
     static void before() {
-        System.out.printf("Running tests in %s.class", MatrixCalcTest.class);
+        System.out.printf("Running tests in %s.class", linear.matrix.MatrixCalcTest.class);
     }
 
     @Test
@@ -76,7 +82,7 @@ public class MatrixCalcTest {
      * Даны две матрицы A и B, найти произведение этих матриц.
      * Примеры приведены по книге А.С.Киркинский - "Линейная Алгебра и Аналитическая
      * Геометрия" - 2006
-     * 
+     *
      * @throws MatrixException в случае неправильных матриц
      */
     @Test
@@ -99,44 +105,33 @@ public class MatrixCalcTest {
      * Даны матрицы, найти обратные для каждой из них.
      * Примеры приведены по книге А.С.Киркинский - "Линейная Алгебра и Аналитическая
      * Геометрия" - 2006
-     * 
-     * @throws MatrixException в случае неправильных матриц
      */
     @Test
-    public void reverseTest() throws MatrixException {
+    public void reverseTest() {
         final double[][] a = new double[][]{{6.0d, 4.0d}, {-2.0d, -1.0d}};
         final double[][] b = new double[][]{{3.0f, 4.0f}, {9.0f, 12.0f}};
         final double[][] c = new double[][]{{2.0d, 0.0d, 2.0d}, {-3.0d, 2.0d, 0.0d}, {6.0d, -2.0d, 4.0d}};
-
         final double[][] a_rev = new double[][]{{-.5d, -2.0d}, {1.0d, 3.0d}};
         final double[][] c_rev = new double[][]{{2.0d, -1.0d, -1.0d}, {3.0d, -1.0d, -1.5d}, {-1.5d, 1.0d, 1.0d}};
 
         Assertions.assertDoesNotThrow(() -> reverse(a));
         Assertions.assertTrue(areEqual(reverse(a), a_rev));
-
-        /*
-         * TODO надо подумать, что делать с валидациями.
-         *  У матрицы с определителем == 0 не может быть обратной.
-         */
-//        Assertions.assertThrows(MatrixException.class, () -> reverse(b));
-
+        Assertions.assertThrows(IllegalArgumentException.class, () -> reverse(b));
         Assertions.assertDoesNotThrow(() -> reverse(c));
         Assertions.assertTrue(areEqual(reverse(c), c_rev));
-
     }
 
     /**
      * Given a matrix, calculate it's submatrix.
-     * 
+     *
      * @throws MatrixException in case of a malformed matrix
      */
     @Test
     public void squareSubmatrixTest() throws MatrixException {
         final double[][] matrix0 = new double[][]{{0.0d, 2.0d, -4.0d}, {-1.0d, -4.0d, 5.0d}, {3.0d, 1.0d, 7.0d},
-                                                  {0.0d, 5.0d, -10.0d}};
+                {0.0d, 5.0d, -10.0d}};
 
         final double[][] matrix1 = new double[][]{{0.0d, 2.0d, -4.0d}, {-1.0d, -4.0d, 5.0d}, {3.0d, 1.0d, 7.0d}};
-
         final double[][] matrix2 = new double[][]{{-1.0d, -4.0d, 5.0d}, {3.0d, 1.0d, 7.0d}, {0.0d, 5.0d, -10.0d}};
 
         // System.out.println(DoubleMatrixCalc.print(DoubleMatrixCalc.squareSubmatrix(matrix0, 0, 0, 3)));
@@ -149,22 +144,19 @@ public class MatrixCalcTest {
      * Given a matrix, calculate it's rank.
      * Примеры приведены по книге А.С.Киркинский - "Линейная Алгебра и Аналитическая
      * Геометрия" - 2006
-     * 
-     * @throws MatrixException in case of a malformed matrix
      */
     @SuppressWarnings("deprecation")
     @Test
-    public void rankTest() throws MatrixException {
+    public void rankTest() {
         final double[][] matrix = new double[][]{{0.0d, 2.0d, -4.0d}, {-1.0d, -4.0d, 5.0d}, {3.0d, 1.0d, 7.0d},
-                                                 {0.0d, 5.0d, -10.0d}};
-
+                {0.0d, 5.0d, -10.0d}};
         assertEquals(2, rank(matrix));
         assertEquals(2, rankByMinors(matrix));
     }
 
     /**
      * Given a matrix, convert it to a trapezoidal matrix. TODO
-     * 
+     *
      * @throws MatrixException in case of a malformed matrix
      */
     @Test
@@ -182,25 +174,23 @@ public class MatrixCalcTest {
      * Given a matrix, check if it is a trapezoidal one.
      * Примеры приведены по книге А.С.Киркинский - "Линейная Алгебра и Аналитическая
      * Геометрия" - 2006
-     * 
-     * @throws MatrixException in case of a malformed matrix
      */
     @Test
-    public void isTrapezoid() throws MatrixException {
+    public void isTrapezoid() {
         final double[][] matrix = new double[][]{{1.0d, -3.0d, -5.0d, -3.0d}, {0.0d, 4.0d, 11.0d, 7.0d},
-                                                 {0.0d, 0.0d, 2.0d, 0.0d}};
+                {0.0d, 0.0d, 2.0d, 0.0d}};
         assertTrue(isTrapezoidForm(matrix));
     }
 
     /**
      * Given a matrix, check if it is a row echelon form.
-     * 
+     *
      * @throws MatrixException in case of a malformed matrix
      */
     @Test
     public void isRowEchelonFormTest() throws MatrixException {
         double[][] matrix = new double[][]{{1.0d, -3.0d, -5.0d, -3.0d}, {0.0d, 4.0d, 11.0d, 7.0d},
-                                           {0.0d, 0.0d, 2.0d, 0.0d}};
+                {0.0d, 0.0d, 2.0d, 0.0d}};
         var rowEchelonMatrix = toRowEchelonForm(matrix);
         assertTrue(isRowEchelonForm(matrix));
         assertTrue(isRowEchelonForm(rowEchelonMatrix));
@@ -222,10 +212,10 @@ public class MatrixCalcTest {
         assertTrue(areEqual(rowEchelonMatrix, matrix));
 
         matrix = new double[][]{{-3.4408949597421845d, 2.94181514630203d}, {2.490922186823001d, -8.99332700307957d},
-                                {4.740206117048821d, -6.958867337177139},
-                                {8.154390360529227d, -1.0613990534676798}};
+                {4.740206117048821d, -6.958867337177139},
+                {8.154390360529227d, -1.0613990534676798}};
         rowEchelonMatrix = new double[][]{{8.154390360529227d, 0.0d}, {0.0d, 2.94181514630203d}, {0.0d, 0.0d},
-                                          {0.0d, 0.0d}};
+                {0.0d, 0.0d}};
         var rowEchelonMatrix_ = toRowEchelonForm(matrix);
         assertFalse(isRowEchelonForm(matrix));
         assertTrue(isRowEchelonForm(rowEchelonMatrix));
@@ -235,11 +225,33 @@ public class MatrixCalcTest {
         assertFalse(areEqual(rowEchelonMatrix, rowEchelonMatrix_));
 
         matrix = new double[][]{{1.0096634218430616d, -8.772286757703684d, -0.44083720521676284d, 0.8588440971684381d},
-                                {6.418590743167737d, -6.420896947702297d, 3.5253331532074323d, 4.864061213084703d},
-                                {4.846333023426332d, -8.178851479847493d, -7.092716530960487d, -4.478958333291305d},
-                                {-1.2029012827902505d, 5.915048574621862d, 5.584530663132492d, 2.962818038754156d}};
+                {6.418590743167737d, -6.420896947702297d, 3.5253331532074323d, 4.864061213084703d},
+                {4.846333023426332d, -8.178851479847493d, -7.092716530960487d, -4.478958333291305d},
+                {-1.2029012827902505d, 5.915048574621862d, 5.584530663132492d, 2.962818038754156d}};
         rowEchelonMatrix = toRowEchelonForm(matrix);
         assertFalse(isRowEchelonForm(matrix));
         assertTrue(isRowEchelonForm(rowEchelonMatrix));
+    }
+
+    @Test
+    void isEqualTest() {
+        double[][] matrix1 = {{3, -4}, {2, 5}};
+        double[][] matrix3 = {{-1, 5}, {-2, -3}};
+        double[][] matrix5 = {{2, 5}, {3, -4}};
+        double[][] matrix7 = {{-2, -3}, {-1, 5}};
+
+        assertTrue(areEqual(matrix1, matrix1));
+        assertFalse(areEqual(matrix1, matrix3));
+        assertTrue(areEqual(matrix3, matrix3));
+        assertFalse(areEqual(matrix3, matrix5));
+        assertTrue(areEqual(matrix5, matrix5));
+        assertFalse(areEqual(matrix5, matrix7));
+        assertTrue(areEqual(matrix7, matrix7));
+
+        double[] vector1 = {-2, -3, -1, 5};
+        double[] vector2 = {-2, -7, -1, 5};
+        assertTrue(areEqual(vector1, vector1));
+        assertFalse(areEqual(vector1, vector2));
+        assertTrue(areEqual(vector2, vector2));
     }
 }

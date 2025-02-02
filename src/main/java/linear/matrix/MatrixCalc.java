@@ -5,7 +5,7 @@ package linear.matrix;
 
 import static linear.matrix.MatrixUtil.copy;
 import static linear.matrix.MatrixUtil.excludeColumnAndRow;
-import static linear.matrix.MatrixUtil.isEqualDimensions;
+import static linear.matrix.Validation.isEqualDimensions;
 
 import java.util.ArrayDeque;
 import java.util.Arrays;
@@ -116,7 +116,6 @@ public final class MatrixCalc {
      * @param colNum - the given column number (index + 1) of the element
      * @return - the cofactor for the element of the matrix which is on the
      * intersection of the given row and column
-     * @throws MatrixException - if the matrix is malformed
      */
     public static double cofactor(double[][] matrix, int rowNum, int colNum) {
         return (Math.pow(-1.0f, rowNum + colNum)) * det(excludeColumnAndRow(matrix, rowNum, colNum));
@@ -128,7 +127,6 @@ public final class MatrixCalc {
      *
      * @param matrix the original matrix
      * @return a new matrix object with cofactors instead of the original elements
-     * @throws MatrixException - if the matrix is malformed
      */
     public static double[][] cofactors(final double[][] matrix) {
         final double[][] result = new double[matrix.length][matrix.length];
@@ -144,7 +142,6 @@ public final class MatrixCalc {
      *
      * @param matrix - the given matrix
      * @return the determinant of the matrix
-     * @throws MatrixException - if the matrix is malformed
      */
     public static double det(final double[][] matrix) {
         double result = Double.MAX_VALUE;
@@ -273,9 +270,8 @@ public final class MatrixCalc {
      *
      * @param originalMatrix is the given matrix for finding its rank
      * @return rank
-     * @throws MatrixException if given matrix is malformed
      */
-    public static int rank(final double[][] originalMatrix) throws MatrixException {
+    public static int rank(final double[][] originalMatrix) {
         final double[][] matrix = copy(originalMatrix);
 
         int rows = matrix.length;
@@ -316,12 +312,11 @@ public final class MatrixCalc {
      *
      * @param matrix is the given matrix for finding its rank
      * @return rank a rank of the given matrix
-     * @throws MatrixException if given matrix is malformed
      * @deprecated the approach from {@linkplain https://cp-algorithms.com/linear_algebra/rank-matrix.html} seems
      * to be more preferable
      */
     @Deprecated
-    public static int rankByMinors(final double[][] matrix) throws MatrixException {
+    public static int rankByMinors(final double[][] matrix) {
         int rows = matrix.length, cols = matrix[0].length;
         int squareSideSize = Math.min(rows, cols);
         int currentMinorSize = 1;
