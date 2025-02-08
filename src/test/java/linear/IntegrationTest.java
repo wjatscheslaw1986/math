@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.random.RandomGenerator;
 import java.util.random.RandomGeneratorFactory;
 
+import linear.matrix.MatrixUtil;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -150,7 +151,7 @@ public final class IntegrationTest {
      * @throws MatrixException in case of a malformed matrix
      */
     @Test
-    public void rowEchelonFormTest() throws MatrixException {
+    void rowEchelonFormRandomMatrixTest() throws MatrixException {
         final RandomGenerator rnd = RandomGeneratorFactory.getDefault().create();
         for (int i = 0; i < 75; i++) {
             final int n = rnd.nextInt(1, 25);
@@ -163,5 +164,24 @@ public final class IntegrationTest {
 //            }
             assertTrue(RowEchelonFormUtil.isRowEchelonForm(refMatrix));
         }
+    }
+
+    @Test
+    void rowEchelonFormTest() throws MatrixException {
+        var matrix = new double[][]{{-3.0d, 3.0d, -1.0d, -7.0d, 5.0d}, {2.0d, 3.0d, -5.0d, 26.0d, -4.0d},
+                {3.0d, -4.0d, 8.0d, -9.0d, 1.0d}, {-4.0d, 1.0d, -3.0d, -12.0d, 2.0d}};
+        var refMatrix = RowEchelonFormUtil.toRowEchelonForm(matrix);
+        assertTrue(RowEchelonFormUtil.isRowEchelonForm(refMatrix));
+        System.out.println(MatrixUtil.print(refMatrix));
+    }
+
+    @Test
+    void rowEchelonFormTest2() throws MatrixException {
+        var matrix = new double[][]{{-3.0d, 3.0d, -1.0d, -7.0d, 5.0d}, {2.0d, 3.0d, -5.0d, 26.0d, -4.0d},
+                {3.0d, -4.0d, 8.0d, -9.0d, 1.0d}, {-4.0d, 1.0d, -3.0d, -12.0d, 2.0d}};
+        assertFalse(RowEchelonFormUtil.isRowEchelonForm(matrix));
+        var refMatrix = RowEchelonFormUtil.toREF(matrix);
+        assertTrue(RowEchelonFormUtil.isRowEchelonForm(refMatrix));
+        System.out.println(MatrixUtil.print(refMatrix));
     }
 }

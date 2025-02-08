@@ -133,13 +133,14 @@ public final class RowEchelonFormUtil {
      * Produces a row echelon form matrix of a given one.
      * This method modifies the given matrix.
      *
-     * @param matrix given
+     * @param givenMatrix given
      * @return a new object which is a row echelon form <i>matrix</i> for the original one
      */
-    public static void toREF(double[][] matrix) {
+    public static double[][] toREF(double[][] givenMatrix) {
+        var matrix = MatrixUtil.copy(givenMatrix);
         int rows = matrix.length;
         if (rows == 0)
-            return;
+            return givenMatrix;
         int cols = matrix[0].length;
 
         int leadRow = 0;
@@ -180,6 +181,8 @@ public final class RowEchelonFormUtil {
             leadRow++;
             leadCol++;
         }
+        MatrixUtil.eliminateEpsilon(matrix);
+        return matrix;
     }
 
     // ===My own below===//
@@ -216,9 +219,9 @@ public final class RowEchelonFormUtil {
         eliminateEpsilon(result);
 
         // If there are zero rows they must be at the bottom
-        for (int row = 0, end = result.length; row < end; row++) {
+        for (int row = 0, end = result.length - 1; row <= end; row++) {
             if (isZeroRow(result, row)) {
-                result = swapRows(result, row, end-- - 1);
+                result = swapRows(result, row, end--);
             }
         }
 
@@ -229,7 +232,7 @@ public final class RowEchelonFormUtil {
 
                 // find a non-zero value in this column
                 int nonZeroValueRowIndex = -1;
-                for (int r = result.length - 1; r >= 0; r--) {
+                for (int r = result.length - 1; r >= row; r--) {
                     if (result[r][col] != .0d) {
                         nonZeroValueRowIndex = r;
                         break;
@@ -243,7 +246,6 @@ public final class RowEchelonFormUtil {
                 }
 
                 result = swapRows(result, row, nonZeroValueRowIndex);
-
             }
 
             // All entries below each pivot must be zeroes. The pivot != 0
