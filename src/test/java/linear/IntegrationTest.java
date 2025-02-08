@@ -184,4 +184,18 @@ public final class IntegrationTest {
         assertTrue(RowEchelonFormUtil.isRowEchelonForm(refMatrix));
         System.out.println(MatrixUtil.print(refMatrix));
     }
+
+    @Test
+    void rowEchelonFormTest3() throws MatrixException {
+        var linearEquationSystem = new double[][]{
+                {2, -1, 3, 4, 5},
+                {6, -3, 7, 8, 9},
+                {5, -4, 9, 10, 11},
+                {4, -2, 5, 6, 7}
+        };
+        assertFalse(RowEchelonFormUtil.isRowEchelonForm(linearEquationSystem));
+        var refMatrix = RowEchelonFormUtil.toRowEchelonForm(linearEquationSystem);
+        assertTrue(RowEchelonFormUtil.isRowEchelonForm(refMatrix));
+        System.out.println(MatrixUtil.print(refMatrix));
+    }
 }

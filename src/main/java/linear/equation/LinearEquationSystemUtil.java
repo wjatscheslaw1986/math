@@ -98,8 +98,10 @@ public final class LinearEquationSystemUtil {
 
         Arrays.fill(solution, 0);
         for (int i = 0; i < colsLeftSideCount; ++i)
-            if (addresses[i] != -1)
+            if (addresses[i] != -1) {
                 solution[i] = equations[addresses[i]][colsLeftSideCount] / equations[addresses[i]][i];
+                MatrixUtil.eliminateEpsilon(solution);
+            }
 
         for (int i = 0; i < rowsCount; ++i) {
             double sum = 0;

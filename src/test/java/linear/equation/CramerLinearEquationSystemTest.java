@@ -3,17 +3,24 @@
  */
 package linear.equation;
 
+import linear.CalcTest;
 import linear.matrix.MatrixCalc;
 import static org.junit.jupiter.api.Assertions.*;
 
 import linear.matrix.MatrixUtil;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 /**
  * @author Wjatscheslaw Michailov
  */
 public class CramerLinearEquationSystemTest {
-    
+
+    @BeforeAll
+    static void before() {
+        System.out.printf("Running tests in %s%s", CramerLinearEquationSystemTest.class, System.lineSeparator());
+    }
+
     @Test
     public void testCramerMethodSolution() {
         var matrix = new double[][]{{2,1,1,2},{1,3,1,5},{1,1,5,-7}};
