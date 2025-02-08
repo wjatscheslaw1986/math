@@ -17,10 +17,10 @@ public class CalcTest {
 
     @Test
     void getNumberOfVariations() {
-        assertEquals(6, CombinatoricsCalc.getNumberOfVariations(6, 1));
-        assertEquals(60, CombinatoricsCalc.getNumberOfVariations(5, 3));
-        assertEquals(120, CombinatoricsCalc.getNumberOfVariations(5, 4));
-        assertEquals(720, CombinatoricsCalc.getNumberOfVariations(6, 5));
+        assertEquals(6, CombinatoricsCalc.countVariations(6, 1));
+        assertEquals(60, CombinatoricsCalc.countVariations(5, 3));
+        assertEquals(120, CombinatoricsCalc.countVariations(5, 4));
+        assertEquals(720, CombinatoricsCalc.countVariations(6, 5));
     }
 
     @Test

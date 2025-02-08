@@ -218,7 +218,7 @@ public final class RowEchelonFormUtil {
         // If there are zero rows they must be at the bottom
         for (int row = 0, end = result.length; row < end; row++) {
             if (isZeroRow(result, row)) {
-                result = swapRows(result, row + 1, end--);
+                result = swapRows(result, row, end-- - 1);
             }
         }
 
@@ -242,7 +242,7 @@ public final class RowEchelonFormUtil {
                     continue;
                 }
 
-                result = swapRows(result, row + 1, nonZeroValueRowIndex + 1);
+                result = swapRows(result, row, nonZeroValueRowIndex);
 
             }
 
@@ -392,9 +392,9 @@ public final class RowEchelonFormUtil {
             int maxSwitchRowNumber = result.length - 1, maxSwitchColNumber = result[0].length - 1;
             while (maxSwitchRowNumber + maxSwitchColNumber > 0 && result[i][i] == .0d) {
                 if (maxSwitchRowNumber > 0)
-                    result = swapRows(result, i + 1, (maxSwitchRowNumber--) + 1);
+                    result = swapRows(result, i, maxSwitchRowNumber--);
                 else if (maxSwitchColNumber > 0)
-                    result = swapColumns(result, i + 1, (maxSwitchColNumber--) + 1);
+                    result = swapColumns(result, i, maxSwitchColNumber--);
             }
             if (result[i][i] == .0d)
                 throw new MatrixException(errMsg);

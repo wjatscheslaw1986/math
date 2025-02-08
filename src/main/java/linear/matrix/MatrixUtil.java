@@ -5,7 +5,7 @@ package linear.matrix;
 
 /**
  * A utility class for matrices.
- * 
+ *
  * @author Wjatscheslaw Michailov
  */
 public final class MatrixUtil {
@@ -18,7 +18,7 @@ public final class MatrixUtil {
 
     /**
      * Copy the given matrix. The given matrix must have the same amount of columns for each row.
-     * 
+     *
      * @return the copy of the matrix passed as an argument
      */
     public static double[][] copy(final double[][] matrix) {
@@ -32,8 +32,9 @@ public final class MatrixUtil {
     }
 
     /**
-     * Modifies the given matrix by assigning 0 value to any value less than 1e-10.
-     * 
+     * Modifies the given matrix by approximating any value that is less
+     * than 1e-8 to the closest integer value.
+     *
      * @param matrix given
      */
     public static void eliminateEpsilon(final double[]... matrix) {
@@ -49,7 +50,7 @@ public final class MatrixUtil {
 
     /**
      * Shrinks the given matrix from left to right, throwing away the all-zero columns.
-     * 
+     *
      * @param matrix given
      * @return result the new matrix object with the modification applied
      */
@@ -68,7 +69,7 @@ public final class MatrixUtil {
 
     /**
      * Checks if all elements in the given row in the given matrix are zeroes.
-     * 
+     *
      * @param matrix given
      * @param row    index
      * @return true if all elements in the given row are zeroes, false otherwise
@@ -81,24 +82,24 @@ public final class MatrixUtil {
     }
 
     /**
-     * Checks if all elements in the given column in the given matrix are zeroes.
-     * 
+     * Checks if all elements in the given column of the given matrix are zeroes.
+     *
      * @param matrix given
      * @param col    index
      * @return true if all elements in the given column are zeroes, false otherwise
      */
     public static boolean isZeroCol(final double[][] matrix, int col) {
-        for (int i = 0; i < matrix.length; i++)
-            if (matrix[i][col] != .0d)
+        for (double[] row : matrix)
+            if (row[col] != .0d)
                 return false;
         return true;
     }
 
     /**
      * Remove a column either from the left or from the right side of this matrix.
-     * 
+     *
      * @param matrix given
-     * @param left true if the left column to be removed, false if the right column should be removed
+     * @param left   true if the left column to be removed, false if the right column should be removed
      * @return the modified matrix
      */
     public static double[][] removeMarginalColumn(final double[][] matrix, final boolean left) {
@@ -107,7 +108,7 @@ public final class MatrixUtil {
         }
         final double[][] copy = new double[matrix.length][matrix[0].length - 1];
         for (int r = 0; r < matrix.length; r++) {
-            final double[] row = new double[matrix[r].length];
+            final double[] row = new double[matrix[r].length - 1];
             System.arraycopy(matrix[r], left ? 1 : 0, row, 0, matrix[r].length - 1);
             copy[r] = row;
         }
@@ -116,7 +117,7 @@ public final class MatrixUtil {
 
     /**
      * Remove row on the bottom from this matrix.
-     * 
+     *
      * @param matrix given
      * @return the modified matrix
      */
@@ -135,7 +136,7 @@ public final class MatrixUtil {
 
     /**
      * Swap two values in two different rows but in the same column in the given matrix.
-     * 
+     *
      * @param matrix the given matrix
      * @param rowA   first swapper row index
      * @param rowB   second swapper row index
@@ -147,22 +148,17 @@ public final class MatrixUtil {
         matrix[rowB][col] = tempRow;
     }
 
-
-    
-    /*
-     * This method returns a matrix 1 row and 1 column lesser than the original one,
-     * by excluding the given row and given the column.
+    /**
+     * This method returns a matrix 1 row and 1 column lesser than the original one.
+     * The ordinals of the row and the column to exclude are provided as <i>rowNumber</i>
+     * and <i>columnNumber</i>, respectively.
      *
-     * @param matrix - the original matrix
-     * 
-     * @param rowNumber - number (index + 1) of a row to exclude
-     * 
+     * @param matrix       - the original matrix
+     * @param rowNumber    - number (index + 1) of a row to exclude
      * @param columnNumber - number (index + 1) of a column to exclude
-     * 
-     * @return a matrix one row one column less in size. The row and column to
-     * exclude are provided as two arguments
+     * @return a matrix one row one column less in size.
      */
-    static double[][] excludeColumnAndRow(double[][] matrix, int rowNumber, int columnNumber) {
+    public static double[][] excludeColumnAndRow(double[][] matrix, int rowNumber, int columnNumber) {
         double[][] submatrix = new double[matrix.length - 1][matrix.length - 1];
         int submatrixRow = 1, submatrixCol = 1;
         for (int rowNum = 1; rowNum <= matrix.length; rowNum++) {
@@ -182,11 +178,11 @@ public final class MatrixUtil {
 
     /**
      * Produce textual representation of the given matrix.
-     * 
+     *
      * @param matrix given
      * @return a string representation of the given matrix
      */
-    public static String print(double[][] matrix) {
+    public static String print(double[]... matrix) {
         double[] columnWidths = getPrintedColumnWidths(matrix);
         StringBuilder sb = new StringBuilder();
         for (int rowNum = 0; rowNum < matrix.length; rowNum++) {
@@ -200,29 +196,6 @@ public final class MatrixUtil {
                 if (colNum == matrix[rowNum].length - 1)
                     sb.append(" |");
             }
-            sb.append("\n");
-        }
-        return sb.toString();
-    }
-
-    /**
-     * Produce textual representation of the given vector.
-     * 
-     * @param vector given
-     * @return a string representation of the given vector
-     * @deprecated use method for matrices instead
-     */
-    @Deprecated(forRemoval = true)
-    public static String print(double[] vector) {
-        double columnWidth = getPrintedColumnWidths(vector);
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < vector.length; i++) {
-            sb.append("| ");
-            sb.append(" ").append(vector[i]).append(" ");
-            for (int j = 0; j <= columnWidth - String.valueOf(vector[i]).length(); j++) {
-                sb.append(" ");
-            }
-            sb.append(" |");
             sb.append("\n");
         }
         return sb.toString();
@@ -249,6 +222,4 @@ public final class MatrixUtil {
         }
         return result;
     }
-
-
 }

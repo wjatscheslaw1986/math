@@ -15,12 +15,11 @@ public class IndexCombinationsGeneratorTest {
     void generate() {
         final int n = 10;
         for (int k = 0; k < n; k++) {
-            var result = IndexCombinationsGenerator.generate(n, k);
+            var result = VariationsWithRepetitionsGenerator.generate(n, k);
             Assertions.assertEquals(CombinatoricsCalc.binomialCoefficient(n, k), result.size());
             for (var choice : result)
                 Assertions.assertEquals(k, choice.length);
-
-//            IndexCombinationsGenerator.print(System.out, n, k);
+            VariationsWithRepetitionsGenerator.print(n, k, System.out);
         }
     }
 }

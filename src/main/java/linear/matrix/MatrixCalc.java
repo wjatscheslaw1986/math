@@ -11,7 +11,7 @@ import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
 
-import combinatorics.IndexCombinationsGenerator;
+import combinatorics.VariationsWithRepetitionsGenerator;
 import linear.matrix.exception.MatrixException;
 
 /**
@@ -129,7 +129,7 @@ public final class MatrixCalc {
      * @return a new matrix object with cofactors instead of the original elements
      */
     public static double[][] cofactors(final double[][] matrix) {
-        final double[][] result = new double[matrix.length][matrix.length];
+        final double[][] result = new double[matrix.length][matrix[0].length];
         for (int row = 1; row <= matrix.length; row++)
             for (int col = 1; col <= matrix.length; col++)
                 result[row - 1][col - 1] = cofactor(matrix, row, col);
@@ -179,7 +179,7 @@ public final class MatrixCalc {
      */
     public static double[][] reverse(final double[][] matrix) {
         var det = det(matrix);
-        if (det == 0) throw new IllegalArgumentException("You cannot have a reverse matrix for a degenerate one!");
+        if (det == 0) throw new IllegalArgumentException("You cannot find a reverse matrix for a degenerate one!");
         return multiply(transpose(cofactors(matrix)), 1.0d / det(matrix));
     }
 
@@ -212,8 +212,8 @@ public final class MatrixCalc {
     }
 
     /**
-     * Вырезать квадратную подматрицу (не путать с алгебраическим дополнением!) для данной матрицы.
-     * Подходит для оконного алгоритма.
+     * Вырезать квадратную субматрицу (не путать с алгебраическим дополнением!) для данной матрицы.
+     * Может быть удобно для оконного алгоритма.
      *
      * @param matrix         исходная матрица
      * @param rowOffset      индекс ряда исходной матрицы, который будет нулевым для вырезаемой
@@ -266,9 +266,9 @@ public final class MatrixCalc {
 
     /**
      * Calculate rank of a given matrix.
-     * Source: {@linkplain https://cp-algorithms.com/linear_algebra/rank-matrix.html}
+     * Source: {@link https://cp-algorithms.com/linear_algebra/rank-matrix.html}
      *
-     * @param originalMatrix is the given matrix for finding its rank
+     * @param originalMatrix the given matrix for finding its rank
      * @return rank
      */
     public static int rank(final double[][] originalMatrix) {
@@ -312,8 +312,7 @@ public final class MatrixCalc {
      *
      * @param matrix is the given matrix for finding its rank
      * @return rank a rank of the given matrix
-     * @deprecated the approach from {@linkplain https://cp-algorithms.com/linear_algebra/rank-matrix.html} seems
-     * to be more preferable
+     * @deprecated use rank() method instead
      */
     @Deprecated
     public static int rankByMinors(final double[][] matrix) {
@@ -324,8 +323,8 @@ public final class MatrixCalc {
         final Deque<double[][]> minorsToCheckStack = new ArrayDeque<double[][]>();
 
         while (currentMinorSize <= squareSideSize) {
-            final var listOfRowIndicesCombinations = IndexCombinationsGenerator.generate(rows, currentMinorSize);
-            final var listOfColumnIndicesCombinations = IndexCombinationsGenerator.generate(cols, currentMinorSize);
+            final var listOfRowIndicesCombinations = VariationsWithRepetitionsGenerator.generate(rows, currentMinorSize);
+            final var listOfColumnIndicesCombinations = VariationsWithRepetitionsGenerator.generate(cols, currentMinorSize);
             for (var rowArray : listOfRowIndicesCombinations)
                 for (var colArray : listOfColumnIndicesCombinations) {
                     final double[][] minor = new double[currentMinorSize][currentMinorSize];

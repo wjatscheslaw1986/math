@@ -25,17 +25,17 @@ public final class LinearEquationSystemUtil {
     /**
      * Resolve linear equation system using Cramer method.
      * <p>Only applicable to Cramer matrices. Use {@link linear.matrix.Validation}.isCramer() method
-     * beforehand to be sure you aren't getting wrong results.</p>
+     * beforehand to make sure you aren't getting wrong results.</p>
      *
-     * @param coefficients matrix made of left part of equations
-     * @param freeMembers  vector made of right part of equations
+     * @param coefficients matrix made of left part of the equations
+     * @param freeMembers  a vector made of right part of the equations
      * @return a vector of variable values (answers) for the equations, regarding their order in the equation.
      */
     public static double[] resolveUsingCramerMethod(final double[][] coefficients, final double[] freeMembers) {
         final var resolved = new double[freeMembers.length];
         final double determinant = MatrixCalc.det(coefficients);
         for (int i = 0; i < freeMembers.length; i++)
-            resolved[i] = MatrixCalc.det(substituteColumn(coefficients, freeMembers, i + 1))
+            resolved[i] = MatrixCalc.det(substituteColumn(coefficients, freeMembers, i))
                     / determinant;
         return resolved;
     }
@@ -118,23 +118,21 @@ public final class LinearEquationSystemUtil {
     }
 
     /*
-     * This method substitutes one column of a given matrix with another one,
-     * at a certain position 'colNum'.
+     * This method substitutes one column of a given matrix with a given vector,
+     * at a certain position 'index'.
      *
-     * @param matrix - the original matrix
-     * @param column - an array of same column values, from top to bottom
-     * @param colNum - column number (index + 1) of the original matrix to
-     *               substitute with 'column'
-     * @return new matrix of same size but with one of its columns substituted by
-     *         'column'
+     * @param matrix  the original matrix
+     * @param column  the given vector
+     * @param index   column index
+     * @return        new matrix of same size but with one of its columns substituted by <i>column</i>
      */
-    static double[][] substituteColumn(final double[][] matrix, final double[] column, final int colNum) {
-        if (matrix[0].length < colNum)
+    static double[][] substituteColumn(final double[][] matrix, final double[] column, final int index) {
+        if (matrix[0].length <= index)
             throw new ArrayIndexOutOfBoundsException(String
-                    .format("Column index %d is out of matrix columns size of %d", colNum - 1, matrix[0].length));
+                    .format("Column index %d is out of matrix columns size of %d", index, matrix[0].length));
         final double[][] result = MatrixUtil.copy(matrix);
         for (int row = 0; row < matrix.length; row++)
-            result[row][colNum - 1] = column[row];
+            result[row][index] = column[row];
         return result;
     }
 

@@ -15,7 +15,7 @@ public final class CombinatoricsCalc {
     }
 
     /**
-     * Number of variations. I.e. number of ways to choose a subset of <b>k</b> elements
+     * Number of variations without repetitions. I.e. number of ways to choose a subset of <b>k</b> elements
      * from a set of <b>n</b> elements, summarizing all possible mutual permutations (orderings)
      * for each chosen subset of <b>k</b> elements, i.e. counting each ordering as a separate variation.
      * 
@@ -23,24 +23,37 @@ public final class CombinatoricsCalc {
      * @param k size of a single choice, i.e. a subset of <b>n</b>
      * @return number of variations
      */
-    public static long getNumberOfVariations(final int n, final int k) {
+    public static long countVariations(final int n, final int k) {
         if (n < k)
             throw new ArithmeticException("You cannot choose from a set the amout of elements which is greater than there are in the set");
         return Math.divideExact(factorial(n), factorial(n - k));
     }
 
     /**
-     * Number of ways to choose <b>k</b> elements out of a set of <b>n</b> elements,
-     * disregard of the order.
+     * Number of variations with repetitions.
+     * I.e. number of ways to click <b>k</b> times any key on a keyboard of <b>n</b> keys.
+     *
+     * @param n size of a given set of all elements
+     * @param k size of a subset of <b>n</b>
+     * @return number of variations with repetitions
+     */
+    public static long countVariationsWithRepetitions(final int n, final int k) {
+        return (long) Math.pow(n, k);
+    }
+
+    /**
+     * Combinations without repetitions.
+     * I.e. a number of ways to choose <b>k</b> elements out of a set of <b>n</b> elements,
+     * disregard of the order, repetitions are not included.
      * 
      * @param n size of a given set of all elements
      * @param k size of a single choice, i.e. a subset of <b>n</b>
-     * @return number of choices
+     * @return number of combinations without repetitions
      */
     public static long binomialCoefficient(final int n, final int k) {
         if (n < k)
-            throw new ArithmeticException("You cannot choose from a set the amout of elements which is greater than there are in the set");
-        return Math.divideExact(getNumberOfVariations(n, k), factorial(k));
+            throw new ArithmeticException("You cannot choose from a set the amount of elements which is greater than there are in the set");
+        return Math.divideExact(countVariations(n, k), factorial(k));
     }
 
     /**
@@ -50,7 +63,7 @@ public final class CombinatoricsCalc {
      * @param arrayLength a size of the given set of array indices
      * @return Number of all possible permutations for the given number of elements.
      */
-    public static long getNumberOfPermutations(final int arrayLength) {
+    public static long countPermutations(final int arrayLength) {
         return factorial(arrayLength);
     }
 

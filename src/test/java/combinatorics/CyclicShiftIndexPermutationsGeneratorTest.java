@@ -19,12 +19,11 @@ public class CyclicShiftIndexPermutationsGeneratorTest {
     void generate() {
         for (int arraySize = 0; arraySize < 7; arraySize++) {
             var result = CyclicShiftIndexPermutationsGenerator.generate(arraySize);
-            Assertions.assertEquals(CombinatoricsCalc.getNumberOfPermutations(arraySize),
+            Assertions.assertEquals(CombinatoricsCalc.countPermutations(arraySize),
                                     result.size());
             for (var permutation : result)
                 Assertions.assertEquals(arraySize, permutation.length);
-
-//            CyclicShiftIndexPermutationsGenerator.print(System.out, arraySize);
+            CyclicShiftIndexPermutationsGenerator.print(System.out, arraySize);
         }
     }
 }
