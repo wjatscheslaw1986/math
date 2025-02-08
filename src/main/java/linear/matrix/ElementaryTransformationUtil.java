@@ -16,16 +16,16 @@ public final class ElementaryTransformationUtil {
      * returns a new one instead.
      *
      * @param matrix  - original matrix
-     * @param rowNum1 - row 1 number (index + 1)
-     * @param rowNum2 - row 2 number (index + 1)
+     * @param row1 - row 1 index
+     * @param row2 - row 2 index
      * @return matrix with switched columns
      */
-    public static double[][] swapRows(double[][] matrix, int rowNum1, int rowNum2) {
-        double[][] result = MatrixUtil.copy(matrix);
+    public static double[][] swapRows(final double[][] matrix, final int row1, final int row2) {
+        final double[][] result = MatrixUtil.copy(matrix);
         for (int c = 0; c < matrix[0].length; c++) {
-            var temp = result[rowNum1 - 1][c];
-            result[rowNum1 - 1][c] = matrix[rowNum2 - 1][c];
-            result[rowNum2 - 1][c] = temp;
+            var temp = result[row1][c];
+            result[row1][c] = matrix[row2][c];
+            result[row2][c] = temp;
         }
         return result;
     }
@@ -35,16 +35,16 @@ public final class ElementaryTransformationUtil {
      * but returns a new one instead.
      *
      * @param matrix  - original matrix
-     * @param colNum1 - column 1 number (index + 1)
-     * @param colNum2 - column 2 number (index + 1)
+     * @param col1 - column 1 index
+     * @param col2 - column 2 index
      * @return matrix with switched columns
      */
-    public static double[][] swapColumns(double[][] matrix, int colNum1, int colNum2) {
-        double[][] result = MatrixUtil.copy(matrix);
+    public static double[][] swapColumns(final double[][] matrix, final int col1, final int col2) {
+        final double[][] result = MatrixUtil.copy(matrix);
         for (int row = 0; row < matrix.length; row++) {
-            var temp = result[row][colNum1 - 1];
-            result[row][colNum1 - 1] = matrix[row][colNum2 - 1];
-            result[row][colNum2 - 1] = temp;
+            var temp = result[row][col1];
+            result[row][col1] = matrix[row][col2];
+            result[row][col2] = temp;
         }
         return result;
     }

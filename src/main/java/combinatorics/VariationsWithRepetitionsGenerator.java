@@ -10,14 +10,17 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiConsumer;
 
+import static combinatorics.CombinatoricsUtil.collectToListFunction;
+import static combinatorics.CombinatoricsUtil.cutFrom;
+
 /**
- * A utility class for generating combinations of indices for a given array.
+ * A utility class for generating variations with repetitions of indices for an array of a given size.
  * 
  * @author Wjatscheslaw Michailov
  */
-public final class IndexCombinationsGenerator {
+public final class VariationsWithRepetitionsGenerator {
 
-    private IndexCombinationsGenerator() {
+    private VariationsWithRepetitionsGenerator() {
         // static context only
     }
 
@@ -28,8 +31,8 @@ public final class IndexCombinationsGenerator {
      * @param k   size of a single choice, i.e. a subset of <b>n</b>
      * @param out an implementation of the OutputStream
      */
-    public static void print(final OutputStream out, final int n, final int k) {
-        process(n, k, getPrintArrayFromToFunction(out));
+    public static void print(final int n, final int k, final OutputStream out) {
+        process(n, k, getPrintArrayFromZeroToFunction(out));
     }
 
     /**
@@ -42,12 +45,12 @@ public final class IndexCombinationsGenerator {
      * @return list of arrays of all possible permutations of values in the array of the given size.
      */
     public static List<int[]> generate(final int n, final int k) {
-        final List<int[]> result = new ArrayList<int[]>();
-        process(n, k, getStoreInListFunction(result));
+        final List<int[]> result = new ArrayList<>();
+        process(n, k, collectToListFunction(result));
         return result;
     }
 
-    /**
+    /*
      * Generates a full set of sets of <b>k</b> elements of <b>n</b> elements,
      * having each mutual permutation of the chosen <b>k</b> elements as a distinct set to add it
      * to the resulting collection.
@@ -56,7 +59,7 @@ public final class IndexCombinationsGenerator {
      * @param k    size of a single choice, i.e. a subset of <b>n</b>
      * @param func a function to perform over each distinct set of elements
      */
-    public static void process(final int n, final int k, final BiConsumer<int[], Integer> func) {
+    private static void process(final int n, final int k, final BiConsumer<int[], Integer> func) {
         final int[] comb = new int[k + 2];
         for (int i = 0; i < k; i++) {
             comb[i] = i;
@@ -77,26 +80,14 @@ public final class IndexCombinationsGenerator {
         }
     }
 
-    private final static BiConsumer<int[], Integer> getStoreInListFunction(final List<int[]> resultList) {
-        return (final int[] currentCombination, final Integer toIndex) -> {
-            resultList.add(subArrayFromZeroTo(currentCombination, toIndex));
-        };
-    };
-
-    private final static BiConsumer<int[], Integer> getPrintArrayFromToFunction(final OutputStream o) {
+    private static BiConsumer<int[], Integer> getPrintArrayFromZeroToFunction(final OutputStream o) {
         return (final int[] currentCombination, final Integer toIndex) -> {
             try {
-                o.write(Arrays.toString(subArrayFromZeroTo(currentCombination, toIndex)).getBytes());
+                o.write(Arrays.toString(cutFrom(currentCombination, toIndex)).getBytes());
                 o.write(System.lineSeparator().getBytes());
             } catch (IOException e) {
                 System.err.print(e.getLocalizedMessage());
             }
         };
-    }
-
-    private static int[] subArrayFromZeroTo(final int[] array, final int toIndex) {
-        final int[] subArray = new int[toIndex];
-        System.arraycopy(array, 0, subArray, 0, toIndex);
-        return subArray;
     }
 }

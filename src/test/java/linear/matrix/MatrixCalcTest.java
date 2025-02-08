@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import java.util.random.RandomGenerator;
 import java.util.random.RandomGeneratorFactory;
 
+import static linear.equation.LinearEquationSystemUtil.resolveUsingReverseMatrixMethod;
 import static linear.matrix.MatrixCalc.*;
 import static linear.matrix.RowEchelonFormUtil.*;
 import static linear.matrix.RowEchelonFormUtil.isRowEchelonForm;
@@ -28,7 +29,8 @@ public class MatrixCalcTest {
 
     @BeforeAll
     static void before() {
-        System.out.printf("Running tests in %s.class", linear.matrix.MatrixCalcTest.class);
+        System.out.printf("Running tests in %s.class%s",
+                linear.matrix.MatrixCalcTest.class, System.lineSeparator());
     }
 
     @Test
@@ -134,8 +136,6 @@ public class MatrixCalcTest {
         final double[][] matrix1 = new double[][]{{0.0d, 2.0d, -4.0d}, {-1.0d, -4.0d, 5.0d}, {3.0d, 1.0d, 7.0d}};
         final double[][] matrix2 = new double[][]{{-1.0d, -4.0d, 5.0d}, {3.0d, 1.0d, 7.0d}, {0.0d, 5.0d, -10.0d}};
 
-        // System.out.println(DoubleMatrixCalc.print(DoubleMatrixCalc.squareSubmatrix(matrix0, 0, 0, 3)));
-        // System.out.println(DoubleMatrixCalc.print(DoubleMatrixCalc.squareSubmatrix(matrix0, 1, 0, 3)));
         assertTrue(areEqual(matrix1, squareSubmatrix(matrix0, 0, 0, 3)));
         assertTrue(areEqual(matrix2, squareSubmatrix(matrix0, 1, 0, 3)));
     }
@@ -148,19 +148,39 @@ public class MatrixCalcTest {
     @SuppressWarnings("deprecation")
     @Test
     public void rankTest() {
-        final double[][] matrix = new double[][]{{0.0d, 2.0d, -4.0d}, {-1.0d, -4.0d, 5.0d}, {3.0d, 1.0d, 7.0d},
+        double[][] matrix = new double[][]{{0.0d, 2.0d, -4.0d}, {-1.0d, -4.0d, 5.0d}, {3.0d, 1.0d, 7.0d},
                 {0.0d, 5.0d, -10.0d}};
+        assertEquals(2, rank(matrix));
+        assertEquals(2, rankByMinors(matrix));
+
+        matrix = new double[][]{{-2.0d, 3.0d, 1.0d, 4.0}, {4.0d, -6.0d, -2.0d, -8.0d}, {-6.0d, 9.0d, 3.0d, 12.0d}};
+        assertEquals(1, rank(matrix));
+        assertEquals(1, rankByMinors(matrix));
+
+        matrix = new double[][]{{3.0d, 1.0d}, {2.0d, 5.0d}, {-1.0d, 7.0d}};
+        assertEquals(2, rank(matrix));
+        assertEquals(2, rankByMinors(matrix));
+
+        matrix = new double[][]{{2.0d, 4.0d, 1.0d, 2.0d}, {1.0d, -3.0d,  0.0d, 4.0d}, {3.0d, 5.0d, 1.0d, 7.0d}};
+        assertEquals(3, rank(matrix));
+        assertEquals(3, rankByMinors(matrix));
+
+        matrix = new double[][]{{-3.0d, 3.0d, -1.0d, -7.0d, 5.0d}, {2.0d, 3.0d, -5.0d, 26.0d, -4.0d},
+                {3.0d, -4.0d, 8.0d, -9.0d, 1.0d}, {-4.0d, 1.0d, -3.0d, -12.0d, 2.0d}};
+        assertEquals(3, rank(matrix));
+        assertEquals(3, rankByMinors(matrix));
+
+        matrix = new double[][]{{2.0d, 1.0d, -1.0d, -1.0d, 1.0d}, {3.0d, 0.0d, 0.0d, 0.0d, -1.0d},
+                {3.0d, 3.0d, -3.0d, -3.0d, 4.0d}, {4.0d, 5.0d, -5.0d, -5.0d, 7.0d}};
         assertEquals(2, rank(matrix));
         assertEquals(2, rankByMinors(matrix));
     }
 
     /**
      * Given a matrix, convert it to a trapezoidal matrix. TODO
-     *
-     * @throws MatrixException in case of a malformed matrix
      */
     @Test
-    public void tryTrapezoid() throws MatrixException {
+    public void tryTrapezoid() {
         final RandomGenerator rnd = RandomGeneratorFactory.getDefault().create();
         for (int i = 0; i < 10; i++) {
             var matrix = MatrixGenerator.generateRandomDoubleMatrix(rnd.nextInt(3, 7), rnd.nextInt(3, 7));
@@ -234,7 +254,7 @@ public class MatrixCalcTest {
     }
 
     @Test
-    void isEqualTest() {
+    void isEqualMatrixTest() {
         double[][] matrix1 = {{3, -4}, {2, 5}};
         double[][] matrix3 = {{-1, 5}, {-2, -3}};
         double[][] matrix5 = {{2, 5}, {3, -4}};
@@ -248,10 +268,33 @@ public class MatrixCalcTest {
         assertFalse(areEqual(matrix5, matrix7));
         assertTrue(areEqual(matrix7, matrix7));
 
+        double[][] matrix8 = {{-2}, {-3}, {-1}, {5}};
+        double[][] matrix9 = {{-2}, {-7}, {-1}, {5}};
+        assertTrue(areEqual(matrix8, matrix8));
+        assertFalse(areEqual(matrix8, matrix9));
+        assertTrue(areEqual(matrix9, matrix9));
+    }
+
+    @Test
+    void isEqualVectorTest() {
         double[] vector1 = {-2, -3, -1, 5};
         double[] vector2 = {-2, -7, -1, 5};
         assertTrue(areEqual(vector1, vector1));
         assertFalse(areEqual(vector1, vector2));
         assertTrue(areEqual(vector2, vector2));
+    }
+
+    @Test
+    void cofactorsTest() {
+        var matrix = new double[][]{{2, -3, -2}, {3, -1, 4}, {3, 1, 5}};
+        var cofactorsMatrix = new double[][]{{-9,-3,6},{13,16,-11},{-14,-14,7}};
+        assertTrue(areEqual(cofactorsMatrix, MatrixCalc.cofactors(matrix)));
+    }
+
+    @Test
+    void transposeTest() {
+        var cofactorsMatrix = new double[][]{{-9,-3,6},{13,16,-11},{-14,-14,7}};
+        var transposedCofactorsMatrix = new double[][]{{-9,13,-14},{-3,16,-14},{6,-11,7}};
+        assertTrue(areEqual(transposedCofactorsMatrix, MatrixCalc.transpose(cofactorsMatrix)));
     }
 }

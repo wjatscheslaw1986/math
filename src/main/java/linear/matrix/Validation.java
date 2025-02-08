@@ -35,7 +35,7 @@ public final class Validation {
      */
     public static boolean isEqualDimensions(double[][] matrix1, double[][] matrix2) {
         if (!(isMatrix(matrix1) && isMatrix(matrix2)))
-            throw new IllegalArgumentException("Empty matrices may not have dimensions.");
+            throw new IllegalArgumentException("Not a matrix");
         return matrix1.length == matrix2.length && matrix1[0].length == matrix2[0].length;
     }
 

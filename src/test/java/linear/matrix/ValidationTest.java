@@ -46,7 +46,8 @@ public class ValidationTest {
         for (int i = 1; i < 10; i++) {
             for (int j = 1; j < 10; j++) {
                 if (j == i)
-                    assertTrue(isEqualDimensions(MatrixGenerator.generateRandomDoubleMatrix(i, j),
+                    assertTrue(isEqualDimensions(
+                            MatrixGenerator.generateRandomDoubleMatrix(i, j),
                             MatrixGenerator.generateRandomDoubleMatrix(j, i)));
                 else
                     assertFalse(
