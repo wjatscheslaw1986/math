@@ -3,13 +3,12 @@
  */
 package linear.equation;
 
-import linear.CalcTest;
 import linear.matrix.MatrixCalc;
-import static org.junit.jupiter.api.Assertions.*;
-
 import linear.matrix.MatrixUtil;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Wjatscheslaw Michailov

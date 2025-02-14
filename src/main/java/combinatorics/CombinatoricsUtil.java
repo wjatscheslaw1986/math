@@ -3,8 +3,7 @@ package combinatorics;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;
-import java.util.List;
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 /**
  * A utility class for {@linkplain combinatorics} package.
@@ -23,26 +22,15 @@ public final class CombinatoricsUtil {
      * @param o the output stream
      * @return the printing function
      */
-    public static BiConsumer<List<int[]>, int[]> printCombinationFunction(final OutputStream o) {
-        return (final List<int[]> l, final int[] currentPermutation) -> {
+    public static Consumer<int[]> getPrintArrayFunction(final OutputStream o) {
+        return (final int[] currentCombination) -> {
             try {
-                o.write(Arrays.toString(currentPermutation).getBytes());
+                o.write(Arrays.toString(currentCombination).getBytes());
                 o.write(System.lineSeparator().getBytes());
             } catch (IOException e) {
                 System.err.print(e.getLocalizedMessage());
             }
         };
-    }
-
-    /**
-     * A function to for collecting combinations into a {@linkplain List}
-     *
-     * @param resultList the list for storing combinations
-     * @return the storing function
-     */
-    public static BiConsumer<int[], Integer> collectToListFunction(final List<int[]> resultList) {
-        return (final int[] currentCombination, final Integer toIndex) ->
-                resultList.add(cutFrom(currentCombination, toIndex));
     }
 
     /**

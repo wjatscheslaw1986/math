@@ -3,16 +3,16 @@
  */
 package linear.matrix;
 
-import static linear.matrix.MatrixUtil.copy;
-import static linear.matrix.MatrixUtil.excludeColumnAndRow;
-import static linear.matrix.Validation.isEqualDimensions;
+import combinatorics.VariationsWithRepetitionsGenerator;
+import linear.matrix.exception.MatrixException;
 
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
 
-import combinatorics.VariationsWithRepetitionsGenerator;
-import linear.matrix.exception.MatrixException;
+import static linear.matrix.MatrixUtil.copy;
+import static linear.matrix.MatrixUtil.excludeColumnAndRow;
+import static linear.matrix.Validation.isEqualDimensions;
 
 /**
  * Matrix calculator util class.

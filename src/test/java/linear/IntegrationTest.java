@@ -3,24 +3,27 @@
  */
 package linear;
 
-import static linear.matrix.MatrixUtil.print;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.random.RandomGenerator;
-import java.util.random.RandomGeneratorFactory;
-
+import combinatorics.CyclicShiftGenerator;
+import combinatorics.JohnsonTrotterGenerator;
+import linear.matrix.MatrixCalc;
 import linear.matrix.MatrixUtil;
+import linear.matrix.RowEchelonFormUtil;
+import linear.matrix.exception.MatrixException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import linear.matrix.MatrixCalc;
-import linear.matrix.RowEchelonFormUtil;
-import linear.matrix.exception.MatrixException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.random.RandomGenerator;
+import java.util.random.RandomGeneratorFactory;
+
+import static linear.matrix.MatrixUtil.print;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * @author vaclav
+ * Integration tests.
+ *
+ * @author Wjatscheslaw Michailov
  */
 public final class IntegrationTest {
 
@@ -33,7 +36,7 @@ public final class IntegrationTest {
      * Даны две матрицы A и B, найти матрицу AB - BA.
      * Примеры приведены по книге А.С.Киркинский - "Линейная Алгебра и Аналитическая
      * Геометрия" - 2006
-     * 
+     *
      * @throws MatrixException в случае неправильных матриц
      */
     @Test
@@ -57,7 +60,7 @@ public final class IntegrationTest {
      * Даны две матрицы A и B, найти определитель матрицы 3*(B^2) - 2*A.
      * Примеры приведены по книге А.С.Киркинский - "Линейная Алгебра и Аналитическая
      * Геометрия" - 2006
-     * 
+     *
      * @throws MatrixException в случае неправильных матриц
      */
     @Test
@@ -70,7 +73,7 @@ public final class IntegrationTest {
 
         double[][] B_by_B_by_3_minus_A_by_2 = new double[][]{{-15.0d, -4.0d}, {30.0d, -7.0d}};
         assertTrue(MatrixCalc.areEqual(B_by_B_by_3_minus_A_by_2, MatrixCalc
-            .subtract(MatrixCalc.multiply(MatrixCalc.multiply(B, B), 3.0d), MatrixCalc.multiply(A, 2.0d))));
+                .subtract(MatrixCalc.multiply(MatrixCalc.multiply(B, B), 3.0d), MatrixCalc.multiply(A, 2.0d))));
         // System.out.println(DoubleMatrixCalc.print(B_by_B_by_3_minus_A_by_2));
         double det = 225;
         assertEquals(det, MatrixCalc.det(B_by_B_by_3_minus_A_by_2));
@@ -80,10 +83,10 @@ public final class IntegrationTest {
     /**
      * Транспонирование произведения любых двух матриц должно быть равно
      * произведению транспонированных этих двух матриц, т.е. (A * B)_t == B_t * A_t.
-     * 
+     * <p>
      * Примеры приведены по книге А.С.Киркинский - "Линейная Алгебра и Аналитическая
      * Геометрия" - 2006
-     * 
+     *
      * @throws MatrixException в случае неправильных матриц
      */
     @Test
@@ -134,7 +137,7 @@ public final class IntegrationTest {
 
         double[][] O = new double[][]{{1.0d, 0.0d}, {0.0d, 0.0d}};
         double[][] A = new double[][]{{Math.cos(Math.toRadians(135)), Math.cos(Math.toRadians(45))},
-                                      {Math.cos(Math.toRadians(45)), Math.cos(Math.toRadians(45))}};
+                {Math.cos(Math.toRadians(45)), Math.cos(Math.toRadians(45))}};
         double[][] A_rev = MatrixCalc.reverse(A);
 
         System.out.println(print(A));
@@ -197,5 +200,25 @@ public final class IntegrationTest {
         var refMatrix = RowEchelonFormUtil.toRowEchelonForm(linearEquationSystem);
         assertTrue(RowEchelonFormUtil.isRowEchelonForm(refMatrix));
         System.out.println(MatrixUtil.print(refMatrix));
+    }
+
+    @Test
+    void permutationsGeneratorsTest() {
+        for (int i = 0; i < 7; i++) {
+            List<int[]> l1 = CyclicShiftGenerator.generate(i);
+            List<int[]> l2 = JohnsonTrotterGenerator.generate(i);
+            assertEquals(l1.size(), l2.size());
+
+            for (int[] i1s : l2) {
+                var found = false;
+                for (int[] i2s : l1) {
+                    if (Arrays.equals(i2s, i1s)) {
+                        found = true;
+                        break;
+                    }
+                }
+                assertTrue(found);
+            }
+        }
     }
 }

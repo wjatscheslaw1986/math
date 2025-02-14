@@ -5,19 +5,20 @@ package combinatorics;
 
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
-import static combinatorics.CombinatoricsUtil.printCombinationFunction;
+import static combinatorics.CombinatoricsUtil.getPrintArrayFunction;
 
 /**
  * A utility class for generating all possible permutations of values of a given array.
  * 
  * @author Wjatscheslaw Michailov
  */
-public final class CyclicShiftIndexPermutationsGenerator {
+public final class CyclicShiftGenerator {
 
-    private CyclicShiftIndexPermutationsGenerator() {
+    private CyclicShiftGenerator() {
         super();
     }
 
@@ -28,7 +29,7 @@ public final class CyclicShiftIndexPermutationsGenerator {
      * @param out  an implementation of the OutputStream
      */
     public static void print(final OutputStream out, final int size) {
-        process(size, printCombinationFunction(out));
+        generate(size, getPrintArrayFunction(out));
     }
 
     /**
@@ -38,7 +39,9 @@ public final class CyclicShiftIndexPermutationsGenerator {
      * @return list of arrays of all possible permutations of values in the array of the given size.
      */
     public static List<int[]> generate(final int size) {
-        return process(size, List::add);
+        final var list = new ArrayList<int[]>();
+        generate(size, list::add);
+        return list;
     }
 
     /*
@@ -48,24 +51,22 @@ public final class CyclicShiftIndexPermutationsGenerator {
      * @param func an operation to perform on each permutation
      * @return list of arrays of all possible permutations of values in the given array.
      */
-    private static List<int[]> process(final int size, final BiConsumer<List<int[]>, int[]> func) {
+    private static void generate(final int size, final Consumer<int[]> func) {
         if (size < 0) {
-            throw new ArrayIndexOutOfBoundsException("Negative indices aren't supported.");
+            throw new ArrayIndexOutOfBoundsException("Number of elements must be non-negative.");
         }
-        final var result = new ArrayList<int[]>();
         final int[] array = generateArrayOfIndicesOfSize(size);
-        int k = array.length - 1;
-        int n = k;
-        func.accept(result, array);
+        final int lastIndex = array.length - 1;
+        int k = lastIndex;
+        func.accept(Arrays.copyOf(array, array.length));
         while (k > 0) {
             leftShift(array, k);
             if (array[k] != k) {
-                func.accept(result, array);
-                k = n;
+                func.accept(Arrays.copyOf(array, array.length));
+                k = lastIndex;
             } else
                 k--;
         }
-        return result;
     }
 
     private static void leftShift(final int[] array, final int k) {

@@ -5,10 +5,11 @@ package combinatorics;
 
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
-import static combinatorics.CombinatoricsUtil.printCombinationFunction;
+import static combinatorics.CombinatoricsUtil.getPrintArrayFunction;
 
 /**
  * A utility class for generating all possible repetitions of indices.
@@ -29,7 +30,7 @@ public final class RepetitionsGenerator {
      * @param out  an implementation of the OutputStream
      */
     public static void print(final int n, final int k, final OutputStream out) {
-        process(n, k, printCombinationFunction(out));
+        generate(n, k, getPrintArrayFunction(out));
     }
 
     /**
@@ -41,17 +42,18 @@ public final class RepetitionsGenerator {
      * @return the list of repetitions for N elements of K
      */
     public static List<int[]> generate(int n, int k) {
-        return process(n, k, List::add);
+        final var list = new ArrayList<int[]>();
+        generate(n, k, list::add);
+        return list;
     }
 
     /*
      * Algorithm
      */
-    static List<int[]> process(int n, int k, final BiConsumer<List<int[]>, int[]> func) {
-        final List<int[]> result = new ArrayList<>();
+    static void generate(final int n, final int k, final Consumer<int[]> func) {
         final int[] permutation = new int[k];
         for (;;) {
-            func.accept(result, permutation);
+            func.accept(Arrays.copyOf(permutation, permutation.length));
             int i = k - 1;
             for(; i >= 0; i--) {
               if (permutation[i] < n - 1) {
@@ -68,6 +70,5 @@ public final class RepetitionsGenerator {
                 i += 1;
             }
         }
-        return result;
     }
 }

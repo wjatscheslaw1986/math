@@ -12,13 +12,10 @@ import org.junit.jupiter.api.Test;
 import java.util.random.RandomGenerator;
 import java.util.random.RandomGeneratorFactory;
 
-import static linear.equation.LinearEquationSystemUtil.resolveUsingReverseMatrixMethod;
 import static linear.matrix.MatrixCalc.*;
 import static linear.matrix.RowEchelonFormUtil.*;
-import static linear.matrix.RowEchelonFormUtil.isRowEchelonForm;
 import static linear.matrix.Validation.isEqualDimensions;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Tests for {@linkplain linear.matrix.MatrixCalc} class.
