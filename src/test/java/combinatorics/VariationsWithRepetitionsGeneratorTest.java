@@ -1,14 +1,22 @@
+/**
+ * Wjatscheslaw Michailov <taleskeeper@yandex.com> All rights reserved © 2025.
+ */
 package combinatorics;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-public class IndexCombinationsGeneratorTest {
+/**
+ * Tests for {@linkplain combinatorics.VariationsWithRepetitionsGenerator } class.
+ *
+ * @author Wjatscheslaw Michailov
+ */
+public class VariationsWithRepetitionsGeneratorTest {
 
     @BeforeAll
     static void before() {
-        System.out.printf("Running tests in %s%s", IndexCombinationsGeneratorTest.class, System.lineSeparator());
+        System.out.printf("Running tests in %s%s", VariationsWithRepetitionsGeneratorTest.class, System.lineSeparator());
     }
 
     @Test

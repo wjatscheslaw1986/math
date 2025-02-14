@@ -3,10 +3,10 @@
  */
 package linear.matrix;
 
+import linear.matrix.exception.MatrixException;
+
 import static linear.matrix.ElementaryTransformationUtil.*;
 import static linear.matrix.MatrixUtil.*;
-
-import linear.matrix.exception.MatrixException;
 
 /**
  * A utility class for row echelon form related calculations.

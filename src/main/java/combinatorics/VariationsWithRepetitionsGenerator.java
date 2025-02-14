@@ -3,18 +3,17 @@
  */
 package combinatorics;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
-import static combinatorics.CombinatoricsUtil.collectToListFunction;
 import static combinatorics.CombinatoricsUtil.cutFrom;
+import static combinatorics.CombinatoricsUtil.getPrintArrayFunction;
 
 /**
- * A utility class for generating variations with repetitions of indices for an array of a given size.
+ * A utility class for generating all possible variations with repetitions of array indices,
+ * for an array of a given size.
  * 
  * @author Wjatscheslaw Michailov
  */
@@ -32,7 +31,7 @@ public final class VariationsWithRepetitionsGenerator {
      * @param out an implementation of the OutputStream
      */
     public static void print(final int n, final int k, final OutputStream out) {
-        process(n, k, getPrintArrayFromZeroToFunction(out));
+        process(n, k, getPrintArrayFunction(out));
     }
 
     /**
@@ -45,8 +44,8 @@ public final class VariationsWithRepetitionsGenerator {
      * @return list of arrays of all possible permutations of values in the array of the given size.
      */
     public static List<int[]> generate(final int n, final int k) {
-        final List<int[]> result = new ArrayList<>();
-        process(n, k, collectToListFunction(result));
+        final var result = new ArrayList<int[]>();
+        process(n, k, result::add);
         return result;
     }
 
@@ -59,15 +58,15 @@ public final class VariationsWithRepetitionsGenerator {
      * @param k    size of a single choice, i.e. a subset of <b>n</b>
      * @param func a function to perform over each distinct set of elements
      */
-    private static void process(final int n, final int k, final BiConsumer<int[], Integer> func) {
+    private static void process(final int n, final int k, final Consumer<int[]> func) {
         final int[] comb = new int[k + 2];
         for (int i = 0; i < k; i++) {
             comb[i] = i;
         }
         comb[k] = n;
         comb[k + 1] = 0;
-        for (;;) {
-            func.accept(comb, k);
+        for (; ; ) {
+            func.accept(cutFrom(comb, k));
             int j = 0;
             for (; comb[j] + 1 == comb[j + 1]; j++) {
                 comb[j] = j;
@@ -78,16 +77,5 @@ public final class VariationsWithRepetitionsGenerator {
                 break;
             }
         }
-    }
-
-    private static BiConsumer<int[], Integer> getPrintArrayFromZeroToFunction(final OutputStream o) {
-        return (final int[] currentCombination, final Integer toIndex) -> {
-            try {
-                o.write(Arrays.toString(cutFrom(currentCombination, toIndex)).getBytes());
-                o.write(System.lineSeparator().getBytes());
-            } catch (IOException e) {
-                System.err.print(e.getLocalizedMessage());
-            }
-        };
     }
 }
