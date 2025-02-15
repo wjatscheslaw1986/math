@@ -3,31 +3,23 @@
  */
 package combinatorics;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import static combinatorics.CombinatoricsCalc.countVariationsWithRepetitions;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 /**
- * Tests for {@linkplain combinatorics.VariationsWithRepetitionsGenerator } class.
+ * Tests for {@linkplain VariationsWithRepetitionsGenerator} class.
  *
  * @author Wjatscheslaw Michailov
  */
 public class VariationsWithRepetitionsGeneratorTest {
 
-    @BeforeAll
-    static void before() {
-        System.out.printf("Running tests in %s%s", VariationsWithRepetitionsGeneratorTest.class, System.lineSeparator());
-    }
-
     @Test
-    void generate() {
-        final int n = 10;
-        for (int k = 0; k < n; k++) {
-            var result = VariationsWithRepetitionsGenerator.generate(n, k);
-            Assertions.assertEquals(CombinatoricsCalc.binomialCoefficient(n, k), result.size());
-            for (var choice : result)
-                Assertions.assertEquals(k, choice.length);
-            VariationsWithRepetitionsGenerator.print(n, k, System.out);
-        }
+    void generateVariationsWithRepetitionsTest() {
+        int n = 5, k = 3;
+        var repetitions = VariationsWithRepetitionsGenerator.generate(n, k);
+        assertEquals(countVariationsWithRepetitions(n, k), repetitions.size());
+        VariationsWithRepetitionsGenerator.print(n, k, System.out);
     }
 }

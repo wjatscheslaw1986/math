@@ -3,7 +3,7 @@
  */
 package linear.matrix;
 
-import combinatorics.VariationsWithRepetitionsGenerator;
+import combinatorics.CombinationsGenerator;
 import linear.matrix.exception.MatrixException;
 
 import java.util.ArrayDeque;
@@ -323,8 +323,8 @@ public final class MatrixCalc {
         final Deque<double[][]> minorsToCheckStack = new ArrayDeque<double[][]>();
 
         while (currentMinorSize <= squareSideSize) {
-            final var listOfRowIndicesCombinations = VariationsWithRepetitionsGenerator.generate(rows, currentMinorSize);
-            final var listOfColumnIndicesCombinations = VariationsWithRepetitionsGenerator.generate(cols, currentMinorSize);
+            final var listOfRowIndicesCombinations = CombinationsGenerator.generate(rows, currentMinorSize);
+            final var listOfColumnIndicesCombinations = CombinationsGenerator.generate(cols, currentMinorSize);
             for (var rowArray : listOfRowIndicesCombinations)
                 for (var colArray : listOfColumnIndicesCombinations) {
                     final double[][] minor = new double[currentMinorSize][currentMinorSize];

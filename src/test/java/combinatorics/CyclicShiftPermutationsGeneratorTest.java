@@ -8,27 +8,27 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests for {@linkplain combinatorics.CyclicShiftGenerator} class.
+ * Tests for {@linkplain CyclicShiftPermutationsGenerator} class.
  *
  * @author Wjatscheslaw Michailov
  */
-public class CyclicShiftGeneratorTest {
+public class CyclicShiftPermutationsGeneratorTest {
 
     @BeforeAll
     static void before() {
-        System.out.printf("Running tests in %s%s", CyclicShiftGeneratorTest.class,
+        System.out.printf("Running tests in %s%s", CyclicShiftPermutationsGeneratorTest.class,
                           System.lineSeparator());
     }
 
     @Test
     void generate() {
         for (int arraySize = 0; arraySize < 7; arraySize++) {
-            var result = CyclicShiftGenerator.generate(arraySize);
+            var result = CyclicShiftPermutationsGenerator.generate(arraySize);
             Assertions.assertEquals(CombinatoricsCalc.countPermutations(arraySize),
                                     result.size());
             for (var permutation : result)
                 Assertions.assertEquals(arraySize, permutation.length);
-            CyclicShiftGenerator.print(System.out, arraySize);
+            CyclicShiftPermutationsGenerator.print(System.out, arraySize);
         }
     }
 }

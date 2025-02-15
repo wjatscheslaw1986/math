@@ -16,9 +16,9 @@ import static combinatorics.CombinatoricsUtil.getPrintArrayFunction;
  *
  * @author Wjatscheslaw Michailov
  */
-public class JohnsonTrotterGenerator {
+public class JohnsonTrotterPermutationsGenerator {
 
-    private JohnsonTrotterGenerator() {
+    private JohnsonTrotterPermutationsGenerator() {
         // static context only
     }
 

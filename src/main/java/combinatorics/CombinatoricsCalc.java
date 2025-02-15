@@ -68,6 +68,14 @@ public final class CombinatoricsCalc {
     }
 
     /**
+     * n! / n1!*n2!*...*nk!
+     * TODO
+     */
+    public static long countPermutationsWithRepetitions(final int arrayLength) {
+        throw new IllegalStateException("TODO");
+    }
+
+    /**
      * I have no idea why they still didn't add it to {@linkplain java.lang.Math}
      * 
      * @return a factorial of a number.

@@ -16,9 +16,9 @@ import static combinatorics.CombinatoricsUtil.getPrintArrayFunction;
  * 
  * @author Wjatscheslaw Michailov
  */
-public final class CyclicShiftGenerator {
+public final class CyclicShiftPermutationsGenerator {
 
-    private CyclicShiftGenerator() {
+    private CyclicShiftPermutationsGenerator() {
         super();
     }
 
