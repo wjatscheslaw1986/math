@@ -3,8 +3,8 @@
  */
 package linear;
 
-import combinatorics.CyclicShiftGenerator;
-import combinatorics.JohnsonTrotterGenerator;
+import combinatorics.CyclicShiftPermutationsGenerator;
+import combinatorics.JohnsonTrotterPermutationsGenerator;
 import linear.matrix.MatrixCalc;
 import linear.matrix.MatrixUtil;
 import linear.matrix.RowEchelonFormUtil;
@@ -205,8 +205,8 @@ public final class IntegrationTest {
     @Test
     void permutationsGeneratorsTest() {
         for (int i = 0; i < 7; i++) {
-            List<int[]> l1 = CyclicShiftGenerator.generate(i);
-            List<int[]> l2 = JohnsonTrotterGenerator.generate(i);
+            List<int[]> l1 = CyclicShiftPermutationsGenerator.generate(i);
+            List<int[]> l2 = JohnsonTrotterPermutationsGenerator.generate(i);
             assertEquals(l1.size(), l2.size());
 
             for (int[] i1s : l2) {
