@@ -63,18 +63,18 @@ public class JohnsonTrotterGenerator {
             direction[i] = -1;
         }
         func.accept(Arrays.copyOf(permutation, permutation.length));
-        int mobileElementIndex = findMaxMobileElement(permutation, direction);
+        int mobileElementIndex = maxMobileElementIndex(permutation, direction);
         while (mobileElementIndex != -1) {
             int mobileElement = permutation[mobileElementIndex];
             int nextIndex = mobileElementIndex + direction[mobileElementIndex];
             swap(permutation, direction, mobileElementIndex, nextIndex);
             changeDirection(permutation, direction, mobileElement);
             func.accept(Arrays.copyOf(permutation, permutation.length));
-            mobileElementIndex = findMaxMobileElement(permutation, direction);
+            mobileElementIndex = maxMobileElementIndex(permutation, direction);
         }
     }
 
-    private static int findMaxMobileElement(int[] permutation, int[] direction) {
+    private static int maxMobileElementIndex(int[] permutation, int[] direction) {
         int index = -1;
         for (int i = 0; i < permutation.length; i++) {
             int nextIndex = i + direction[i];
@@ -101,10 +101,10 @@ public class JohnsonTrotterGenerator {
         }
     }
 
-    private static void swap(int[] permution, int[] direction, int i, int j) {
-        int temp = permution[i];
-        permution[i] = permution[j];
-        permution[j] = temp;
+    private static void swap(int[] permutation, int[] direction, int i, int j) {
+        int temp = permutation[i];
+        permutation[i] = permutation[j];
+        permutation[j] = temp;
 
         int temp2 = direction[i];
         direction[i] = direction[j];
