@@ -12,7 +12,8 @@ import java.util.function.Consumer;
 import static combinatorics.CombinatoricsUtil.getPrintArrayFunction;
 
 /**
- * A utility class for generating all possible permutations of ordinals.
+ * A utility class for generating all possible permutations of indices for an array of a
+ * given length.
  *
  * @author Wjatscheslaw Michailov
  */
@@ -23,7 +24,7 @@ public class JohnsonTrotterPermutationsGenerator {
     }
 
     /**
-     * Generate permutations of ordinals for <b>n</b> first indices of an array
+     * Generate permutations of indices for <b>n</b> first indices of an array
      * and print these permutations to System::out.
      *
      * @param n length of an array of indices
@@ -33,11 +34,11 @@ public class JohnsonTrotterPermutationsGenerator {
     }
 
     /**
-     * Generate permutations of ordinals for <b>n</b> first indices of an array,
+     * Generate permutations of indices for <b>n</b> first indices of an array,
      * then collect and return these in a list.
      *
      * @param n length of an array of indices
-     * @return list of all possible permutations of <b>n</b> ordinals
+     * @return list of all possible permutations of <b>n</b> indices
      */
     public static List<int[]> generate(int n) {
         final var list = new ArrayList<int[]>();
@@ -46,11 +47,11 @@ public class JohnsonTrotterPermutationsGenerator {
     }
 
     /**
-     * Generate permutations of ordinals for <b>n</b> first indices of an array
+     * Generate permutations of indices for <b>n</b> first indices of an array
      * and apply the given function to each permutation.
      *
      * @param n length of an array of indices
-     * @param func function to apply to each of the permutations
+     * @param func function to apply to each permutation
      */
     public static void generate(final int n, final Consumer<int[]> func) {
         if (n < 0) {

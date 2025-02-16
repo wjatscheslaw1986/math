@@ -3,6 +3,7 @@
  */
 package combinatorics;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static combinatorics.CombinatoricsCalc.countVariationsWithRepetitions;
@@ -14,6 +15,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @author Wjatscheslaw Michailov
  */
 public class VariationsWithRepetitionsGeneratorTest {
+
+    @BeforeAll
+    static void before() {
+        System.out.printf("Running tests in %s%s", VariationsWithRepetitionsGeneratorTest.class, System.lineSeparator());
+    }
 
     @Test
     void generateVariationsWithRepetitionsTest() {
