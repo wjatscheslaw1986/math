@@ -13,7 +13,7 @@ import static combinatorics.CombinatoricsUtil.getPrintArrayFunction;
 
 /**
  * A utility class for generating all possible combinations without
- * repetitions of array indices, for an array of a given size.
+ * repetitions of their elements (indices in our case), for an array of a given size.
  * 
  * @author Wjatscheslaw Michailov
  */

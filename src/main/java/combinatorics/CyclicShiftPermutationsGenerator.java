@@ -12,14 +12,15 @@ import java.util.function.Consumer;
 import static combinatorics.CombinatoricsUtil.getPrintArrayFunction;
 
 /**
- * A utility class for generating all possible permutations of values of a given array.
+ * A utility class for generating all possible permutations of indices for an array of a
+ * given length.
  * 
  * @author Wjatscheslaw Michailov
  */
 public final class CyclicShiftPermutationsGenerator {
 
     private CyclicShiftPermutationsGenerator() {
-        super();
+        // static context only
     }
 
     /**

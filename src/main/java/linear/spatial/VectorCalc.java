@@ -3,7 +3,16 @@
  */
 package linear.spatial;
 
-public class DoubleVectorCalc {
+/**
+ * A utility class for calculations of vectors.
+ *
+ * @author Wjatscheslaw Michailov
+ */
+public final class VectorCalc {
+
+    private VectorCalc() {
+        // static context only
+    }
 
     /**
      * The method multiplies the given vector on a rational number

@@ -9,7 +9,7 @@ import linear.matrix.MatrixUtil;
 import java.util.Arrays;
 
 import static linear.matrix.MatrixUtil.EPS;
-import static linear.matrix.MatrixUtil.swapValue;
+import static linear.matrix.MatrixUtil.swap;
 
 /**
  * A utility class for solving linear equation systems.
@@ -82,7 +82,7 @@ public final class LinearEquationSystemUtil {
                 continue;
 
             for (int i = col; i <= colsLeftSideCount; ++i)
-                swapValue(equations, sel, row, i);
+                swap(equations, sel, row, i);
 
             addresses[col] = row;
 
