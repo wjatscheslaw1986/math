@@ -9,6 +9,7 @@ import linear.matrix.exception.MatrixException;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
+import java.util.stream.IntStream;
 
 import static linear.matrix.MatrixUtil.copy;
 import static linear.matrix.MatrixUtil.excludeColumnAndRow;
@@ -144,7 +145,7 @@ public final class MatrixCalc {
      * @return the determinant of the matrix
      */
     public static double det(final double[][] matrix) {
-        double result = Double.MAX_VALUE;
+        double result = Double.NaN;
         if (matrix.length < 2)
             return matrix[0][0];
         if (matrix.length == 2)
@@ -168,6 +169,19 @@ public final class MatrixCalc {
         return matrix[0][0] * matrix[1][1] * matrix[2][2] + matrix[0][1] * matrix[1][2] * matrix[2][0]
                 + matrix[1][0] * matrix[2][1] * matrix[0][2] - matrix[0][2] * matrix[1][1] * matrix[2][0]
                 - matrix[1][0] * matrix[0][1] * matrix[2][2] - matrix[2][1] * matrix[1][2] * matrix[0][0];
+    }
+
+    /**
+     * This method calculates a determinant of the given triangular matrix.
+     * It is up to you to check if the matrix is valid
+     * using {@linkplain linear.matrix.Validation} class.
+     *
+     * @param matrix given
+     * @return the determinant of the matrix
+     */
+    public static double detTriangular(final double[][] matrix) {
+        return IntStream.range(0, matrix.length).mapToObj(i -> matrix[i][i])
+                .reduce((a, b) -> a*b).orElse(Double.NaN);
     }
 
     /**

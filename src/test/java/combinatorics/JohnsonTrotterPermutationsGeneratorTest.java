@@ -17,6 +17,7 @@ public class JohnsonTrotterPermutationsGeneratorTest {
 
     @Test
     void generate() {
+        //TODO
         JohnsonTrotterPermutationsGenerator.print(3, System.out);
     }
 
