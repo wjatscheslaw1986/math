@@ -6,8 +6,11 @@ package linear.equation;
 import linear.matrix.MatrixCalc;
 import linear.matrix.MatrixUtil;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
+import static linear.equation.SolutionsCount.*;
 import static linear.matrix.MatrixUtil.EPS;
 import static linear.matrix.MatrixUtil.swap;
 
@@ -59,10 +62,9 @@ public final class LinearEquationSystemUtil {
      * Resolve given linear equations system using Jordan-Gauss method.
      *
      * @param equations linear equations matrix including both sides of each equation
-     * @param solution  the modifiable vector for a single solution
      * @return number of solutions for the system. Integer.MAX_VALUE for infinite number of solutions.
      */
-    public static int resolveUsingJordanGaussMethod(final double[][] equations, final double[] solution) {
+    public static Solution resolveUsingJordanGaussMethod(final double[][] equations) {
         int rowsCount = equations.length;
         int colsLeftSideCount = equations[0].length - 1;
 
@@ -96,7 +98,7 @@ public final class LinearEquationSystemUtil {
             ++row;
         }
 
-        Arrays.fill(solution, 0);
+        final double[] solution = new double[equations[0].length - 1];
         for (int i = 0; i < colsLeftSideCount; ++i)
             if (addresses[i] != -1) {
                 solution[i] = equations[addresses[i]][colsLeftSideCount] / equations[addresses[i]][i];
@@ -109,14 +111,14 @@ public final class LinearEquationSystemUtil {
                 sum += solution[j] * equations[i][j];
 
             if (Math.abs(sum - equations[i][colsLeftSideCount]) > EPS)
-                return 0; // No solutions
+                return new Solution(ZERO, List.of()); // No solutions
         }
 
         for (int i = 0; i < colsLeftSideCount; ++i)
             if (addresses[i] == -1)
-                return Integer.MAX_VALUE; // Infinite solutions
+                return new Solution(INFINITE, List.of(solution)); // Infinite solutions
 
-        return 1; // Unique solution
+        return new Solution(SINGLE, List.of(solution)); // Unique solution
     }
 
     /*

@@ -13,6 +13,7 @@ import java.util.random.RandomGenerator;
 import java.util.random.RandomGeneratorFactory;
 
 import static linear.matrix.MatrixCalc.*;
+import static linear.matrix.MatrixUtil.EPS;
 import static linear.matrix.RowEchelonFormUtil.*;
 import static linear.matrix.Validation.isEqualDimensions;
 import static org.junit.jupiter.api.Assertions.*;
@@ -75,6 +76,44 @@ public class MatrixCalcTest {
         a1 = new double[][]{{2.0d, 1.0d, 3.0d}, {1.0d, -1.0d, 7.0d}, {0.0f, 2.0f, -7.0f}};
         b1 = new double[][]{{2.0f, 1.0f, 3.0f}, {1.0f, -1.0f, 7.0f}};
         Assertions.assertFalse(isEqualDimensions(a1, b1));
+    }
+
+    /**
+     * Примеры приведены по книге А.С.Киркинский - "Линейная Алгебра и Аналитическая Геометрия" - 2006
+     *
+     * @throws MatrixException в случае неправильных матриц
+     */
+    @Test
+    public void matrixExpressionsTest() throws MatrixException {
+
+        /*
+         * Даны две матрицы C и D, найти (3*C + C*D)^T
+         */
+
+        var C = new double[][]{
+                {3, -1, 1},
+                {0, 2, -5},
+                {1, -1, 2}
+        };
+
+        var D = new double[][]{
+                {-2.0d, 2.0d, .0d},
+                {4.0d, 1.0d, 3.0d},
+                {-3.0d, 2.0d, 1.0d}
+        };
+
+        var answer = new double[][]{
+                {-4.0, 23.0, -9.0},
+                {4.0, -2.0, 2.0},
+                {1.0, -14.0, 5.0}};
+
+        var result = MatrixCalc.transpose(
+                MatrixCalc.sum(
+                        MatrixCalc.multiply(C, 3), MatrixCalc.multiply(C, D)));
+
+        assertTrue(MatrixCalc.areEqual(answer, result));
+
+//        System.out.println(print(result));
     }
 
     /**
@@ -158,7 +197,7 @@ public class MatrixCalcTest {
         assertEquals(2, rank(matrix));
         assertEquals(2, rankByMinors(matrix));
 
-        matrix = new double[][]{{2.0d, 4.0d, 1.0d, 2.0d}, {1.0d, -3.0d,  0.0d, 4.0d}, {3.0d, 5.0d, 1.0d, 7.0d}};
+        matrix = new double[][]{{2.0d, 4.0d, 1.0d, 2.0d}, {1.0d, -3.0d, 0.0d, 4.0d}, {3.0d, 5.0d, 1.0d, 7.0d}};
         assertEquals(3, rank(matrix));
         assertEquals(3, rankByMinors(matrix));
 
@@ -284,14 +323,54 @@ public class MatrixCalcTest {
     @Test
     void cofactorsTest() {
         var matrix = new double[][]{{2, -3, -2}, {3, -1, 4}, {3, 1, 5}};
-        var cofactorsMatrix = new double[][]{{-9,-3,6},{13,16,-11},{-14,-14,7}};
+        var cofactorsMatrix = new double[][]{{-9, -3, 6}, {13, 16, -11}, {-14, -14, 7}};
         assertTrue(areEqual(cofactorsMatrix, MatrixCalc.cofactors(matrix)));
     }
 
     @Test
     void transposeTest() {
-        var cofactorsMatrix = new double[][]{{-9,-3,6},{13,16,-11},{-14,-14,7}};
-        var transposedCofactorsMatrix = new double[][]{{-9,13,-14},{-3,16,-14},{6,-11,7}};
+        var cofactorsMatrix = new double[][]{{-9, -3, 6}, {13, 16, -11}, {-14, -14, 7}};
+        var transposedCofactorsMatrix = new double[][]{{-9, 13, -14}, {-3, 16, -14}, {6, -11, 7}};
         assertTrue(areEqual(transposedCofactorsMatrix, MatrixCalc.transpose(cofactorsMatrix)));
+    }
+
+    @Test
+    void detTriangularTest() {
+        /*
+         * Пример взят из Киркинский А.С. "Основы линейной алгебры"
+         */
+
+        var matrix = new double[][]{
+                {22.0d, 5.0d, 5.0d, 5.0d},
+                {0.0d, 2.0d, 0.0d, 0.0d},
+                {0.0d, 0.0d, 2.0d, 0.0d},
+                {0.0d, 0.0d, 0.0d, 2.0d}};
+
+        assertTrue(Validation.isSquareMatrix(matrix));
+        assertEquals(detTriangExample1(matrix.length), detTriangular(matrix));
+
+        var matrix2 = new double[5][5];
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 5; j++) {
+                matrix2[i][j] = Math.min(i + 1, j + 1);
+            }
+        }
+        assertEquals(detTriangular(RowEchelonFormUtil.toRowEchelonForm(matrix2)), detTriangular(RowEchelonFormUtil.toREF(matrix2)));
+        assertEquals(det(RowEchelonFormUtil.toRowEchelonForm(matrix2)), detTriangular(RowEchelonFormUtil.toREF(matrix2)));
+        assertEquals(1.0d, detTriangular(RowEchelonFormUtil.toREF(matrix2)));
+
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 5; j++) {
+                matrix2[i][j] = Math.max(i + 1, j + 1);
+            }
+        }
+
+        assertEquals(detTriangular(RowEchelonFormUtil.toRowEchelonForm(matrix2)), detTriangular(RowEchelonFormUtil.toREF(matrix2)), EPS);
+        assertEquals(det(RowEchelonFormUtil.toRowEchelonForm(matrix2)), detTriangular(RowEchelonFormUtil.toREF(matrix2)), EPS);
+        assertEquals(5.0d, detTriangular(RowEchelonFormUtil.toREF(matrix2)));
+    }
+
+    private double detTriangExample1(int n) {
+        return (5.0d * n + 2.0d) * Math.pow(2.0d, ((double) n - 1.0d));
     }
 }
