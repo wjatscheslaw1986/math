@@ -29,7 +29,7 @@ public final class IntegrationTest {
 
     @BeforeAll
     static void before() {
-        System.out.println(String.format("Running tests in %s.class", IntegrationTest.class));
+        System.out.printf("Running tests in %s.class%n", IntegrationTest.class);
     }
 
     /**
@@ -171,8 +171,12 @@ public final class IntegrationTest {
 
     @Test
     void rowEchelonFormTest() throws MatrixException {
-        var matrix = new double[][]{{-3.0d, 3.0d, -1.0d, -7.0d, 5.0d}, {2.0d, 3.0d, -5.0d, 26.0d, -4.0d},
-                {3.0d, -4.0d, 8.0d, -9.0d, 1.0d}, {-4.0d, 1.0d, -3.0d, -12.0d, 2.0d}};
+        var matrix = new double[][]{
+                {-3.0d, 3.0d, -1.0d, -7.0d, 5.0d},
+                {2.0d, 3.0d, -5.0d, 26.0d, -4.0d},
+                {3.0d, -4.0d, 8.0d, -9.0d, 1.0d},
+                {-4.0d, 1.0d, -3.0d, -12.0d, 2.0d}
+        };
         var refMatrix = RowEchelonFormUtil.toRowEchelonForm(matrix);
         assertTrue(RowEchelonFormUtil.isRowEchelonForm(refMatrix));
         System.out.println(MatrixUtil.print(refMatrix));
@@ -180,8 +184,12 @@ public final class IntegrationTest {
 
     @Test
     void rowEchelonFormTest2() throws MatrixException {
-        var matrix = new double[][]{{-3.0d, 3.0d, -1.0d, -7.0d, 5.0d}, {2.0d, 3.0d, -5.0d, 26.0d, -4.0d},
-                {3.0d, -4.0d, 8.0d, -9.0d, 1.0d}, {-4.0d, 1.0d, -3.0d, -12.0d, 2.0d}};
+        var matrix = new double[][]{
+                {-3.0d, 3.0d, -1.0d, -7.0d, 5.0d},
+                {2.0d, 3.0d, -5.0d, 26.0d, -4.0d},
+                {3.0d, -4.0d, 8.0d, -9.0d, 1.0d},
+                {-4.0d, 1.0d, -3.0d, -12.0d, 2.0d}
+        };
         assertFalse(RowEchelonFormUtil.isRowEchelonForm(matrix));
         var refMatrix = RowEchelonFormUtil.toREF(matrix);
         assertTrue(RowEchelonFormUtil.isRowEchelonForm(refMatrix));
@@ -209,9 +217,9 @@ public final class IntegrationTest {
             List<int[]> l2 = JohnsonTrotterPermutationsGenerator.generate(i);
             assertEquals(l1.size(), l2.size());
 
-            for (int[] i1s : l2) {
+            for (int[] i1s : l1) {
                 var found = false;
-                for (int[] i2s : l1) {
+                for (int[] i2s : l2) {
                     if (Arrays.equals(i2s, i1s)) {
                         found = true;
                         break;

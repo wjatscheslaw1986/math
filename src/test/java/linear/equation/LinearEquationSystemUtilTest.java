@@ -4,14 +4,12 @@
 package linear.equation;
 
 import linear.matrix.MatrixCalc;
-import linear.matrix.exception.MatrixException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static linear.equation.LinearEquationSystemUtil.isSolvable;
 import static linear.equation.LinearEquationSystemUtil.resolveUsingJordanGaussMethod;
-import static linear.equation.SolutionsCount.INFINITE;
-import static linear.equation.SolutionsCount.ZERO;
+import static linear.equation.SolutionsCount.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -41,10 +39,10 @@ public class LinearEquationSystemUtilTest {
                 {2, 2, 1, -3, 0}
         };
         var solutionWhereFreeVariableIsZero = new double[]{0, -1, 2, 0};
-        var singleSolution = resolveUsingJordanGaussMethod(linearEquationSystem);
-        assertEquals(INFINITE, singleSolution.solutionsCount());
+        var solution = resolveUsingJordanGaussMethod(linearEquationSystem);
+        assertEquals(INFINITE, solution.solutionsCount());
         assertTrue(isSolvable(linearEquationSystem));
-        assertTrue(MatrixCalc.areEqual(solutionWhereFreeVariableIsZero, singleSolution.vectors().getFirst()));
+        assertTrue(MatrixCalc.areEqual(solutionWhereFreeVariableIsZero, solution.solution()));
 
         // б)
 
@@ -55,10 +53,10 @@ public class LinearEquationSystemUtilTest {
                 {3, 1, -2, 1, 15}
         };
         solutionWhereFreeVariableIsZero = new double[]{3, 1, -2, 1};
-        singleSolution = resolveUsingJordanGaussMethod(linearEquationSystem);
-        assertEquals(SolutionsCount.SINGLE, singleSolution.solutionsCount());
+        solution = resolveUsingJordanGaussMethod(linearEquationSystem);
+        assertEquals(SINGLE, solution.solutionsCount());
         assertTrue(isSolvable(linearEquationSystem));
-        assertTrue(MatrixCalc.areEqual(solutionWhereFreeVariableIsZero, singleSolution.vectors().getFirst()));
+        assertTrue(MatrixCalc.areEqual(solutionWhereFreeVariableIsZero, solution.solution()));
 
         // в)
 
@@ -67,10 +65,29 @@ public class LinearEquationSystemUtilTest {
                 {4, 9, 3, -2, 11},
                 {2, 6, 2, -2, 9}
         };
-        singleSolution = resolveUsingJordanGaussMethod(linearEquationSystem);
-        assertTrue(singleSolution.vectors().isEmpty());
-        assertEquals(ZERO, singleSolution.solutionsCount());
+        solution = resolveUsingJordanGaussMethod(linearEquationSystem);
+        assertNull(solution.solution());
+        assertEquals(ZERO, solution.solutionsCount());
         assertFalse(isSolvable(linearEquationSystem));
+
+        // д)
+
+        linearEquationSystem = new double[][]{
+                {6, 9, 5, 6, 7},
+                {4, 6, 3, 4, 5},
+                {2, 3, 1, 2, 3},
+                {2, 3, 2, 2, 2}
+        };
+        solutionWhereFreeVariableIsZero = new double[]{2, 0, -1, 0};
+        solution = resolveUsingJordanGaussMethod(linearEquationSystem);
+        assertEquals(INFINITE, solution.solutionsCount());
+        assertTrue(isSolvable(linearEquationSystem));
+        assertTrue(MatrixCalc.areEqual(solutionWhereFreeVariableIsZero, solution.solution()));
+
+        var basis = solution.basis();
+        assertEquals(2, basis.size());
+        assertTrue(MatrixCalc.areEqual(new double[]{2, 1, -1, 0}, basis.get(0)));
+        assertTrue(MatrixCalc.areEqual(new double[]{2, 0, -1, 1}, basis.get(1)));
 
         // е)
 
@@ -81,9 +98,9 @@ public class LinearEquationSystemUtilTest {
                 {4, -2, 5, 6, 7}
         };
         solutionWhereFreeVariableIsZero = new double[]{0, 4, 3, 0};
-        singleSolution = resolveUsingJordanGaussMethod(linearEquationSystem);
-        assertEquals(INFINITE, singleSolution.solutionsCount());
+        solution = resolveUsingJordanGaussMethod(linearEquationSystem);
+        assertEquals(INFINITE, solution.solutionsCount());
         assertTrue(isSolvable(linearEquationSystem));
-        assertTrue(MatrixCalc.areEqual(solutionWhereFreeVariableIsZero, singleSolution.vectors().getFirst()));
+        assertTrue(MatrixCalc.areEqual(solutionWhereFreeVariableIsZero, solution.solution()));
     }
 }

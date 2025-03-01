@@ -142,7 +142,7 @@ public final class MatrixUtil {
      * @param rowB   second swapper row index
      * @param col    the column index of the swapped value which stays the same after the swap
      */
-    public static void swap(final double[][] matrix, final int rowA, final int rowB, final int col) {
+    public static void swapInColumn(final double[][] matrix, final int rowA, final int rowB, final int col) {
         final double tempRow = matrix[rowA][col];
         matrix[rowA][col] = matrix[rowB][col];
         matrix[rowB][col] = tempRow;

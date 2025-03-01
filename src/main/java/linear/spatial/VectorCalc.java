@@ -3,6 +3,8 @@
  */
 package linear.spatial;
 
+import java.util.Arrays;
+
 /**
  * A utility class for calculations of vectors.
  *
@@ -44,5 +46,16 @@ public final class VectorCalc {
         for (int i = 0; i < vector1.length; i++)
             summarizeCoordinates[i] = vector1[i]+vector2[i];
         return summarizeCoordinates;
+    }
+
+    /**
+     * Checks if the two given vectors are equal.
+     *
+     * @param a vector A
+     * @param b vector B
+     * @return true if vectors are equal, false otherwise
+     */
+    public static boolean areEqual(final double[] a, final double[] b) {
+        return Arrays.equals(a, b);
     }
 }

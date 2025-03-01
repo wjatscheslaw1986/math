@@ -5,6 +5,7 @@ package linear.matrix;
 
 import combinatorics.CombinationsGenerator;
 import linear.matrix.exception.MatrixException;
+import linear.spatial.VectorCalc;
 
 import java.util.ArrayDeque;
 import java.util.Arrays;
@@ -372,18 +373,7 @@ public final class MatrixCalc {
      */
     public static boolean areEqual(final double[][] a, final double[][] b) {
         for (int i = 0; i < a.length; i++)
-            if (!areEqual(a[i], b[i])) return false;
+            if (!VectorCalc.areEqual(a[i], b[i])) return false;
         return true;
-    }
-
-    /**
-     * Checks if the two given vectors are equal.
-     *
-     * @param a vector A
-     * @param b vector B
-     * @return true if vectors are equal, false otherwise
-     */
-    public static boolean areEqual(final double[] a, final double[] b) {
-        return Arrays.equals(a, b);
     }
 }
