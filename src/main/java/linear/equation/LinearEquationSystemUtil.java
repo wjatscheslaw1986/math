@@ -6,13 +6,11 @@ package linear.equation;
 import linear.matrix.MatrixCalc;
 import linear.matrix.MatrixUtil;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import static linear.equation.SolutionsCount.*;
 import static linear.matrix.MatrixUtil.EPS;
-import static linear.matrix.MatrixUtil.swap;
+import static linear.matrix.MatrixUtil.swapInColumn;
 
 /**
  * A utility class for solving linear equation systems.
@@ -80,11 +78,13 @@ public final class LinearEquationSystemUtil {
                 if (Math.abs(equations[i][col]) > Math.abs(equations[sel][col]))
                     sel = i;
 
-            if (Math.abs(equations[sel][col]) < EPS)
+            if (Math.abs(equations[sel][col]) < EPS) {
+                equations[sel][col] = .0d;
                 continue;
+            }
 
             for (int i = col; i <= colsLeftSideCount; ++i)
-                swap(equations, sel, row, i);
+                swapInColumn(equations, sel, row, i);
 
             addresses[col] = row;
 
@@ -111,14 +111,14 @@ public final class LinearEquationSystemUtil {
                 sum += solution[j] * equations[i][j];
 
             if (Math.abs(sum - equations[i][colsLeftSideCount]) > EPS)
-                return new Solution(ZERO, List.of()); // No solutions
+                return new Solution(ZERO, null, addresses); // No solutions
         }
 
         for (int i = 0; i < colsLeftSideCount; ++i)
             if (addresses[i] == -1)
-                return new Solution(INFINITE, List.of(solution)); // Infinite solutions
+                return new Solution(INFINITE, solution, addresses); // Infinite solutions
 
-        return new Solution(SINGLE, List.of(solution)); // Unique solution
+        return new Solution(SINGLE, solution, addresses); // Unique solution
     }
 
     /*
