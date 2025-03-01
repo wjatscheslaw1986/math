@@ -5,6 +5,7 @@ package linear.matrix;
 
 import linear.MatrixGenerator;
 import linear.matrix.exception.MatrixException;
+import linear.spatial.VectorCalc;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -315,9 +316,9 @@ public class MatrixCalcTest {
     void isEqualVectorTest() {
         double[] vector1 = {-2, -3, -1, 5};
         double[] vector2 = {-2, -7, -1, 5};
-        assertTrue(areEqual(vector1, vector1));
-        assertFalse(areEqual(vector1, vector2));
-        assertTrue(areEqual(vector2, vector2));
+        assertTrue(VectorCalc.areEqual(vector1, vector1));
+        assertFalse(VectorCalc.areEqual(vector1, vector2));
+        assertTrue(VectorCalc.areEqual(vector2, vector2));
     }
 
     @Test
