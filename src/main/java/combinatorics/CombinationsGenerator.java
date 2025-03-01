@@ -1,5 +1,5 @@
 /**
- * Wjatscheslaw Michailov <taleskeeper@yandex.com> All rights reserved © 2025.
+ * Viacheslav Mikhailov (taleskeeper@yandex.com)  © 2025.
  */
 package combinatorics;
 
@@ -15,7 +15,7 @@ import static combinatorics.CombinatoricsUtil.getPrintArrayFunction;
  * A utility class for generating all possible combinations without
  * repetitions of their elements (indices in our case), for an array of a given size.
  * 
- * @author Wjatscheslaw Michailov
+ * @author Viacheslav Mikhailov
  */
 public final class CombinationsGenerator {
 

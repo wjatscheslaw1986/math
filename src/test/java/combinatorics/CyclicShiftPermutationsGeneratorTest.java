@@ -1,5 +1,5 @@
 /**
- * Wjatscheslaw Michailov <taleskeeper@yandex.com> All rights reserved © 2025.
+ * Viacheslav Mikhailov (taleskeeper@yandex.com)  © 2025.
  */
 package combinatorics;
 
@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests for {@linkplain CyclicShiftPermutationsGenerator} class.
  *
- * @author Wjatscheslaw Michailov
+ * @author Viacheslav Mikhailov
  */
 public class CyclicShiftPermutationsGeneratorTest {
 

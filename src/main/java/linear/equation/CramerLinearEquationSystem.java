@@ -1,5 +1,5 @@
 /**
- * Wjatscheslaw Michailov (taleskeeper@yandex.com) All rights reserved © 2025.
+ * Viacheslav Mikhailov (taleskeeper@yandex.com)  © 2025.
  */
 package linear.equation;
 
@@ -13,7 +13,7 @@ import java.util.function.BiFunction;
  * The wrapper object for solution of Cramer Linear Equation Systems.
  * The solution is called eagerly in the constructor.
  *
- * @author Wjatscheslaw Michailov
+ * @author Viacheslav Mikhailov
  */
 public class CramerLinearEquationSystem {
 

@@ -1,12 +1,12 @@
 /**
- * Wjatscheslaw Michailov <taleskeeper@yandex.com> All rights reserved © 2025.
+ * Viacheslav Mikhailov (taleskeeper@yandex.com)  © 2025.
  */
 package combinatorics;
 
 /**
  * An API for calculating stereotypical tasks in combinatorics.
  * 
- * @author Wjatscheslaw Michailov
+ * @author Viacheslav Mikhailov
  */
 public final class CombinatoricsCalc {
 

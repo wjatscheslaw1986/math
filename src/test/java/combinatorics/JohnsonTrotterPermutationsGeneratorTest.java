@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests for {@linkplain JohnsonTrotterPermutationsGenerator} class.
  *
- * @author Wjatscheslaw Michailov
+ * @author Viacheslav Mikhailov
  */
 public class JohnsonTrotterPermutationsGeneratorTest {
 

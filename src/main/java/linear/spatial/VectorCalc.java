@@ -1,5 +1,5 @@
 /**
- * Wjatscheslaw Michailov (taleskeeper@yandex.com) All rights reserved © 2025.
+ * Viacheslav Mikhailov (taleskeeper@yandex.com)  © 2025.
  */
 package linear.spatial;
 
@@ -8,7 +8,7 @@ import java.util.Arrays;
 /**
  * A utility class for calculations of vectors.
  *
- * @author Wjatscheslaw Michailov
+ * @author Viacheslav Mikhailov
  */
 public final class VectorCalc {
 
