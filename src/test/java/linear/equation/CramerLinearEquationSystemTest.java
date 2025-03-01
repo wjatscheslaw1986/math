@@ -1,5 +1,5 @@
 /**
- * Wjatscheslaw Michailov <taleskeeper@yandex.com> All rights reserved © 2025.
+ * Viacheslav Mikhailov (taleskeeper@yandex.com)  © 2025.
  */
 package linear.equation;
 
@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * @author Wjatscheslaw Michailov
+ * @author Viacheslav Mikhailov
  */
 public class CramerLinearEquationSystemTest {
 

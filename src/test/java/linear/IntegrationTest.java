@@ -1,5 +1,5 @@
 /**
- * Wjatscheslaw Michailov (taleskeeper@yandex.com) All rights reserved © 2025.
+ * Viacheslav Mikhailov (taleskeeper@yandex.com)  © 2025.
  */
 package linear;
 
@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Integration tests.
  *
- * @author Wjatscheslaw Michailov
+ * @author Viacheslav Mikhailov
  */
 public final class IntegrationTest {
 

@@ -3,7 +3,7 @@ package linear.matrix;
 import static linear.matrix.MatrixUtil.copy;
 
 /**
- * @author Wjatscheslaw Michailov
+ * @author Viacheslav Mikhailov
  */
 public final class ElementaryTransformationUtil {
 

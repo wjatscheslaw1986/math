@@ -1,5 +1,5 @@
 /**
- * Wjatscheslaw Michailov <taleskeeper@yandex.com> All rights reserved © 2025.
+ * Viacheslav Mikhailov (taleskeeper@yandex.com)  © 2025.
  */
 package combinatorics;
 
@@ -16,7 +16,7 @@ import static linear.spatial.VectorUtil.swap;
  * A utility class for generating a series of all possible permutations of indices
  * for an array of a given length, in lexicographical order.
  *
- * @author Wjatscheslaw Michailov
+ * @author Viacheslav Mikhailov
  */
 public class NarayanaPermutationsGenerator {
 

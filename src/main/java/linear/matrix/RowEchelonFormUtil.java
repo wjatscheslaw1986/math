@@ -1,5 +1,5 @@
 /**
- * Wjatscheslaw Michailov <taleskeeper@yandex.com> All rights reserved © 2025.
+ * Viacheslav Mikhailov (taleskeeper@yandex.com)  © 2025.
  */
 package linear.matrix;
 
@@ -18,7 +18,7 @@ import static linear.matrix.MatrixUtil.*;
  * <li>There are no zero rows, so no violation occurs.</li>
  * </ul>
  *
- * @author Wjatscheslaw Michailov
+ * @author Viacheslav Mikhailov
  */
 public final class RowEchelonFormUtil {
 

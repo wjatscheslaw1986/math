@@ -1,12 +1,12 @@
 /**
- * Wjatscheslaw Michailov (taleskeeper@yandex.com) All rights reserved © 2025.
+ * Viacheslav Mikhailov (taleskeeper@yandex.com)  © 2025.
  */
 package linear.equation.exception;
 
 import java.io.Serial;
 
 /**
- * @author Wjatscheslaw Michailov
+ * @author Viacheslav Mikhailov
  */
 public class LinearEquationSystemException extends Exception {
     @Serial

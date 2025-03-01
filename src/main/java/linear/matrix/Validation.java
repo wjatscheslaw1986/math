@@ -1,12 +1,12 @@
 /**
- * Wjatscheslaw Michailov (taleskeeper@yandex.com) All rights reserved © 2025.
+ * Viacheslav Mikhailov (taleskeeper@yandex.com)  © 2025.
  */
 package linear.matrix;
 
 /**
  * A utility class that provides checks for different matrix properties.
  *
- * @author Wjatscheslaw Michailov
+ * @author Viacheslav Mikhailov
  */
 public final class Validation {
 

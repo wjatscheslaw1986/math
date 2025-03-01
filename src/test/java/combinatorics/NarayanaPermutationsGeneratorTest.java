@@ -1,5 +1,5 @@
 /**
- * Wjatscheslaw Michailov <taleskeeper@yandex.com> All rights reserved © 2025.
+ * Viacheslav Mikhailov (taleskeeper@yandex.com)  © 2025.
  */
 package combinatorics;
 
@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Tests for {@linkplain NarayanaPermutationsGenerator} class.
  *
- * @author Wjatscheslaw Michailov
+ * @author Viacheslav Mikhailov
  */
 public class NarayanaPermutationsGeneratorTest {
 

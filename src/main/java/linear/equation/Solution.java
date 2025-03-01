@@ -1,5 +1,5 @@
 /**
- * Wjatscheslaw Michailov (taleskeeper@yandex.com) All rights reserved © 2025.
+ * Viacheslav Mikhailov (taleskeeper@yandex.com)  © 2025.
  */
 package linear.equation;
 
@@ -15,7 +15,7 @@ import java.util.Objects;
  *                 or a solution with all variable members are zeroes for the case of {@linkplain SolutionsCount.INFINITE},
  *                 or {@code null} for the case of {@linkplain SolutionsCount.ZERO}
  * @param addresses an array of index addresses of variable members in equations
- * @author Wjatscheslaw Michailov
+ * @author Viacheslav Mikhailov
  */
 public record Solution(SolutionsCount solutionsCount, double[] solution, int[] addresses) {
 

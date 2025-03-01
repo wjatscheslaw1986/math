@@ -1,5 +1,5 @@
 /**
- * Wjatscheslaw Michailov (taleskeeper@yandex.com) All rights reserved © 2025.
+ * Viacheslav Mikhailov (taleskeeper@yandex.com)  © 2025.
  */
 package linear.matrix;
 
@@ -19,7 +19,7 @@ import static linear.matrix.Validation.isEqualDimensions;
 /**
  * Matrix calculator util class.
  *
- * @author Wjatscheslaw Michailov
+ * @author Viacheslav Mikhailov
  */
 public final class MatrixCalc {
 

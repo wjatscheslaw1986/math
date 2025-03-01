@@ -8,7 +8,7 @@ import java.util.function.Consumer;
 /**
  * A utility class for {@linkplain combinatorics} package.
  *
- * @author Wjatscheslaw Michailov
+ * @author Viacheslav Mikhailov
  */
 public final class CombinatoricsUtil {
 

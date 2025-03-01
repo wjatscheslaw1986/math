@@ -1,5 +1,5 @@
 /**
- * Wjatscheslaw Michailov <taleskeeper@yandex.com> All rights reserved © 2025.
+ * Viacheslav Mikhailov (taleskeeper@yandex.com)  © 2025.
  */
 package combinatorics;
 
@@ -15,7 +15,7 @@ import static combinatorics.CombinatoricsUtil.getPrintArrayFunction;
  * A utility class for generating all possible permutations of indices for an array of a
  * given length.
  * 
- * @author Wjatscheslaw Michailov
+ * @author Viacheslav Mikhailov
  */
 public final class CyclicShiftPermutationsGenerator {
 
