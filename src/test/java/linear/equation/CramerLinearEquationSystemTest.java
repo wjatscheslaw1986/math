@@ -5,6 +5,7 @@ package linear.equation;
 
 import linear.matrix.MatrixCalc;
 import linear.matrix.MatrixUtil;
+import linear.spatial.VectorCalc;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -28,8 +29,8 @@ public class CramerLinearEquationSystemTest {
         var solutions = new double[]{1,2,-2};
         var equationSystem = new CramerLinearEquationSystem(LinearEquationSystemUtil::resolveUsingCramerMethod, matrix);
         assertTrue(MatrixCalc.areEqual(equationSystem.getCoefficients(), leftParts));
-        assertTrue(MatrixCalc.areEqual(equationSystem.getFreeMembers(), rightParts));
-        assertTrue(MatrixCalc.areEqual(equationSystem.getResolved(), solutions));
+        assertTrue(VectorCalc.areEqual(equationSystem.getFreeMembers(), rightParts));
+        assertTrue(VectorCalc.areEqual(equationSystem.getResolved(), solutions));
 
         matrix = new double[][]{{3,-5,7,10},{2,-3,2,7},{1,4,-4,9}};
         leftParts = MatrixUtil.removeMarginalColumn(matrix, false);
@@ -37,8 +38,8 @@ public class CramerLinearEquationSystemTest {
         solutions = new double[]{5,1,0};
         equationSystem = new CramerLinearEquationSystem(LinearEquationSystemUtil::resolveUsingCramerMethod, matrix);
         assertTrue(MatrixCalc.areEqual(equationSystem.getCoefficients(), leftParts));
-        assertTrue(MatrixCalc.areEqual(equationSystem.getFreeMembers(), rightParts));
-        assertTrue(MatrixCalc.areEqual(equationSystem.getResolved(), solutions));
+        assertTrue(VectorCalc.areEqual(equationSystem.getFreeMembers(), rightParts));
+        assertTrue(VectorCalc.areEqual(equationSystem.getResolved(), solutions));
     }
 
     @Test
@@ -49,8 +50,8 @@ public class CramerLinearEquationSystemTest {
         var solutions = new double[]{1,2,-2};
         var equationSystem = new CramerLinearEquationSystem(LinearEquationSystemUtil::resolveUsingReverseMatrixMethod, matrix);
         assertTrue(MatrixCalc.areEqual(equationSystem.getCoefficients(), leftParts));
-        assertTrue(MatrixCalc.areEqual(equationSystem.getFreeMembers(), rightParts));
-        assertTrue(MatrixCalc.areEqual(equationSystem.getResolved(), solutions));
+        assertTrue(VectorCalc.areEqual(equationSystem.getFreeMembers(), rightParts));
+        assertTrue(VectorCalc.areEqual(equationSystem.getResolved(), solutions));
 
         matrix = new double[][]{{3,-5,7,10},{2,-3,2,7},{1,4,-4,9}};
         leftParts = MatrixUtil.removeMarginalColumn(matrix, false);
@@ -58,7 +59,7 @@ public class CramerLinearEquationSystemTest {
         solutions = new double[]{5,1,0};
         equationSystem = new CramerLinearEquationSystem(LinearEquationSystemUtil::resolveUsingReverseMatrixMethod, matrix);
         assertTrue(MatrixCalc.areEqual(equationSystem.getCoefficients(), leftParts));
-        assertTrue(MatrixCalc.areEqual(equationSystem.getFreeMembers(), rightParts));
-        assertTrue(MatrixCalc.areEqual(equationSystem.getResolved(), solutions));
+        assertTrue(VectorCalc.areEqual(equationSystem.getFreeMembers(), rightParts));
+        assertTrue(VectorCalc.areEqual(equationSystem.getResolved(), solutions));
     }
 }

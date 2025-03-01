@@ -4,6 +4,7 @@
 package linear.equation;
 
 import linear.matrix.MatrixCalc;
+import linear.spatial.VectorCalc;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -42,7 +43,7 @@ public class LinearEquationSystemUtilTest {
         var solution = resolveUsingJordanGaussMethod(linearEquationSystem);
         assertEquals(INFINITE, solution.solutionsCount());
         assertTrue(isSolvable(linearEquationSystem));
-        assertTrue(MatrixCalc.areEqual(solutionWhereFreeVariableIsZero, solution.solution()));
+        assertTrue(VectorCalc.areEqual(solutionWhereFreeVariableIsZero, solution.solution()));
 
         // б)
 
@@ -56,7 +57,7 @@ public class LinearEquationSystemUtilTest {
         solution = resolveUsingJordanGaussMethod(linearEquationSystem);
         assertEquals(SINGLE, solution.solutionsCount());
         assertTrue(isSolvable(linearEquationSystem));
-        assertTrue(MatrixCalc.areEqual(solutionWhereFreeVariableIsZero, solution.solution()));
+        assertTrue(VectorCalc.areEqual(solutionWhereFreeVariableIsZero, solution.solution()));
 
         // в)
 
@@ -82,12 +83,12 @@ public class LinearEquationSystemUtilTest {
         solution = resolveUsingJordanGaussMethod(linearEquationSystem);
         assertEquals(INFINITE, solution.solutionsCount());
         assertTrue(isSolvable(linearEquationSystem));
-        assertTrue(MatrixCalc.areEqual(solutionWhereFreeVariableIsZero, solution.solution()));
+        assertTrue(VectorCalc.areEqual(solutionWhereFreeVariableIsZero, solution.solution()));
 
         var basis = solution.basis();
         assertEquals(2, basis.size());
-        assertTrue(MatrixCalc.areEqual(new double[]{2, 1, -1, 0}, basis.get(0)));
-        assertTrue(MatrixCalc.areEqual(new double[]{2, 0, -1, 1}, basis.get(1)));
+        assertTrue(VectorCalc.areEqual(new double[]{2, 1, -1, 0}, basis.get(0)));
+        assertTrue(VectorCalc.areEqual(new double[]{2, 0, -1, 1}, basis.get(1)));
 
         // е)
 
@@ -101,6 +102,6 @@ public class LinearEquationSystemUtilTest {
         solution = resolveUsingJordanGaussMethod(linearEquationSystem);
         assertEquals(INFINITE, solution.solutionsCount());
         assertTrue(isSolvable(linearEquationSystem));
-        assertTrue(MatrixCalc.areEqual(solutionWhereFreeVariableIsZero, solution.solution()));
+        assertTrue(VectorCalc.areEqual(solutionWhereFreeVariableIsZero, solution.solution()));
     }
 }
