@@ -146,18 +146,18 @@ public class MatrixCalcTest {
      * Геометрия" - 2006
      */
     @Test
-    public void reverseTest() {
+    public void inverseTest() {
         final double[][] a = new double[][]{{6.0d, 4.0d}, {-2.0d, -1.0d}};
         final double[][] b = new double[][]{{3.0f, 4.0f}, {9.0f, 12.0f}};
         final double[][] c = new double[][]{{2.0d, 0.0d, 2.0d}, {-3.0d, 2.0d, 0.0d}, {6.0d, -2.0d, 4.0d}};
         final double[][] a_rev = new double[][]{{-.5d, -2.0d}, {1.0d, 3.0d}};
         final double[][] c_rev = new double[][]{{2.0d, -1.0d, -1.0d}, {3.0d, -1.0d, -1.5d}, {-1.5d, 1.0d, 1.0d}};
 
-        Assertions.assertDoesNotThrow(() -> reverse(a));
-        Assertions.assertTrue(areEqual(reverse(a), a_rev));
-        Assertions.assertThrows(IllegalArgumentException.class, () -> reverse(b));
-        Assertions.assertDoesNotThrow(() -> reverse(c));
-        Assertions.assertTrue(areEqual(reverse(c), c_rev));
+        Assertions.assertDoesNotThrow(() -> inverse(a));
+        Assertions.assertTrue(areEqual(inverse(a), a_rev));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> inverse(b));
+        Assertions.assertDoesNotThrow(() -> inverse(c));
+        Assertions.assertTrue(areEqual(inverse(c), c_rev));
     }
 
     /**

@@ -51,7 +51,7 @@ public final class LinearEquationSystemUtil {
      * @return a vector of variable values (answers) for the equations, regarding their order in the equation.
      */
     public static double[] resolveUsingReverseMatrixMethod(double[][] coefficients, double[] freeMembers) {
-        var solution = MatrixCalc.multiply(MatrixCalc.reverse(coefficients), freeMembers);
+        var solution = MatrixCalc.multiply(MatrixCalc.inverse(coefficients), freeMembers);
         MatrixUtil.eliminateEpsilon(solution);
         return solution;
     }
