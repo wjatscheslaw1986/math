@@ -191,7 +191,7 @@ public final class MatrixCalc {
      * @param matrix - the original matrix object
      * @return a new matrix object which is a reversed matrix passed as an argument
      */
-    public static double[][] reverse(final double[][] matrix) {
+    public static double[][] inverse(final double[][] matrix) {
         var det = det(matrix);
         if (det == 0) throw new IllegalArgumentException("You cannot find a reverse matrix for a degenerate one!");
         return multiply(transpose(cofactors(matrix)), 1.0d / det(matrix));

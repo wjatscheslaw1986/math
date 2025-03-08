@@ -114,7 +114,7 @@ public final class IntegrationTest {
         double[][] a = new double[][]{{1.0d, 2.0d}, {1.0d, -1.0d}};
         double[][] b = new double[][]{{1.0d, 3.0d}, {-1.0d, 1.0d}};
         double[][] a_in_another_basis = MatrixCalc.multiply(new double[][]{{-7.0d, -1.0d}, {1.0d, 7.0d}}, 0.25d);
-        double[][] b_rev = MatrixCalc.reverse(b);
+        double[][] b_rev = MatrixCalc.inverse(b);
 
         // System.out.println("B_1 * A = " + DoubleMatrixCalc.print(DoubleMatrixCalc.multiplyMatrices(b_rev, a)));
         // System.out.println("B_1 * A * B = " +
@@ -138,7 +138,7 @@ public final class IntegrationTest {
         double[][] O = new double[][]{{1.0d, 0.0d}, {0.0d, 0.0d}};
         double[][] A = new double[][]{{Math.cos(Math.toRadians(135)), Math.cos(Math.toRadians(45))},
                 {Math.cos(Math.toRadians(45)), Math.cos(Math.toRadians(45))}};
-        double[][] A_rev = MatrixCalc.reverse(A);
+        double[][] A_rev = MatrixCalc.inverse(A);
 
         System.out.println(print(A));
         System.out.println(print(A_rev));

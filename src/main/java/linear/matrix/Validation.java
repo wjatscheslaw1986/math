@@ -3,6 +3,10 @@
  */
 package linear.matrix;
 
+import linear.matrix.exception.MatrixException;
+
+import static linear.matrix.MatrixCalc.*;
+
 /**
  * A utility class that provides checks for different matrix properties.
  *
@@ -89,6 +93,34 @@ public final class Validation {
      * @return true if the given matrix is a Cramer matrix, false otherwise
      */
     public static boolean isCramer(final double[][] matrix) {
-        return isSquareMatrix(matrix) && MatrixCalc.det(matrix) != .0d;
+        return isSquareMatrix(matrix) && !isDegenerate(matrix);
+    }
+
+    /**
+     * Checks if the given matrix is a degenerate one.
+     *
+     * @param matrix the given matrix
+     * @return true if the given matrix is degenerate, false otherwise
+     */
+    public static boolean isDegenerate(final double[][] matrix) {
+        return MatrixCalc.det(matrix) != .0d;
+    }
+
+    /**
+     * Checks if the given two matrices {@code matrixA} and {@code matrixB} are similar
+     * against the given transformation matrix {@code matrixC}.
+     * <p>
+     * Note: linear transformation matricies are similar across different bases.
+     *
+     * @param matrixA the given matrix
+     * @param matrixB the given matrix
+     * @param matrixC the given matrix
+     * @return true if the given two matrices {@code matrixA} and {@code matrixB} are similar, false otherwise
+     */
+    public static boolean areSimilar(final double[][] matrixA, final double[][] matrixB, final double[][] matrixC)
+            throws MatrixException {
+        if (isDegenerate(matrixC))
+            throw new IllegalArgumentException("The given transformation matrix is degenerate.");
+        return areEqual(matrixA, multiply(multiply(matrixC, matrixB), inverse(matrixC)));
     }
 }
