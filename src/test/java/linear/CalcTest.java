@@ -1,3 +1,6 @@
+/**
+ * Viacheslav Mikhailov (taleskeeper@yandex.com)  © 2025.
+ */
 package linear;
 
 import combinatorics.CombinatoricsCalc;

@@ -6,7 +6,7 @@
 	<artifactId>math</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Math</name>
-	<description>Some basic math</description>
+	<description>Math functions and algorithms for common use</description>
 	<properties>
 		<maven.compiler.source>23</maven.compiler.source>
 		<maven.compiler.target>23</maven.compiler.target>
@@ -27,6 +27,9 @@
 				<version>3.11.0</version>
 				<configuration>
 					<release>23</release>
+					<source>23</source>
+					<target>23</target>
+<!--					<compilerArgs>&#45;&#45;enable-preview</compilerArgs>-->
 				</configuration>
 			</plugin>
 		</plugins>
