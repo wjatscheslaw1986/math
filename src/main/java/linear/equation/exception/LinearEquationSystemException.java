@@ -1,5 +1,5 @@
 /**
- * Viacheslav Mikhailov (taleskeeper@yandex.com)  © 2025.
+ * Viacheslav Mikhailov (taleskeeper@yandex.com) © 2025.
  */
 package linear.equation.exception;
 
