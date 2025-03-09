@@ -6,7 +6,8 @@ package combinatorics;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static combinatorics.NarayanaPermutationsGenerator.reverseOrderAfterIndex;
 import static org.junit.jupiter.api.Assertions.*;
@@ -33,6 +34,15 @@ public class NarayanaPermutationsGeneratorTest {
 
 //        NarayanaPermutationsGenerator.generate(5).stream()
 //                .map(Arrays::toString)
+//                .forEach(System.out::println);
+//
+//        Below is the analogy of how to get combinations for k of n choices with Narayana algorithm.
+//        NarayanaPermutationsGenerator.generate(4).stream()
+//                .map(array -> {
+//                    var arrayNoLastElement = new int[array.length - 1];
+//                    System.arraycopy(array, 0, arrayNoLastElement, 0, arrayNoLastElement.length);
+//                    return Arrays.stream(arrayNoLastElement).sorted().boxed().toList();
+//                }).distinct()
 //                .forEach(System.out::println);
     }
 
