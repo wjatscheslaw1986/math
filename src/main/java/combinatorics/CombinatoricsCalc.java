@@ -5,7 +5,7 @@ package combinatorics;
 
 /**
  * An API for calculating stereotypical tasks in combinatorics.
- * 
+ *
  * @author Viacheslav Mikhailov
  */
 public final class CombinatoricsCalc {
@@ -18,7 +18,10 @@ public final class CombinatoricsCalc {
      * Number of variations without repetitions. I.e. number of ways to choose a subset of <b>k</b> elements
      * from a set of <b>n</b> elements, summarizing all possible mutual permutations (orderings)
      * for each chosen subset of <b>k</b> elements, i.e. counting each ordering as a separate variation.
-     * 
+     * <p>
+     *     n!/(n-m)!
+     * </p>
+     *
      * @param n size of a given set of all elements
      * @param k size of a single choice, i.e. a subset of <b>n</b>
      * @return number of variations
@@ -45,7 +48,10 @@ public final class CombinatoricsCalc {
      * Combinations without repetitions.
      * I.e. a number of ways to choose <b>k</b> elements out of a set of <b>n</b> elements,
      * disregard of the order, repetitions are not included.
-     * 
+     * <p>
+     * n!/(m!*(n-m)!)
+     * </p>
+     *
      * @param n size of a given set of all elements
      * @param k size of a single choice, i.e. a subset of <b>n</b>
      * @return number of combinations without repetitions
@@ -53,13 +59,16 @@ public final class CombinatoricsCalc {
     public static long binomialCoefficient(final int n, final int k) {
         if (n < k)
             throw new ArithmeticException("You cannot choose from a set the amount of elements which is greater than there are in the set");
-        return Math.divideExact(countVariations(n, k), factorial(k));
+        return Math.divideExact(countVariations(n, k), countPermutations(k));
     }
 
     /**
      * Calculates a size of a set of all possible permutations of indices, from 0 (inclusive)
      * to arrayLength (exclusive).
-     * 
+     * <p>
+     * n!
+     * </p>
+     *
      * @param arrayLength a size of the given set of array indices
      * @return Number of all possible permutations for the given number of elements.
      */
@@ -77,7 +86,7 @@ public final class CombinatoricsCalc {
 
     /**
      * I have no idea why they still didn't add it to {@linkplain java.lang.Math}
-     * 
+     *
      * @return a factorial of a number.
      */
     public static long factorial(final int n) {

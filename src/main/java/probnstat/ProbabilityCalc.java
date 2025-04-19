@@ -36,7 +36,7 @@ public final class ProbabilityCalc {
 
     /**
      * Calculate probability of that at least one of the given events represented by their
-     * {@code eventsProbabilities} takes place.
+     * {@code eventsProbabilities} takes place. Union of probabilities.
      *
      * @param eventsProbabilities the array of probabilities of the events
      * @return probability of that at least one of the events happens

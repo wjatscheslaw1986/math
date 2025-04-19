@@ -177,6 +177,25 @@ public final class MatrixUtil {
     }
 
     /**
+     * Returns the column by its index of the given matrix, counting from left to right.
+     *
+     * @param matrix        the given matrix
+     * @param column  index of the column to return
+     * @return the column as an array
+     */
+    public static double[] getColumn(double[][] matrix, int column) {
+        if (matrix.length < 1) throw new IllegalArgumentException("The given matrix shouldn't be empty.");
+        if (matrix[0].length <= column) throw new ArrayIndexOutOfBoundsException("No column of index " + column
+                + " could be found in the " + matrix.length + "x" + matrix[0].length + " matrix.");
+        var resultColumn = new double[matrix[0].length];
+        int i = 0;
+        for (var row : matrix) {
+            resultColumn[i++] = row[column];
+        }
+        return resultColumn;
+    }
+
+    /**
      * Produce textual representation of the given matrix.
      *
      * @param matrix given

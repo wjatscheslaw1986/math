@@ -103,7 +103,7 @@ public final class Validation {
      * @return true if the given matrix is degenerate, false otherwise
      */
     public static boolean isDegenerate(final double[][] matrix) {
-        return MatrixCalc.det(matrix) != .0d;
+        return MatrixCalc.det(matrix) == .0d;
     }
 
     /**

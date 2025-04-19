@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
  *
  * @author Viacheslav Mikhailov
  */
-public class SingleVariableEquationUtil {
+public class EquationUtil {
 
     /**
      * Multiply two equation members of same variable.
@@ -54,11 +54,14 @@ public class SingleVariableEquationUtil {
      * @param input a list of members of a single variable equation with only 0 in its right part
      * @return a list of members of a single variable equation, gathered distinct by power, ordered
      */
-    public static List<Member> distinctByPower(final List<Member> input) {
-        return input.stream()
+    public static List<Member> distinct(final List<Member> input) {
+        List<Member> members = input.stream()
                 .collect(Collectors.groupingBy(
-                        Member::getPower,
-                        Collectors.toList())).values().stream()
+                        (Member m) -> {
+                            if (m.getPower() != .0d)
+                                return m.getLetter() + m.getPower();
+                            else return m.getPower();
+                            }, Collectors.toList())).values().stream()
                 .map(listOfMembers -> {
                     var iterator = listOfMembers.iterator();
                     var result = iterator.next();
@@ -71,25 +74,28 @@ public class SingleVariableEquationUtil {
                     }
                     return result;
                 }).sorted(Comparator.reverseOrder()).toList();
+        return members;
     }
 
     /**
-     * Returns textual representation of the given equation member.
+     * Solves the single variable linear equation.
+     * The right side of the equation is represented by the last element of the {@code coefficients} array.
      *
-     * @param member    the equation member
-     * @param character (optional) a character you want to represent the variable with
-     * @return the textual representation of the given equation member.
+     * @param coefficients the both sides of the linear single variable equation, as an array.
+     * @param variableIndex the index of the {@code coefficients} array with the variable
+     * @return the value of the variable found
      */
-    public static String textify(final Member member, final Character... character) {
-        if (member.getPower() == .0d) {
-            return String.valueOf(member.getCoefficient());
+    public static double solveSingleVariableLinearEquation(final double[] coefficients, final int variableIndex) {
+        if (coefficients.length < 2)
+            throw new IllegalArgumentException("Not an equation.");
+        if (coefficients.length - 1 == variableIndex)
+            throw new IllegalArgumentException("The variable shouldn't be found on the right side of the equation.");
+        double sum = .0d;
+        for (int i = 0; i < coefficients.length - 1; i++) {
+            if (i == variableIndex) continue;
+            sum = sum + coefficients[i];
         }
-        var sb = new StringBuilder()
-                .append(member.getCoefficient())
-                .append(character.length > 0 ? character[0] : 'x');
-        if (member.getPower() != 1.0d) {
-            sb.append("^").append(member.getPower());
-        }
-        return sb.toString();
+        sum = coefficients[coefficients.length - 1] - sum;
+        return sum / coefficients[variableIndex];
     }
 }

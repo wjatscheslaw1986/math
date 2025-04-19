@@ -20,9 +20,9 @@ import java.util.Objects;
 public record Solution(SolutionsCount solutionsCount, double[] solution, int[] addresses) {
 
     /**
-     * Returns a basis in linear space of solutions for current linear equation system.
-     * The basis (as well as the space) exists only in case when rank of the main matrix (i.e. matrix made of left
-     * sides of the equations) is strictly less than the number of variables in the equations.
+     * Returns a basis on linear space of solutions for current linear equation system.
+     * The basis (as well as the linear space) exists only in case where the rank of the main matrix
+     * (i.e. matrix made of left sides of the equations) is strictly less than the number of variables in the equations.
      *
      * @return fundamental solution system for the linear equation system
      */

@@ -4,12 +4,13 @@
 package linear.equation;
 
 import linear.matrix.MatrixCalc;
+import linear.matrix.MatrixUtil;
+import linear.matrix.RowEchelonFormUtil;
 import linear.spatial.VectorCalc;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import static linear.equation.LinearEquationSystemUtil.isSolvable;
-import static linear.equation.LinearEquationSystemUtil.resolveUsingJordanGaussMethod;
+import static linear.equation.LinearEquationSystemUtil.*;
 import static linear.equation.SolutionsCount.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -25,8 +26,9 @@ public class LinearEquationSystemUtilTest {
 
     /**
      * Решить системы уравнений методом Гаусса.
-     * Примеры приведены по книге А.С.Киркинский - "Линейная Алгебра и Аналитическая
-     * Геометрия" - 2006
+     * <p>
+     * Примеры приведены по книге А.С.Киркинский - "Линейная Алгебра и Аналитическа Геометрия" - 2006
+     * </p>
      */
     @Test
     public void resolveUsingJordanGaussMethodTest() {
@@ -103,5 +105,45 @@ public class LinearEquationSystemUtilTest {
         assertEquals(INFINITE, solution.solutionsCount());
         assertTrue(isSolvable(linearEquationSystem));
         assertTrue(VectorCalc.areEqual(solutionWhereFreeVariableIsZero, solution.solution()));
+    }
+
+    /**
+     * Найти фундаментальную систему решений.
+     * <p>
+     * Примеры приведены по книге А.С.Киркинский - "Линейная Алгебра и Аналитическа Геометрия" - 2006
+     * </p>
+     */
+    @Test
+    public void given_linear_equations_system_find_fundamental_solutions_system() {
+        var linearEquationSystem = new double[][]{
+                {1, 2, 3, 4, 0},
+                {3, -5, 1, -2, 0},
+                {4, -3, 4, 2, 0}
+        };
+
+        int variablesCount = linearEquationSystem[0].length - 1;
+        var solution = resolveUsingJordanGaussMethod(MatrixUtil.copy(linearEquationSystem));
+        assertEquals(2, solution.basis().size());
+        assertEquals(2, variablesCount
+                - MatrixCalc.rank(MatrixUtil.removeMarginalColumn(MatrixUtil.copy(linearEquationSystem), false)));
+
+        //TODO find Jordan-Gauss limitations
+//        assertArrayEquals(new double[]{-(17d/11d),-(8d/11d), 1d, 0d}, solution.basis().get(0));
+//        assertArrayEquals(new double[]{-(17d/11d),-(8d/11d), 0d, 1d}, solution.basis().get(1));
+    }
+
+    @Test
+    void given_resolve() {
+        var linearEquationSystem = new double[][]{
+                {1, 2, 3, -2, 4},
+                {2, 6, 10, -2, 14},
+                {1, 4, 8, -3, 12},
+                {2, 2, 1, -3, 0}
+        };
+        var left = MatrixUtil.removeMarginalColumn(linearEquationSystem, false);
+        System.out.println(MatrixUtil.print(linearEquationSystem));
+        RowEchelonFormUtil.toRREF(linearEquationSystem);
+        System.out.println(MatrixUtil.print(linearEquationSystem));
+
     }
 }

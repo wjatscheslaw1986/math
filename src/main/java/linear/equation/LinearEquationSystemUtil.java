@@ -5,12 +5,13 @@ package linear.equation;
 
 import linear.matrix.MatrixCalc;
 import linear.matrix.MatrixUtil;
+import linear.matrix.RowEchelonFormUtil;
+import linear.matrix.Validation;
 
 import java.util.Arrays;
 
 import static linear.equation.SolutionsCount.*;
-import static linear.matrix.MatrixUtil.EPS;
-import static linear.matrix.MatrixUtil.swapInColumn;
+import static linear.matrix.MatrixUtil.*;
 
 /**
  * A utility class for solving linear equation systems.
@@ -58,6 +59,11 @@ public final class LinearEquationSystemUtil {
 
     /**
      * Resolve given linear equations system using Jordan-Gauss method.
+     * <p>
+     *     <b>IMPORTANT:</b> this method modifies the argument as it performs
+     *     its job. Use {@link MatrixUtil.copy()} on the argument you pass to this method if
+     *     you need it for further calculations.
+     * </p>
      *
      * @param equations linear equations matrix including both sides of each equation
      * @return number of solutions for the system. Integer.MAX_VALUE for infinite number of solutions.
@@ -119,6 +125,49 @@ public final class LinearEquationSystemUtil {
                 return new Solution(INFINITE, solution, addresses); // Infinite solutions
 
         return new Solution(SINGLE, solution, addresses); // Unique solution
+    }
+
+    /**
+     * TODO
+     *
+     * @param equations
+     * @return
+     */
+//    public static Solution resolve(final double[][] equations) {
+//        var rref = MatrixUtil.copy(equations);
+//        RowEchelonFormUtil.toRREF(rref);
+//        int rowIndex = rref.length - 1;
+//        double[] row = rref[rowIndex];
+//        var addresses = new int[rref[0].length];
+//        for (int i = 0; i < addresses.length; i++) addresses[i] = i;
+//        while (rowIndex > -1 && allZeroes(row)) {
+//            --rowIndex;
+//        }
+//        if (rowIndex == rref.length - 1) {
+//            if (!Validation.isCramer(rref)) throw new RuntimeException("Supposedly not RREF.");
+//            var solution = LinearEquationSystemUtil.resolveUsingCramerMethod(MatrixUtil.removeMarginalColumn(rref, false), MatrixUtil.getColumn(rref, rref[0].length));
+//            return new Solution(SINGLE, solution, addresses);
+//        }
+//        var solutions = new double[equations.length];
+//        for (int i = rowIndex; i < equations.length; i++) {
+//            solutions[i] = 1.0d; // since a free member can be any we choose it to be one.
+//        }
+//        int j = rowIndex - 1;
+//        while (j > -1) {
+//            solutions[j] = rref[j]
+//        }
+//        return null;
+//    }
+
+
+
+    private static boolean allZeroes(final double[] numbers) {
+        for (double d : numbers) {
+            if (d != .0d) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /*
