@@ -3,6 +3,7 @@
  */
 package linear.equation;
 
+import algebra.EquationUtil;
 import linear.matrix.MatrixCalc;
 import linear.matrix.MatrixUtil;
 import linear.matrix.RowEchelonFormUtil;
@@ -133,31 +134,34 @@ public final class LinearEquationSystemUtil {
      * @param equations
      * @return
      */
-//    public static Solution resolve(final double[][] equations) {
-//        var rref = MatrixUtil.copy(equations);
-//        RowEchelonFormUtil.toRREF(rref);
-//        int rowIndex = rref.length - 1;
-//        double[] row = rref[rowIndex];
-//        var addresses = new int[rref[0].length];
-//        for (int i = 0; i < addresses.length; i++) addresses[i] = i;
-//        while (rowIndex > -1 && allZeroes(row)) {
-//            --rowIndex;
-//        }
-//        if (rowIndex == rref.length - 1) {
-//            if (!Validation.isCramer(rref)) throw new RuntimeException("Supposedly not RREF.");
-//            var solution = LinearEquationSystemUtil.resolveUsingCramerMethod(MatrixUtil.removeMarginalColumn(rref, false), MatrixUtil.getColumn(rref, rref[0].length));
-//            return new Solution(SINGLE, solution, addresses);
-//        }
-//        var solutions = new double[equations.length];
-//        for (int i = rowIndex; i < equations.length; i++) {
-//            solutions[i] = 1.0d; // since a free member can be any we choose it to be one.
-//        }
-//        int j = rowIndex - 1;
-//        while (j > -1) {
-//            solutions[j] = rref[j]
-//        }
-//        return null;
-//    }
+    public static Solution resolve(final double[][] equations) {
+        var rref = MatrixUtil.copy(equations);
+        RowEchelonFormUtil.toRREF(rref);
+        int rowIndex = rref.length - 1;
+        double[] row = rref[rowIndex];
+        var addresses = new int[rref[0].length];
+        while (rowIndex > -1 && allZeroes(row)) {
+            --rowIndex;
+        }
+        if (rowIndex == rref.length - 1) {
+            if (!Validation.isCramer(rref)) throw new RuntimeException("Supposedly not RREF.");
+            var solution = LinearEquationSystemUtil.resolveUsingCramerMethod(MatrixUtil.removeMarginalColumn(rref, false), MatrixUtil.getColumn(rref, rref[0].length));
+            for (int i = 0; i < addresses.length; i++) addresses[i] = i;
+            return new Solution(SINGLE, solution, addresses);
+        }
+        var solutions = new double[equations.length];
+        for (int i = rowIndex; i < equations.length; i++) {
+            solutions[i] = 1.0d; // since a free member can be any we choose it to be one.
+        }
+        int j = rowIndex - 1;
+        while (j > -1) {
+            double[] coefficients = new double[equations.length];
+            System.arraycopy(solutions, 0, coefficients, 0, solutions.length);
+            coefficients[j] = rref[j][j];
+            solutions[j] = EquationUtil.solveSingleVariableLinearEquation(coefficients, j--);
+        }
+        return null;
+    }
 
 
 
