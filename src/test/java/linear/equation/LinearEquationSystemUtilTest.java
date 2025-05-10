@@ -15,6 +15,8 @@ import static linear.equation.SolutionsCount.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
+ * Tests for {@linkplain linear.equation.LinearEquationSystemUtil } class.
+ *
  * @author Viacheslav Mikhailov
  */
 public class LinearEquationSystemUtilTest {
@@ -122,14 +124,20 @@ public class LinearEquationSystemUtilTest {
         };
 
         int variablesCount = linearEquationSystem[0].length - 1;
-        var solution = resolveUsingJordanGaussMethod(MatrixUtil.copy(linearEquationSystem));
+        var solution = resolve(MatrixUtil.copy(linearEquationSystem));
+
+        /*
+         * Number of dimensions (vectors of the basis) of the equation system solution space must be n - r,
+         * where n is number of variables, and r is rank of the matrix.
+         */
+        assertEquals(2, MatrixCalc.rank(linearEquationSystem));
         assertEquals(2, solution.basis().size());
         assertEquals(2, variablesCount
                 - MatrixCalc.rank(MatrixUtil.removeMarginalColumn(MatrixUtil.copy(linearEquationSystem), false)));
 
         //TODO find Jordan-Gauss limitations
-//        assertArrayEquals(new double[]{-(17d/11d),-(8d/11d), 1d, 0d}, solution.basis().get(0));
-//        assertArrayEquals(new double[]{-(17d/11d),-(8d/11d), 0d, 1d}, solution.basis().get(1));
+        assertArrayEquals(new double[]{-(17d/11d),-(8d/11d), 1d, 0d}, solution.basis().get(0));
+        assertArrayEquals(new double[]{-(16d/11d),-(14d/11d), 0d, 1d}, solution.basis().get(1));
     }
 
     @Test

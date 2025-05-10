@@ -23,8 +23,11 @@ public class EquationUtilTest {
 
     @Test
     void given_single_variable_linear_equation_find_its_solution() {
-        double[] coefficients = new double[]{.0d,.0d,4.0d,.0d,.0d,.05d,.0d,.0d,8.05d};
+        double[] coefficients = new double[]{.0d, .0d, 4.0d, .0d, .0d, .05d, .0d, .0d, 8.05d};
         assertEquals(2, EquationUtil.solveSingleVariableLinearEquation(coefficients, 2));
+
+        coefficients = new double[]{.0d, 1.0d, 1.0d};
+        assertEquals(1, EquationUtil.solveSingleVariableLinearEquation(coefficients, 1));
     }
 
 }

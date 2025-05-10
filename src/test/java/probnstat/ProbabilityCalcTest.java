@@ -78,7 +78,7 @@ public class ProbabilityCalcTest {
 
         var oneCoinSideProbability = .5d;
 
-        // На всех монетах появится герб / на всех монетах появится герб
+        // На всех монетах появится герб / на всех монетах появится решка
         assertEquals(.0625d, Math.pow(1.0d / (double) binomialCoefficient(2, 1), 4));
 
         // Хотя бы на одной монете появится герб

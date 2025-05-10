@@ -9,7 +9,9 @@ import linear.matrix.MatrixUtil;
 import linear.matrix.RowEchelonFormUtil;
 import linear.matrix.Validation;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static linear.equation.SolutionsCount.*;
 import static linear.matrix.MatrixUtil.*;
@@ -118,52 +120,92 @@ public final class LinearEquationSystemUtil {
                 sum += solution[j] * equations[i][j];
 
             if (Math.abs(sum - equations[i][colsLeftSideCount]) > EPS)
-                return new Solution(ZERO, null, addresses); // No solutions
+                return new Solution(ZERO, null, null); // No solutions
         }
 
         for (int i = 0; i < colsLeftSideCount; ++i)
             if (addresses[i] == -1)
-                return new Solution(INFINITE, solution, addresses); // Infinite solutions
+                return new Solution(INFINITE, solution, List.of()); // Infinite solutions
 
-        return new Solution(SINGLE, solution, addresses); // Unique solution
+        return new Solution(SINGLE, solution, List.of()); // Unique solution
     }
 
     /**
-     * TODO
+     * Решить систему линейных уравнений.
      *
-     * @param equations
-     * @return
+     * @param equations система линейных уравнений, в виде массива массивов числовых коэффициентов
+     * @return решение системы линейных уравнений
      */
     public static Solution resolve(final double[][] equations) {
-        var rref = MatrixUtil.copy(equations);
-        RowEchelonFormUtil.toRREF(rref);
-        int rowIndex = rref.length - 1;
-        double[] row = rref[rowIndex];
-        var addresses = new int[rref[0].length];
+        var ref = RowEchelonFormUtil.toRowEchelonForm(MatrixUtil.copy(equations));
+        int rowIndex = ref.length - 1;
+        double[] row = ref[rowIndex];
+        var addresses = new int[row.length - 1];
         while (rowIndex > -1 && allZeroes(row)) {
-            --rowIndex;
+            row = ref[--rowIndex];
         }
-        if (rowIndex == rref.length - 1) {
-            if (!Validation.isCramer(rref)) throw new RuntimeException("Supposedly not RREF.");
-            var solution = LinearEquationSystemUtil.resolveUsingCramerMethod(MatrixUtil.removeMarginalColumn(rref, false), MatrixUtil.getColumn(rref, rref[0].length));
+        if (rowIndex == ref.length - 1) {
+            // No all-zero rows in RREF matrix case
+            if (!Validation.isCramer(ref)) return new Solution(ZERO, null, null);
+            var solution = LinearEquationSystemUtil.resolveUsingCramerMethod(MatrixUtil.removeMarginalColumn(ref, false), MatrixUtil.getColumn(ref, ref[0].length));
             for (int i = 0; i < addresses.length; i++) addresses[i] = i;
-            return new Solution(SINGLE, solution, addresses);
+            return new Solution(SINGLE, solution, null);
         }
-        var solutions = new double[equations.length];
-        for (int i = rowIndex; i < equations.length; i++) {
-            solutions[i] = 1.0d; // since a free member can be any we choose it to be one.
+        var zeroSolutionTemplate = new double[ref[0].length];
+        for (int i = rowIndex + 1; i < zeroSolutionTemplate.length - 1; i++) {
+            // Assign free members a value of 0, for convenience
+            zeroSolutionTemplate[i] = 0.0d; // since a free equation member can be any number we choose 0
+            addresses[i] = -1;
         }
-        int j = rowIndex - 1;
-        while (j > -1) {
-            double[] coefficients = new double[equations.length];
-            System.arraycopy(solutions, 0, coefficients, 0, solutions.length);
-            coefficients[j] = rref[j][j];
-            solutions[j] = EquationUtil.solveSingleVariableLinearEquation(coefficients, j--);
+        var basisVectorsTemplates = new ArrayList<double[]>();
+        Outer:
+        for (int i = rowIndex; i < addresses.length; i++) {
+            double[] c = new double[zeroSolutionTemplate.length];
+            System.arraycopy(zeroSolutionTemplate, 0, c, 0, zeroSolutionTemplate.length);
+            for (int j = rowIndex; j < addresses.length; j++) {
+                if (addresses[i] == -1 && i == j) {
+                    c[j] = 1.0d;
+                    basisVectorsTemplates.add(c);
+                    continue Outer;
+                }
+            }
         }
-        return null;
+        var basisVectors = new ArrayList<double[]>();
+        var zeroSolution = getVector(ref, zeroSolutionTemplate, rowIndex);
+        for (var template : basisVectorsTemplates) {
+            basisVectors.add(getVector(ref, template, rowIndex));
+        }
+        return new Solution(INFINITE, zeroSolution, basisVectors);
     }
 
-
+    /**
+     * Returns a vector of a basis on linear space of solutions for a given linear equation system.
+     * The given linear equation system is represented by a row echelon form for the matrix
+     * made of equations' coefficients.
+     * <p></p>
+     * The algorithm is based on features of matrix row echelon form.
+     *
+     * @param rowEchelonFormMatrix a row echelon form matrix for the matrix made of the linear equations system coefficients
+     * @param freeMemberValuesTemplate a result template with pre-filled values for the result after {@code rowIndex}
+     * @param rowIndex the largest index for a non-free member for the equation system
+     * @return a single vector of a fundamental solution system, for the linear equation system
+     */
+    private static double[] getVector(final double[][] rowEchelonFormMatrix,
+                                      final double[] freeMemberValuesTemplate,
+                                      final int rowIndex) {
+        var result = new double[freeMemberValuesTemplate.length - 1];
+        int j = rowIndex;
+        System.arraycopy(freeMemberValuesTemplate, 0, result, 0, freeMemberValuesTemplate.length - 1);
+        while (j > -1) {
+            freeMemberValuesTemplate[j] = rowEchelonFormMatrix[j][j];
+            for (int i = j + 1; i < freeMemberValuesTemplate.length - 1; i++) {
+                freeMemberValuesTemplate[i] = result[i] * rowEchelonFormMatrix[j][i];
+            }
+            result[j] = EquationUtil.solveSingleVariableLinearEquation(freeMemberValuesTemplate, j);
+            j--;
+        }
+        return result;
+    }
 
     private static boolean allZeroes(final double[] numbers) {
         for (double d : numbers) {
