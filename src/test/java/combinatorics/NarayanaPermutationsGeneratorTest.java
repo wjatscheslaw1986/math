@@ -6,8 +6,7 @@ package combinatorics;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Arrays;
 
 import static combinatorics.NarayanaPermutationsGenerator.reverseOrderAfterIndex;
 import static org.junit.jupiter.api.Assertions.*;

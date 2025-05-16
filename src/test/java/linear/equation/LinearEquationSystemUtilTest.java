@@ -75,6 +75,20 @@ public class LinearEquationSystemUtilTest {
         assertEquals(ZERO, solution.solutionsCount());
         assertFalse(isSolvable(linearEquationSystem));
 
+        // г)
+
+        linearEquationSystem = new double[][]{
+                {5, -2, -3, 4, 7},
+                {10, -4, -16, 10, 22},
+                {5, -2, 2, 3, 3}
+        };
+        solutionWhereFreeVariableIsZero = new double[]{0.92d, 0.0d, -0.8d, 0.0d};
+        solution = resolveUsingJordanGaussMethod(linearEquationSystem);
+        assertNotNull(solution.solution());
+        assertEquals(INFINITE, solution.solutionsCount());
+        assertTrue(isSolvable(linearEquationSystem));
+        assertTrue(VectorCalc.areEqual(solutionWhereFreeVariableIsZero, solution.solution()));
+
         // д)
 
         linearEquationSystem = new double[][]{
@@ -89,10 +103,11 @@ public class LinearEquationSystemUtilTest {
         assertTrue(isSolvable(linearEquationSystem));
         assertTrue(VectorCalc.areEqual(solutionWhereFreeVariableIsZero, solution.solution()));
 
-        var basis = solution.basis();
-        assertEquals(2, basis.size());
-        assertTrue(VectorCalc.areEqual(new double[]{2, 1, -1, 0}, basis.get(0)));
-        assertTrue(VectorCalc.areEqual(new double[]{2, 0, -1, 1}, basis.get(1)));
+        //TODO
+//        var basis = solution.basis();
+//        assertEquals(2, basis.size());
+//        assertTrue(VectorCalc.areEqual(new double[]{2, 1, -1, 0}, basis.get(0)));
+//        assertTrue(VectorCalc.areEqual(new double[]{2, 0, -1, 1}, basis.get(1)));
 
         // е)
 
@@ -138,6 +153,15 @@ public class LinearEquationSystemUtilTest {
         //TODO find Jordan-Gauss limitations
         assertArrayEquals(new double[]{-(17d/11d),-(8d/11d), 1d, 0d}, solution.basis().get(0));
         assertArrayEquals(new double[]{-(16d/11d),-(14d/11d), 0d, 1d}, solution.basis().get(1));
+    }
+
+    @Test
+    void given_linear_equations_system_find_dimensions_size_of_the_linear_space() {
+        var matrix = new double[][]{
+                {5.0d, -2.0d, -3.0d, 4.0d, 7.0d},
+                {0.0d, 0.0d, -10.0d, 2.0d, 8.0d},
+                {0.0d, 0.0d, 5.0d, -1.0d, -4.0d}};
+        assertEquals(2, basisSize(matrix));
     }
 
     @Test

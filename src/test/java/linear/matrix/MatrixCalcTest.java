@@ -138,6 +138,17 @@ public class MatrixCalcTest {
          */
         final double[][] b2 = new double[][]{{1.0f, 2.0f, 0.0f}, {3.0f, 1.0f, 2.0f}};
         Assertions.assertThrows(MatrixException.class, () -> multiply(A, b2));
+
+        /*
+         * Определитель произведения матриц всегда равен произведению определителей матриц.
+         */
+
+        int i = 7;
+        do {
+            var matrix1 = MatrixGenerator.generateRandomIntMatrix(i, i);
+            var matrix2 = MatrixGenerator.generateRandomIntMatrix(i, i);
+            Assertions.assertEquals(det(matrix1) * det(matrix2), det(multiply(matrix1, matrix2)));
+        } while (--i > 0);
     }
 
     /**
@@ -153,28 +164,28 @@ public class MatrixCalcTest {
         final double[][] a_rev = new double[][]{{-.5d, -2.0d}, {1.0d, 3.0d}};
         final double[][] c_rev = new double[][]{{2.0d, -1.0d, -1.0d}, {3.0d, -1.0d, -1.5d}, {-1.5d, 1.0d, 1.0d}};
 
+        Assertions.assertTrue(Validation.isInvertible(a));
         Assertions.assertDoesNotThrow(() -> inverse(a));
         Assertions.assertTrue(areEqual(inverse(a), a_rev));
+        Assertions.assertFalse(Validation.isInvertible(b));
         Assertions.assertThrows(IllegalArgumentException.class, () -> inverse(b));
         Assertions.assertDoesNotThrow(() -> inverse(c));
         Assertions.assertTrue(areEqual(inverse(c), c_rev));
     }
 
     /**
-     * Given a matrix, calculate it's submatrix.
-     *
-     * @throws MatrixException in case of a malformed matrix
+     * Given a matrix, crop it.
      */
     @Test
-    public void squareSubmatrixTest() throws MatrixException {
+    public void given_a_matrix_crop_it() {
         final double[][] matrix0 = new double[][]{{0.0d, 2.0d, -4.0d}, {-1.0d, -4.0d, 5.0d}, {3.0d, 1.0d, 7.0d},
                 {0.0d, 5.0d, -10.0d}};
 
         final double[][] matrix1 = new double[][]{{0.0d, 2.0d, -4.0d}, {-1.0d, -4.0d, 5.0d}, {3.0d, 1.0d, 7.0d}};
         final double[][] matrix2 = new double[][]{{-1.0d, -4.0d, 5.0d}, {3.0d, 1.0d, 7.0d}, {0.0d, 5.0d, -10.0d}};
 
-        assertTrue(areEqual(matrix1, squareSubmatrix(matrix0, 0, 0, 3)));
-        assertTrue(areEqual(matrix2, squareSubmatrix(matrix0, 1, 0, 3)));
+        assertTrue(areEqual(matrix1, crop(matrix0, 0, 0, 3)));
+        assertTrue(areEqual(matrix2, crop(matrix0, 1, 0, 3)));
     }
 
     /**
@@ -209,6 +220,11 @@ public class MatrixCalcTest {
 
         matrix = new double[][]{{2.0d, 1.0d, -1.0d, -1.0d, 1.0d}, {3.0d, 0.0d, 0.0d, 0.0d, -1.0d},
                 {3.0d, 3.0d, -3.0d, -3.0d, 4.0d}, {4.0d, 5.0d, -5.0d, -5.0d, 7.0d}};
+        assertEquals(2, rank(matrix));
+        assertEquals(2, rankByMinors(matrix));
+
+        matrix = new double[][]{{5.0d, -2.0d, -3.0d, 4.0d, 7.0d}, {0.0d, 0.0d, -10.0d, 2.0d, 8.0d},
+                {0.0d, 0.0d, 5.0d, -1.0d, -4.0d}};
         assertEquals(2, rank(matrix));
         assertEquals(2, rankByMinors(matrix));
     }

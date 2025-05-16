@@ -103,7 +103,6 @@ public final class LinearEquationSystemUtil {
                     for (int j = col; j <= colsLeftSideCount; ++j)
                         equations[i][j] -= equations[row][j] * c;
                 }
-
             ++row;
         }
 
@@ -123,31 +122,35 @@ public final class LinearEquationSystemUtil {
                 return new Solution(ZERO, null, null); // No solutions
         }
 
-        for (int i = 0; i < colsLeftSideCount; ++i)
-            if (addresses[i] == -1)
-                return new Solution(INFINITE, solution, List.of()); // Infinite solutions
+        roundValues(12, solution);
 
-        return new Solution(SINGLE, solution, List.of()); // Unique solution
+        for (int i = 0; i < colsLeftSideCount; ++i)
+            if (addresses[i] == -1) {
+                //TODO basis
+                return new Solution(INFINITE, solution, List.of()); // Infinite solutions
+            }
+
+        return new Solution(SINGLE, solution, null); // Unique solution
     }
 
     /**
      * Решить систему линейных уравнений.
      *
-     * @param equations система линейных уравнений, в виде массива массивов числовых коэффициентов
+     * @param equations система линейных уравнений, в виде массива уравнений. Каждое уравнение представлено
+     *                  массивом коэффициентов. Последний элемент каждого уравнения является правой
+     *                  частью уравнения, обязательно константу.
      * @return решение системы линейных уравнений
      */
     public static Solution resolve(final double[][] equations) {
-        var ref = RowEchelonFormUtil.toRowEchelonForm(MatrixUtil.copy(equations));
-        int rowIndex = ref.length - 1;
-        double[] row = ref[rowIndex];
-        var addresses = new int[row.length - 1];
-        while (rowIndex > -1 && allZeroes(row)) {
-            row = ref[--rowIndex];
-        }
+        var ref = RowEchelonFormUtil.toRowEchelonForm(equations);
+        int rowIndex = getLastNonFreeVariableIndex(ref);
+        var addresses = new int[ref[0].length - 1];
         if (rowIndex == ref.length - 1) {
-            // No all-zero rows in RREF matrix case
+            // No all-zero rows in REF matrix case
             if (!Validation.isCramer(ref)) return new Solution(ZERO, null, null);
-            var solution = LinearEquationSystemUtil.resolveUsingCramerMethod(MatrixUtil.removeMarginalColumn(ref, false), MatrixUtil.getColumn(ref, ref[0].length));
+            var solution = LinearEquationSystemUtil.resolveUsingCramerMethod(
+                    MatrixUtil.removeMarginalColumn(ref, false),
+                    MatrixUtil.getColumn(ref, ref[0].length));
             for (int i = 0; i < addresses.length; i++) addresses[i] = i;
             return new Solution(SINGLE, solution, null);
         }
@@ -176,6 +179,61 @@ public final class LinearEquationSystemUtil {
             basisVectors.add(getVector(ref, template, rowIndex));
         }
         return new Solution(INFINITE, zeroSolution, basisVectors);
+    }
+
+    /**
+     * TODO this does not cover the case where free variables are scattered. Change it.
+     *
+     * Get the biggest index of a non-free variable. The very last index of a variable in any equation minus
+     * this index should result in basis size, i.e. number of dimensions of the linear space.
+     *
+     * @param rowEchelonFormMatrix REF for the augmented matrix made of a linear equations system
+     * @return the biggest index of a non-free variable
+     */
+    private static int getLastNonFreeVariableIndex(final double[][] rowEchelonFormMatrix) {
+        int rowIndex = rowEchelonFormMatrix.length - 1;
+        double[] row = rowEchelonFormMatrix[rowIndex];
+        while (rowIndex > -1 && allZeroes(row)) {
+            row = rowEchelonFormMatrix[--rowIndex];
+        }
+        return rowIndex;
+    }
+
+    /**
+     *
+     *
+     * @param rowEchelonFormMatrix
+     * @param addresses
+     * @param rowIndex
+     * @return базис векторов в виде списка массивов действительных чисел
+     */
+    private static List<double[]> getBasis(final double[][] rowEchelonFormMatrix,
+                                     final int[] addresses,
+                                     final int rowIndex) {
+
+        var basisVectors = new ArrayList<double[]>();
+        for (var template : getBasisVectorTemplates(addresses, rowIndex)) {
+            basisVectors.add(getVector(rowEchelonFormMatrix, template, rowIndex));
+        }
+        return basisVectors;
+    }
+
+    private static List<double[]> getBasisVectorTemplates(final int[] addresses, final int rowIndex) {
+        var basisVectorsTemplates = new ArrayList<double[]>();
+        for (int i = rowIndex; i < addresses.length; i++) {
+            double[] c = new double[addresses.length + 1];
+            for (int j = rowIndex; j <= addresses.length; j++) {
+                if (addresses[i] == -1) {
+                    if (i == j) {
+                        c[j] = 1.0d;
+                        basisVectorsTemplates.add(c);
+                    } else {
+                        c[j] = 0.0d;
+                    }
+                }
+            }
+        }
+        return basisVectorsTemplates;
     }
 
     /**
@@ -247,5 +305,16 @@ public final class LinearEquationSystemUtil {
      */
     public static boolean isSolvable(final double[][] augmentedMatrix) {
         return MatrixCalc.rank(MatrixUtil.removeMarginalColumn(augmentedMatrix, false)) == MatrixCalc.rank(augmentedMatrix);
+    }
+
+    /**
+     * The number of dimensions of the linear space for the given linear equation system.
+     * The given linear equation system is represented by the given augmented matrix as a parameter.
+     *
+     * @param augmentedMatrix a matrix for linear equation system coefficients including the right side of each equation
+     * @return the size of the basis of the linear space
+     */
+    public static int basisSize(final double[][] augmentedMatrix) {
+        return augmentedMatrix[0].length - 1 - MatrixCalc.rank(augmentedMatrix);
     }
 }

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * A utility class for matrices.
+ * A utility class for equations.
  *
  * @author Viacheslav Mikhailov
  */
@@ -90,6 +90,8 @@ public class EquationUtil {
             throw new IllegalArgumentException("Not an equation.");
         if (coefficients.length - 1 == variableIndex)
             throw new IllegalArgumentException("The variable shouldn't be found on the right side of the equation.");
+        if (coefficients[variableIndex] == .0d)
+            throw new IllegalArgumentException("The single variable of the equation is multiplied by the coefficient equal to 0.");
         double sum = .0d;
         for (int i = 0; i < coefficients.length - 1; i++) {
             if (i == variableIndex) continue;

@@ -3,6 +3,8 @@
  */
 package linear.matrix;
 
+import approximation.RoundingUtil;
+
 /**
  * A utility class for matrices.
  *
@@ -149,6 +151,7 @@ public final class MatrixUtil {
     }
 
     /**
+     * TODO tests!
      * This method returns a matrix 1 row and 1 column lesser than the original one.
      * The ordinals of the row and the column to exclude are provided as <i>rowNumber</i>
      * and <i>columnNumber</i>, respectively.
@@ -159,12 +162,12 @@ public final class MatrixUtil {
      * @return a matrix one row one column less in size.
      */
     public static double[][] excludeColumnAndRow(double[][] matrix, int rowNumber, int columnNumber) {
-        double[][] submatrix = new double[matrix.length - 1][matrix.length - 1];
+        double[][] submatrix = new double[matrix.length - 1][matrix[0].length - 1];
         int submatrixRow = 1, submatrixCol = 1;
         for (int rowNum = 1; rowNum <= matrix.length; rowNum++) {
             if (rowNum == rowNumber)
                 continue;
-            for (int colNum = 1; colNum <= matrix.length; colNum++) {
+            for (int colNum = 1; colNum <= matrix[0].length; colNum++) {
                 if (colNum == columnNumber)
                     continue;
                 submatrix[submatrixRow - 1][submatrixCol - 1] = matrix[rowNum - 1][colNum - 1];
@@ -193,6 +196,21 @@ public final class MatrixUtil {
             resultColumn[i++] = row[column];
         }
         return resultColumn;
+    }
+
+    /**
+     * Round values in the given matrix or vector up to 12 places after the dot.
+     * This method <b>does modify</b> the argument, so be careful.
+     *
+     * @param decimalPlaces decimal places right to the dot to round up to
+     * @param matrix the given matrix
+     */
+    public static void roundValues(int decimalPlaces, double[]... matrix) {
+        for (int r = 0; r < matrix.length; r++) {
+            for (int c = 0; c < matrix[0].length; c++) {
+                matrix[r][c] = RoundingUtil.roundToNDecimals(matrix[r][c], decimalPlaces);
+            }
+        }
     }
 
     /**

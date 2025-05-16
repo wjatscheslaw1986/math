@@ -14,6 +14,7 @@ import java.util.stream.IntStream;
 import static linear.matrix.MatrixUtil.copy;
 import static linear.matrix.MatrixUtil.excludeColumnAndRow;
 import static linear.matrix.Validation.isEqualDimensions;
+import static linear.matrix.Validation.isSquareMatrix;
 
 /**
  * Matrix calculator util class.
@@ -145,6 +146,8 @@ public final class MatrixCalc {
      * @return the determinant of the matrix
      */
     public static double det(final double[][] matrix) {
+        if (!isSquareMatrix(matrix))
+            throw new IllegalArgumentException("A non-square matrix has no determinant.");
         double result = Double.NaN;
         if (matrix.length < 2)
             return matrix[0][0];
@@ -235,7 +238,7 @@ public final class MatrixCalc {
      * @param squareSideSize размер стороны вырезаемой квадратной матрицы
      * @return вырезанная квадратная матрица
      */
-    public static double[][] squareSubmatrix(double[][] matrix, int rowOffset, int colOffset, int squareSideSize) {
+    public static double[][] crop(double[][] matrix, int rowOffset, int colOffset, int squareSideSize) {
         if (matrix.length < rowOffset + squareSideSize || matrix[0].length < colOffset + squareSideSize) {
             throw new ArrayIndexOutOfBoundsException("Искомая подматрица вышла за рамки основной.");
         }

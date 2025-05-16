@@ -7,7 +7,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
-import static combinatorics.CombinatoricsCalc.*;
+import static combinatorics.CombinatoricsCalc.binomialCoefficient;
+import static combinatorics.CombinatoricsCalc.countPermutations;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static probnstat.ProbabilityCalc.atLeastOneHappensProbability;
 

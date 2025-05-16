@@ -95,7 +95,8 @@ public class ValidationTest {
     void isCramerTest() {
         for (int i = 1; i < 10; i++) {
             var matrix = MatrixGenerator.generateRandomDoubleMatrix(i, i);
-            if (MatrixCalc.det(matrix) == .0d)
+            var det = MatrixCalc.det(matrix);
+            if (det == .0d)
                 assertFalse(isCramer(matrix));
             else
                 assertTrue(isCramer(matrix));
