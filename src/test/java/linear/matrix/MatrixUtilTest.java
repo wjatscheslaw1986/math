@@ -72,4 +72,26 @@ public class MatrixUtilTest {
         assertArrayEquals(col2, MatrixUtil.getColumn(givenMatrix, 1));
         assertArrayEquals(col3, MatrixUtil.getColumn(givenMatrix, 2));
     }
+
+    @Test
+    void given_matrix_remove_nth_row() {
+        final double[][] given = new double[][]{
+                {1.0d, -3.0d, -5.0d, -3.0d},
+                {0.0d, 4.0d, 11.0d, 7.0d},
+                {0.0d, 0.0d, 2.0d, 0.0d}};
+        final double[][] expectedResult1 = new double[][]{
+                {1.0d, -3.0d, -5.0d, -3.0d},
+                {0.0d, 4.0d, 11.0d, 7.0d}};
+        final double[][] expectedResult2 = new double[][]{
+                {1.0d, -3.0d, -5.0d, -3.0d},
+                {0.0d, 0.0d, 2.0d, 0.0d}};
+        final double[][] expectedResult3 = new double[][]{
+                {0.0d, 4.0d, 11.0d, 7.0d},
+                {0.0d, 0.0d, 2.0d, 0.0d}};
+        assertTrue(areEqual(expectedResult3, MatrixUtil.removeNthRow(given, 1)));
+        assertTrue(areEqual(expectedResult2, MatrixUtil.removeNthRow(given, 2)));
+        assertTrue(areEqual(expectedResult1, MatrixUtil.removeNthRow(given, 3)));
+        assertThrows(ArrayIndexOutOfBoundsException.class, () -> MatrixUtil.removeNthRow(given, 0));
+        assertThrows(ArrayIndexOutOfBoundsException.class, () -> MatrixUtil.removeNthRow(given, 4));
+    }
 }

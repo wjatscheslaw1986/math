@@ -131,7 +131,7 @@ public final class RowEchelonFormUtil {
 
     /**
      * Produces a row echelon form matrix of a given one.
-     * This method modifies the given matrix.
+     * This method does not modify the given matrix.
      *
      * @param givenMatrix given
      * @return a new object which is a row echelon form <i>matrix</i> for the original one
@@ -218,10 +218,14 @@ public final class RowEchelonFormUtil {
         double[][] result = MatrixUtil.copy(matrix);
         eliminateEpsilon(result);
 
-        // If there are zero rows they must be at the bottom
-        for (int row = 0, end = result.length - 1; row <= end; row++) {
-            if (isZeroRow(result, row)) {
-                result = swapRows(result, row, end--);
+        // Remove zero rows
+        int rowNum = 1;
+        while(rowNum <= result.length) {
+            if (isZeroRow(result, rowNum - 1)) {
+                result = removeNthRow(result, rowNum);
+                rowNum = 1;
+            } else {
+                rowNum++;
             }
         }
 

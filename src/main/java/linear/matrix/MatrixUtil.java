@@ -118,20 +118,27 @@ public final class MatrixUtil {
     }
 
     /**
-     * Remove row on the bottom from this matrix.
+     * Remove Nth row from this matrix.
+     * <p>This method does not modify the given matrix.</p>
      *
+     * @param n the ordinal of the row, counting downwards
      * @param matrix given
      * @return the modified matrix
      */
-    public static double[][] removeBottomRow(final double[][] matrix) {
+    public static double[][] removeNthRow(final double[][] matrix, final int n) {
+        if (matrix.length < n) {
+            throw new ArrayIndexOutOfBoundsException(String.format("No %sth row in the given matrix", n));
+        }
         if (matrix.length < 2) {
             return new double[][]{{}};
         }
         final double[][] copy = new double[matrix.length - 1][matrix[0].length];
-        for (int r = 0; r < matrix.length - 1; r++) {
-            final double row[] = new double[matrix[r].length];
-            System.arraycopy(matrix[r], 0, row, 0, matrix[r].length);
-            copy[r] = row;
+        for (int i1 = 1, i2 = 1; i1 <= matrix.length; i1++) {
+            if (i1 == n) continue;
+            final double[] row = new double[matrix[i1 - 1].length];
+            System.arraycopy(matrix[i1 - 1], 0, row, 0, matrix[i1 - 1].length);
+            copy[i2 - 1] = row;
+            i2++;
         }
         return copy;
     }

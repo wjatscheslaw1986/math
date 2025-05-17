@@ -133,6 +133,12 @@ public final class LinearEquationSystemUtil {
         return new Solution(SINGLE, solution, null); // Unique solution
     }
 
+//    public static double[] resolve2(final double[][] augmentedMatrix) {
+//        var ref = RowEchelonFormUtil.toREF(augmentedMatrix);
+//
+//
+//    }
+
     /**
      * Решить систему линейных уравнений.
      *
