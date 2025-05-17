@@ -352,7 +352,7 @@ public class MatrixCalcTest {
     }
 
     @Test
-    void detTriangularTest() {
+    void detTriangularTest() throws MatrixException {
         /*
          * Пример взят из Киркинский А.С. "Основы линейной алгебры"
          */

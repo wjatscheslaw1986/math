@@ -8,10 +8,11 @@ import linear.matrix.MatrixCalc;
 import linear.matrix.MatrixUtil;
 import linear.matrix.RowEchelonFormUtil;
 import linear.matrix.Validation;
+import linear.matrix.exception.MatrixException;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.function.IntFunction;
+import java.util.stream.Collectors;
 
 import static linear.equation.SolutionsCount.*;
 import static linear.matrix.MatrixUtil.*;
@@ -133,11 +134,62 @@ public final class LinearEquationSystemUtil {
         return new Solution(SINGLE, solution, null); // Unique solution
     }
 
-//    public static double[] resolve2(final double[][] augmentedMatrix) {
-//        var ref = RowEchelonFormUtil.toREF(augmentedMatrix);
-//
-//
-//    }
+    /**
+     *
+     * @param augmentedMatrix
+     * @return
+     * @throws MatrixException
+     */
+    public static List<List<Double>> resolve2(final double[][] augmentedMatrix) throws MatrixException {
+        int freeMembersLeft = basisSize(augmentedMatrix);
+        List<Integer> freeVariableIndices = new ArrayList<>();
+        if (freeMembersLeft < 1)
+            return List.of(LinearEquationSystemUtil.resolveUsingReverseMatrixMethod(
+                    removeMarginalColumn(augmentedMatrix, false),
+                    getColumn(augmentedMatrix, augmentedMatrix[0].length))).stream()
+                    .map(arr -> {
+                        List<Double> row = new ArrayList<>();
+                        for (double d : arr)
+                            row.add(d);
+                        return row;
+                    }).toList();
+        var ref = removeAllZeroesRows(RowEchelonFormUtil.toRowEchelonForm(augmentedMatrix));
+        if (!RowEchelonFormUtil.isRowEchelonForm(ref))
+            throw new RuntimeException("We may only resolve linear equation systems with row echelon form matrices.");
+        List<List<Double>> solution = new ArrayList<>(freeMembersLeft);
+        Map<Integer, Double> mapEquationMemberIndexOnItsValue = new HashMap<>(augmentedMatrix[0].length - 1);
+        for (int i = ref.length - 1; i > -1; i--) {
+            double[] augmentedRow = ref[i];
+            int pivotIndex = 0;
+            for (int j = 0; j < ref.length; j++) {
+                if (augmentedRow[j] == .0d) pivotIndex++;
+                else break;
+            }
+            double[] singleVariableEquation = new double[augmentedRow.length - pivotIndex];
+            singleVariableEquation[pivotIndex] = augmentedRow[pivotIndex];
+            singleVariableEquation[singleVariableEquation.length-1] = augmentedRow[augmentedRow.length-1];
+            for (int j = pivotIndex + 1; j < augmentedRow.length - 1; j++) {
+                if (!mapEquationMemberIndexOnItsValue.containsKey(j)) {
+                    freeMembersLeft--;
+                    freeVariableIndices.add(j);
+                    singleVariableEquation[j] = 1.0d;
+                    mapEquationMemberIndexOnItsValue.put(j, singleVariableEquation[j]);
+                }
+                singleVariableEquation[j] = augmentedRow[j] * mapEquationMemberIndexOnItsValue.get(j);
+            }
+            mapEquationMemberIndexOnItsValue.put(pivotIndex, EquationUtil.solveSingleVariableLinearEquation(singleVariableEquation, pivotIndex));
+        }
+        solution.add(mapEquationMemberIndexOnItsValue.keySet().stream().sorted(Integer::compareTo)
+                .map(mapEquationMemberIndexOnItsValue::get).toList());
+
+        return solution;
+    }
+
+    private static boolean unknownLeftAfterPivot(final boolean[] mapIndexOnFlagKnown, final int pivotIndex) {
+        for (int i = pivotIndex + 1; i < mapIndexOnFlagKnown.length; i++)
+            if (!mapIndexOnFlagKnown[i]) return true;
+        return false;
+    }
 
     /**
      * Решить систему линейных уравнений.
@@ -148,7 +200,7 @@ public final class LinearEquationSystemUtil {
      * @return решение системы линейных уравнений
      */
     public static Solution resolve(final double[][] equations) {
-        var ref = RowEchelonFormUtil.toRowEchelonForm(equations);
+        var ref = RowEchelonFormUtil.toREF(equations);
         int rowIndex = getLastNonFreeVariableIndex(ref);
         var addresses = new int[ref[0].length - 1];
         if (rowIndex == ref.length - 1) {
@@ -302,7 +354,7 @@ public final class LinearEquationSystemUtil {
     /**
      * Check if the given system of linear equations solvable,
      * using Rouché–Capelli (Kronecker–Capelli) theorem:
-     * <p>A system of linear equations has a solution if and only if its
+     * <p>A system of linear equations has a solution iff its
      * coefficient matrix A and its augmented matrix [A|b] have the same rank.</p>
      *
      * @param augmentedMatrix a matrix of vectors. Each vector represents an equation

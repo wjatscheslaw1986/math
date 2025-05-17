@@ -118,6 +118,26 @@ public final class MatrixUtil {
     }
 
     /**
+     * Create a copy of the given matrix, but exclude rows where all elements are zeroes.
+     *
+     * @param matrix given
+     * @return the copy of the given matrix, but without all-zeroes rows
+     */
+    public static double[][] removeAllZeroesRows(final double[][] matrix) {
+        double[][] result = copy(matrix);
+        int rowNum = 1;
+        while (rowNum <= result.length) {
+            if (isZeroRow(result, rowNum - 1)) {
+                result = removeNthRow(result, rowNum);
+                rowNum = 1;
+            } else {
+                rowNum++;
+            }
+        }
+        return result;
+    }
+
+    /**
      * Remove Nth row from this matrix.
      * <p>This method does not modify the given matrix.</p>
      *

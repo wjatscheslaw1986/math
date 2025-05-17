@@ -194,7 +194,7 @@ public final class RowEchelonFormUtil {
      * @param matrix given
      * @return a new object which is a row echelon form <i>matrix</i> for the original one
      */
-    public static double[][] toRowEchelonForm(final double[][] matrix) {
+    public static double[][] toRowEchelonForm(final double[][] matrix) throws MatrixException {
 
         if (matrix.length < 2)
             return matrix;
@@ -218,14 +218,10 @@ public final class RowEchelonFormUtil {
         double[][] result = MatrixUtil.copy(matrix);
         eliminateEpsilon(result);
 
-        // Remove zero rows
-        int rowNum = 1;
-        while(rowNum <= result.length) {
-            if (isZeroRow(result, rowNum - 1)) {
-                result = removeNthRow(result, rowNum);
-                rowNum = 1;
-            } else {
-                rowNum++;
+        // If there are zero rows they must be at the bottom
+        for (int row = 0, end = result.length - 1; row <= end; row++) {
+            if (isZeroRow(result, row)) {
+                result = swapRows(result, row, end--);
             }
         }
 
@@ -269,6 +265,8 @@ public final class RowEchelonFormUtil {
                 break;
             }
         }
+        if (!isRowEchelonForm(result))
+            throw new MatrixException("Failed to bring matrix to the row echelon form.");
         return result;
     }
 
@@ -279,7 +277,7 @@ public final class RowEchelonFormUtil {
      * @return true if the matrix is in row echelon form, otherwise false
      * @throws MatrixException if the given matrix is malformed
      */
-    public static boolean isRowEchelonForm(double[][] matrix) throws MatrixException {
+    public static boolean isRowEchelonForm(double[][] matrix) {
         final int rows = matrix.length;
         final int cols = matrix[0].length;
 
@@ -335,8 +333,6 @@ public final class RowEchelonFormUtil {
                     }
                 }
             }
-
-            pivotFound = false;
         }
 
         return true;

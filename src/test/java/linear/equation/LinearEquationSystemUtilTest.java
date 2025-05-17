@@ -6,9 +6,12 @@ package linear.equation;
 import linear.matrix.MatrixCalc;
 import linear.matrix.MatrixUtil;
 import linear.matrix.RowEchelonFormUtil;
+import linear.matrix.exception.MatrixException;
 import linear.spatial.VectorCalc;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 import static linear.equation.LinearEquationSystemUtil.*;
 import static linear.equation.SolutionsCount.*;
@@ -140,6 +143,12 @@ public class LinearEquationSystemUtilTest {
 
         int variablesCount = linearEquationSystem[0].length - 1;
         var solution = resolve(MatrixUtil.copy(linearEquationSystem));
+        List<List<Double>> s2;
+        try {
+            s2 = resolve2(MatrixUtil.copy(linearEquationSystem));
+        } catch (MatrixException e) {
+            throw new RuntimeException(e);
+        }
 
         /*
          * Number of dimensions (vectors of the basis) of the equation system solution space must be n - r,
