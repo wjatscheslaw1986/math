@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Map;
 
 import static linear.equation.LinearEquationSystemUtil.*;
 import static linear.equation.SolutionsCount.*;
@@ -143,12 +144,12 @@ public class LinearEquationSystemUtilTest {
 
         int variablesCount = linearEquationSystem[0].length - 1;
         var solution = resolve(MatrixUtil.copy(linearEquationSystem));
-        List<List<Double>> s2;
-        try {
-            s2 = resolve2(MatrixUtil.copy(linearEquationSystem));
-        } catch (MatrixException e) {
-            throw new RuntimeException(e);
-        }
+        List<Map<Integer, Double>> s2;
+//        try {
+//            s2 = resolve2(MatrixUtil.copy(linearEquationSystem));
+//        } catch (MatrixException e) {
+//            throw new RuntimeException(e);
+//        }
 
         /*
          * Number of dimensions (vectors of the basis) of the equation system solution space must be n - r,
@@ -185,6 +186,53 @@ public class LinearEquationSystemUtilTest {
         System.out.println(MatrixUtil.print(linearEquationSystem));
         RowEchelonFormUtil.toRREF(linearEquationSystem);
         System.out.println(MatrixUtil.print(linearEquationSystem));
+
+    }
+
+    @Test
+    void given_equation_return_combination() {
+        var linearEquationSystem = new double[][]{
+                {1, 2, 3, 4, 0},
+                {3, -5, 1, -2, 0},
+                {4, -3, 4, 2, 0}
+        };
+        var freeMemberAddresses = List.of(1,3);
+        List<double[]> combination = deriveCoefficientCombinationsFromTemplateForFreeMembersAfterPivot(linearEquationSystem[0], 0, freeMemberAddresses);
+        assertEquals(freeMemberAddresses.size(), combination.size());
+        assertArrayEquals(new double[]{1, 1.0, 3, 0.0, 0}, combination.get(0));
+        assertArrayEquals(new double[]{1, 0.0, 3, 1.0, 0}, combination.get(1));
+    }
+
+    @Test
+    void given_row_echelon_form_matrix_find_pivot_for_the_row() {
+        var ref = new double[][]{
+                {1.0096634218430616d, -8.772286757703684d, -0.44083720521676284d, 0.8588440971684381d},
+                {.0d, -6.420896947702297d, 3.5253331532074323d, 4.864061213084703d},
+                {.0d, .0d, -7.092716530960487d, -4.478958333291305d},
+                {.0d, .0d, .0d, 2.962818038754156d}};
+
+        for (int i = ref.length - 1; i >= 0; i--)
+            assertEquals(i, findPivotIndex(ref, i));
+    }
+
+    @Test
+    void given_equation_return_free_variable_indices_list() throws MatrixException {
+        var linearEquationSystem = new double[][]{
+                {1, 2, 3, 4, 0},
+                {3, -5, 1, -2, 0},
+                {4, -3, 4, 2, 0}
+        };
+        var expectedResult = new int[]{1, 1, -1, -1};
+        assertArrayEquals(expectedResult,
+                getEquationMemberFlags(RowEchelonFormUtil.toRowEchelonForm(linearEquationSystem), basisSize(linearEquationSystem)));
+        linearEquationSystem = new double[][]{
+                {5, -2, -3, 4, 7},
+                {10, -4, -16, 10, 22},
+                {5, -2, 2, 3, 3}
+        };
+        expectedResult = new int[]{1, -1, 1, -1};
+        assertArrayEquals(expectedResult,
+                getEquationMemberFlags(RowEchelonFormUtil.toRowEchelonForm(linearEquationSystem), basisSize(linearEquationSystem)));
 
     }
 }

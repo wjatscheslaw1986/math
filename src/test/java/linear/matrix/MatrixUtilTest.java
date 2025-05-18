@@ -6,8 +6,7 @@ package linear.matrix;
 import org.junit.jupiter.api.Test;
 
 import static linear.matrix.MatrixCalc.areEqual;
-import static linear.matrix.MatrixUtil.copy;
-import static linear.matrix.MatrixUtil.removeMarginalColumn;
+import static linear.matrix.MatrixUtil.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -71,6 +70,30 @@ public class MatrixUtilTest {
         assertArrayEquals(col1, MatrixUtil.getColumn(givenMatrix, 0));
         assertArrayEquals(col2, MatrixUtil.getColumn(givenMatrix, 1));
         assertArrayEquals(col3, MatrixUtil.getColumn(givenMatrix, 2));
+    }
+
+    @Test
+    void given_matrix_remove_all_zeroes_rows() {
+        final double[][] givenMatrix = new double[][]{
+                {1.0d, -3.0d, -5.0d},
+                {0.0d, 0.0d, 0.0d},
+                {0.0d, 4.0d, 11.0d},
+                {0.0d, 0.0d, 2.0d},
+                {0.0d, 0.0d, 0.0d},
+                {0.0d, 0.0d, 0.0d},
+                {0.0d, 0.0d, 0.0d}
+        };
+        final double[][] expectedResult = new double[][]{
+                {1.0d, -3.0d, -5.0d},
+                {0.0d, 4.0d, 11.0d},
+                {0.0d, 0.0d, 2.0d}
+        };
+        var result = removeAllZeroesRows(givenMatrix);
+        assertEquals(3, result.length);
+        for (int i = 0; i < result.length; i++) {
+            assertArrayEquals(result[i], expectedResult[i]);
+        }
+        assertTrue(areEqual(expectedResult, result));
     }
 
     @Test

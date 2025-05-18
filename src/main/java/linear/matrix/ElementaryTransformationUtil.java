@@ -72,6 +72,7 @@ public final class ElementaryTransformationUtil {
     }
 
     /**
+     * TODO tests!
      * Adds values of one column to another one, previously multiplied by a floating
      * point number.
      *

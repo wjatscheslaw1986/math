@@ -10,9 +10,9 @@ import linear.matrix.RowEchelonFormUtil;
 import linear.matrix.Validation;
 import linear.matrix.exception.MatrixException;
 
-import java.util.*;
-import java.util.function.IntFunction;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static linear.equation.SolutionsCount.*;
 import static linear.matrix.MatrixUtil.*;
@@ -135,60 +135,119 @@ public final class LinearEquationSystemUtil {
     }
 
     /**
+     * TODO
      *
      * @param augmentedMatrix
      * @return
      * @throws MatrixException
      */
-    public static List<List<Double>> resolve2(final double[][] augmentedMatrix) throws MatrixException {
-        int freeMembersLeft = basisSize(augmentedMatrix);
-        List<Integer> freeVariableIndices = new ArrayList<>();
-        if (freeMembersLeft < 1)
-            return List.of(LinearEquationSystemUtil.resolveUsingReverseMatrixMethod(
-                    removeMarginalColumn(augmentedMatrix, false),
-                    getColumn(augmentedMatrix, augmentedMatrix[0].length))).stream()
-                    .map(arr -> {
-                        List<Double> row = new ArrayList<>();
-                        for (double d : arr)
-                            row.add(d);
-                        return row;
-                    }).toList();
+    public static List<double[]> fundamental(final double[][] augmentedMatrix) throws MatrixException {
         var ref = removeAllZeroesRows(RowEchelonFormUtil.toRowEchelonForm(augmentedMatrix));
-        if (!RowEchelonFormUtil.isRowEchelonForm(ref))
-            throw new RuntimeException("We may only resolve linear equation systems with row echelon form matrices.");
-        List<List<Double>> solution = new ArrayList<>(freeMembersLeft);
-        Map<Integer, Double> mapEquationMemberIndexOnItsValue = new HashMap<>(augmentedMatrix[0].length - 1);
-        for (int i = ref.length - 1; i > -1; i--) {
-            double[] augmentedRow = ref[i];
-            int pivotIndex = 0;
-            for (int j = 0; j < ref.length; j++) {
-                if (augmentedRow[j] == .0d) pivotIndex++;
-                else break;
-            }
-            double[] singleVariableEquation = new double[augmentedRow.length - pivotIndex];
-            singleVariableEquation[pivotIndex] = augmentedRow[pivotIndex];
-            singleVariableEquation[singleVariableEquation.length-1] = augmentedRow[augmentedRow.length-1];
-            for (int j = pivotIndex + 1; j < augmentedRow.length - 1; j++) {
-                if (!mapEquationMemberIndexOnItsValue.containsKey(j)) {
-                    freeMembersLeft--;
-                    freeVariableIndices.add(j);
-                    singleVariableEquation[j] = 1.0d;
-                    mapEquationMemberIndexOnItsValue.put(j, singleVariableEquation[j]);
-                }
-                singleVariableEquation[j] = augmentedRow[j] * mapEquationMemberIndexOnItsValue.get(j);
-            }
-            mapEquationMemberIndexOnItsValue.put(pivotIndex, EquationUtil.solveSingleVariableLinearEquation(singleVariableEquation, pivotIndex));
-        }
-        solution.add(mapEquationMemberIndexOnItsValue.keySet().stream().sorted(Integer::compareTo)
-                .map(mapEquationMemberIndexOnItsValue::get).toList());
-
-        return solution;
+        var freeMembersLeft = basisSize(augmentedMatrix);
+        var freeVariableIndices = getEquationMemberFlags(ref, freeMembersLeft);
+        if (freeVariableIndices.length == 0)
+            return List.of(resolveUsingReverseMatrixMethod(
+                    MatrixUtil.removeMarginalColumn(ref, false),
+                    MatrixUtil.getColumn(ref, ref[0].length)));
+        var fundamental = new ArrayList<double[]>();
+        //TODO
+        return fundamental;
     }
 
-    private static boolean unknownLeftAfterPivot(final boolean[] mapIndexOnFlagKnown, final int pivotIndex) {
-        for (int i = pivotIndex + 1; i < mapIndexOnFlagKnown.length; i++)
-            if (!mapIndexOnFlagKnown[i]) return true;
-        return false;
+    /**
+     * Returns an array of equation members' flags.
+     * <p>
+     * Each flag corresponds to an equation member by their common index.
+     * The flag value is either -1, or 1.
+     * The flag -1 means the variable in the linear equation found by the index is a free variable, so that
+     * its value is arbitrary.
+     * The flag 1 means the variable of the linear equation found by the index is <b>not</b> a free variable, so that
+     * its value should be found solving a corresponding single variable linear equation.
+     * </p>
+     *
+     * @param ref the row echelon form of a matrix
+     * @param basisSize number of free members in each of the linear equations
+     * @return an array of member flags for the equation
+     */
+    public static int[] getEquationMemberFlags(double[][] ref, int basisSize) {
+        int[] addresses = new int[ref[0].length - 1];
+        int freeVariablesLeft = basisSize;
+        int freeVariableIndex = addresses.length - 1;
+        int j = ref.length - 1;
+        while (freeVariablesLeft > 0) {
+            for (int i = freeVariableIndex; i > -1 && j >= 0; i--) {
+                if (isZeroRow(ref, j)) {
+                    j--;
+                    continue;
+                }
+                int pivotIndex = findPivotIndex(ref, j);
+                for (int k = pivotIndex + 1; k < ref[j].length - 1; k++) {
+                    if (addresses[k] != 0) continue;
+                    addresses[k] = -1;
+                    freeVariablesLeft--;
+                }
+                addresses[pivotIndex] = 1;
+                j--;
+            }
+        }
+        return addresses;
+    }
+
+    /**
+     * Returns an index of the pivot element for the given row index for the given
+     * row echelon form matrix.
+     * <p>The matrix <b>must</b> be in a row echelon form, for the return of this function to be meaningful.</p>
+     *
+     * @param rowEchelonFormMatrix the row echelon form of a matrix
+     * @param row the row index
+     * @return an index of the pivot element for the given row in the given matrix
+     */
+    public static int findPivotIndex(double[][] rowEchelonFormMatrix, int row) {
+        boolean nonZeroFound = false;
+        int pivotIndex = 0;
+        while (!nonZeroFound || pivotIndex >= rowEchelonFormMatrix[0].length) {
+            double found = rowEchelonFormMatrix[row][pivotIndex];
+            if (found != 0.0d) nonZeroFound = true;
+            else pivotIndex++;
+        }
+        return pivotIndex;
+    }
+
+    /**
+     * TODO Remove it?
+     * The method returns a list of coefficient combinations, size of {@code freeMemberIndices}. Each combination is
+     * the given template {@code coefficientsTemplate} with only one of its free members
+     * (according to the index found in the {@code freeMemberIndices}) is equal to 1.0d,
+     * with the rest of the free members == 0.0d.
+     *
+     * @param coefficientsTemplate the given template for the resulting equations
+     * @param pivot the index of the member of the coefficientsTemplate which is supposed to be an index of a single
+     *              unknown variable in any of the resulting equations
+     * @param freeMemberIndices indices of free (i.e. volatile, may be of any value) members of the given coefficientsTemplate
+     * @return the list of coefficient combinations
+     * @deprecated use getEquationMemberFlags() instead.
+     */
+    @Deprecated(forRemoval = true)
+    public static List<double[]> deriveCoefficientCombinationsFromTemplateForFreeMembersAfterPivot(final double[] coefficientsTemplate,
+                                                                                                   final int pivot,
+                                                                                                   final List<Integer> freeMemberIndices) {
+        final List<double[]> coefficientCombinations = new ArrayList<>();
+        int counter = 0;
+        while (counter < freeMemberIndices.size()) {
+            var basisVectorTemplate = new double[coefficientsTemplate.length];
+            System.arraycopy(coefficientsTemplate, 0, basisVectorTemplate, 0, coefficientsTemplate.length);
+            int cc = 0;
+            for (int i = pivot + 1; i < basisVectorTemplate.length - 1; ++i) {
+                if (freeMemberIndices.contains(i))
+                    if (i == freeMemberIndices.get(counter))
+                        basisVectorTemplate[freeMemberIndices.get(cc++)] = 1.0d;
+                    else
+                        basisVectorTemplate[freeMemberIndices.get(cc++)] = .0d;
+                }
+            coefficientCombinations.add(basisVectorTemplate);
+            counter++;
+        }
+        return coefficientCombinations;
     }
 
     /**
@@ -240,14 +299,15 @@ public final class LinearEquationSystemUtil {
     }
 
     /**
-     * TODO this does not cover the case where free variables are scattered. Change it.
-     *
+     * TODO this does not cover the case where free variables are scattered. Delete it.
      * Get the biggest index of a non-free variable. The very last index of a variable in any equation minus
      * this index should result in basis size, i.e. number of dimensions of the linear space.
      *
      * @param rowEchelonFormMatrix REF for the augmented matrix made of a linear equations system
      * @return the biggest index of a non-free variable
+     * @deprecated use findPivotIndex() instead.
      */
+    @Deprecated(forRemoval = true)
     private static int getLastNonFreeVariableIndex(final double[][] rowEchelonFormMatrix) {
         int rowIndex = rowEchelonFormMatrix.length - 1;
         double[] row = rowEchelonFormMatrix[rowIndex];
@@ -255,43 +315,6 @@ public final class LinearEquationSystemUtil {
             row = rowEchelonFormMatrix[--rowIndex];
         }
         return rowIndex;
-    }
-
-    /**
-     *
-     *
-     * @param rowEchelonFormMatrix
-     * @param addresses
-     * @param rowIndex
-     * @return базис векторов в виде списка массивов действительных чисел
-     */
-    private static List<double[]> getBasis(final double[][] rowEchelonFormMatrix,
-                                     final int[] addresses,
-                                     final int rowIndex) {
-
-        var basisVectors = new ArrayList<double[]>();
-        for (var template : getBasisVectorTemplates(addresses, rowIndex)) {
-            basisVectors.add(getVector(rowEchelonFormMatrix, template, rowIndex));
-        }
-        return basisVectors;
-    }
-
-    private static List<double[]> getBasisVectorTemplates(final int[] addresses, final int rowIndex) {
-        var basisVectorsTemplates = new ArrayList<double[]>();
-        for (int i = rowIndex; i < addresses.length; i++) {
-            double[] c = new double[addresses.length + 1];
-            for (int j = rowIndex; j <= addresses.length; j++) {
-                if (addresses[i] == -1) {
-                    if (i == j) {
-                        c[j] = 1.0d;
-                        basisVectorsTemplates.add(c);
-                    } else {
-                        c[j] = 0.0d;
-                    }
-                }
-            }
-        }
-        return basisVectorsTemplates;
     }
 
     /**
