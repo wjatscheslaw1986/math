@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import static combinatorics.CombinatoricsUtil.cutFrom;
-import static combinatorics.CombinatoricsUtil.getPrintArrayFunction;
+import static combinatorics.CombinatoricsUtil.getPrintIntArrayFunction;
 
 /**
  * A utility class for generating all possible combinations without
@@ -31,7 +31,7 @@ public final class CombinationsGenerator {
      * @param out an implementation of the OutputStream
      */
     public static void print(final int n, final int k, final OutputStream out) {
-        process(n, k, getPrintArrayFunction(out));
+        process(n, k, getPrintIntArrayFunction(out));
     }
 
     /**

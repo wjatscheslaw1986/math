@@ -4,6 +4,7 @@
 package linear.equation;
 
 import algebra.EquationUtil;
+import combinatorics.CyclicShiftPermutationsGenerator;
 import linear.matrix.MatrixCalc;
 import linear.matrix.MatrixUtil;
 import linear.matrix.RowEchelonFormUtil;
@@ -397,5 +398,37 @@ public final class LinearEquationSystemUtil {
      */
     public static int basisSize(final double[][] augmentedMatrix) {
         return augmentedMatrix[0].length - 1 - MatrixCalc.rank(augmentedMatrix);
+    }
+
+    public static List<double[]> basisVectors(final double[] coefficients, final int[] addresses) {
+        final List<Integer> freeMemberIndices = new ArrayList<>();
+        List<double[]> permutations = new ArrayList<>();
+        for(int i = 0; i < addresses.length; i++) if (addresses[i] == -1) freeMemberIndices.add(i);
+        List<int[]> perms = CyclicShiftPermutationsGenerator.generate(freeMemberIndices.size())
+                .stream().limit(freeMemberIndices.size()).toList();
+        for (int[] permutation : perms) {
+            List<Integer> permutationValues = new ArrayList<>();
+            permutationValues.add(1);
+            for (int n = 1; n < permutation.length; n++)
+                permutationValues.add(0);
+            double[] arr = new double[addresses.length];
+            int j = 0;
+            System.arraycopy(coefficients, 0, arr, 0, addresses.length);
+            for (int i = 0; i < permutation.length; i++) {
+                if (addresses[permutation[i]] == -1) {
+                    arr[i] = coefficients[i] * permutationValues.get(permutation[j++]);
+                } else {
+                    arr[i] = coefficients[i];
+                }
+            }
+            permutations.add(arr);
+        }
+        List<double[]> correctlyOrderedCoefficientPermutations = new ArrayList<>();
+        correctlyOrderedCoefficientPermutations.addFirst(permutations.getFirst());
+        int j = 1;
+        for (int i = permutations.size() - 1; i > 0; i--) {
+            correctlyOrderedCoefficientPermutations.add(j++, permutations.get(i));
+        }
+        return correctlyOrderedCoefficientPermutations;
     }
 }

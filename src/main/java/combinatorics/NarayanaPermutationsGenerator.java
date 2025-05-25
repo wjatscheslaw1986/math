@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static combinatorics.CombinatoricsUtil.getPrintArrayFunction;
+import static combinatorics.CombinatoricsUtil.getPrintIntArrayFunction;
 import static linear.spatial.VectorUtil.swap;
 
 /**
@@ -31,7 +31,7 @@ public class NarayanaPermutationsGenerator {
      * @param out  an implementation of the OutputStream
      */
     public static void print(final OutputStream out, final int size) {
-        generate(size, getPrintArrayFunction(out));
+        generate(size, getPrintIntArrayFunction(out));
     }
 
     /**

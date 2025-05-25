@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static combinatorics.CombinatoricsUtil.getPrintArrayFunction;
+import static combinatorics.CombinatoricsUtil.getPrintIntArrayFunction;
 
 /**
  * A utility class for generating all possible variations (arrangements) of indices.
@@ -31,7 +31,7 @@ public final class VariationsWithRepetitionsGenerator {
      * @param out  an implementation of the OutputStream
      */
     public static void print(final int n, final int k, final OutputStream out) {
-        generate(n, k, getPrintArrayFunction(out));
+        generate(n, k, getPrintIntArrayFunction(out));
     }
 
     /**

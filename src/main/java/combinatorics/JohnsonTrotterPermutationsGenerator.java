@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static combinatorics.CombinatoricsUtil.getPrintArrayFunction;
+import static combinatorics.CombinatoricsUtil.getPrintIntArrayFunction;
 
 /**
  * A utility class for generating all possible permutations of indices for an array of a
@@ -30,7 +30,7 @@ public class JohnsonTrotterPermutationsGenerator {
      * @param n length of an array of indices
      */
     public static void print(int n, OutputStream o) {
-        generate(n, getPrintArrayFunction(o));
+        generate(n, getPrintIntArrayFunction(o));
     }
 
     /**

@@ -17,13 +17,31 @@ public final class CombinatoricsUtil {
     }
 
     /**
-     * A function to print combination to {@linkplain OutputStream}.
+     * A function to print an integer array to {@linkplain OutputStream}.
      *
      * @param o the output stream
      * @return the printing function
      */
-    public static Consumer<int[]> getPrintArrayFunction(final OutputStream o) {
+    public static Consumer<int[]> getPrintIntArrayFunction(final OutputStream o) {
         return (final int[] currentCombination) -> {
+            try {
+                o.write(Arrays.toString(currentCombination).getBytes());
+                o.write(System.lineSeparator().getBytes());
+            } catch (IOException e) {
+                System.err.print(e.getLocalizedMessage());
+            }
+        };
+    }
+
+    /**
+     * A function to print an object array to {@linkplain OutputStream}.
+     *
+     * @param o the output stream
+     * @param <T> object type
+     * @return the printing function
+     */
+    public static <T> Consumer<T[]> getPrintArrayFunction(final OutputStream o) {
+        return (final T[] currentCombination) -> {
             try {
                 o.write(Arrays.toString(currentCombination).getBytes());
                 o.write(System.lineSeparator().getBytes());

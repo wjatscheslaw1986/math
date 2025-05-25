@@ -235,4 +235,12 @@ public class LinearEquationSystemUtilTest {
                 getEquationMemberFlags(RowEchelonFormUtil.toRowEchelonForm(linearEquationSystem), basisSize(linearEquationSystem)));
 
     }
+
+    @Test
+    void given_coefficients_generate_permutations_of_free_members() {
+        double[] coeff = new double[]{10, -4, -16, 10, 22};
+        int[] freeMemberAddresses = new int[]{1, -1, 1, -1, 1};
+        var v = LinearEquationSystemUtil.basisVectors(coeff, freeMemberAddresses);
+        assertEquals(2, v.size());
+    }
 }

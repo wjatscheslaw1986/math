@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static combinatorics.CombinatoricsUtil.getPrintArrayFunction;
+import static combinatorics.CombinatoricsUtil.getPrintIntArrayFunction;
 
 /**
  * A utility class for generating all possible permutations of indices for an array of a
@@ -30,7 +30,7 @@ public final class CyclicShiftPermutationsGenerator {
      * @param out  an implementation of the OutputStream
      */
     public static void print(final OutputStream out, final int size) {
-        generate(size, getPrintArrayFunction(out));
+        generate(size, getPrintIntArrayFunction(out));
     }
 
     /**
@@ -50,7 +50,6 @@ public final class CyclicShiftPermutationsGenerator {
      * 
      * @param size a size of array of indices, starting with 0;
      * @param func an operation to perform on each permutation
-     * @return list of arrays of all possible permutations of values in the given array.
      */
     private static void generate(final int size, final Consumer<int[]> func) {
         if (size < 0) {
