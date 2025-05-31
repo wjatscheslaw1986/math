@@ -11,6 +11,7 @@ import linear.spatial.VectorCalc;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -222,7 +223,7 @@ public class LinearEquationSystemUtilTest {
                 {3, -5, 1, -2, 0},
                 {4, -3, 4, 2, 0}
         };
-        var expectedResult = new int[]{1, 1, -1, -1};
+        var expectedResult = new Boolean[]{false, false, true, true};
         assertArrayEquals(expectedResult,
                 getEquationMemberFlags(RowEchelonFormUtil.toRowEchelonForm(linearEquationSystem), basisSize(linearEquationSystem)));
         linearEquationSystem = new double[][]{
@@ -230,17 +231,52 @@ public class LinearEquationSystemUtilTest {
                 {10, -4, -16, 10, 22},
                 {5, -2, 2, 3, 3}
         };
-        expectedResult = new int[]{1, -1, 1, -1};
+        expectedResult = new Boolean[]{false, true, false, true};
         assertArrayEquals(expectedResult,
                 getEquationMemberFlags(RowEchelonFormUtil.toRowEchelonForm(linearEquationSystem), basisSize(linearEquationSystem)));
 
     }
 
     @Test
-    void given_coefficients_generate_permutations_of_free_members() {
-        double[] coeff = new double[]{10, -4, -16, 10, 22};
-        int[] freeMemberAddresses = new int[]{1, -1, 1, -1, 1};
-        var v = LinearEquationSystemUtil.basisVectors(coeff, freeMemberAddresses);
+    void given_equation_system_solve_it() throws MatrixException {
+        var linearEquationSystem = new double[][]{
+                {1, 2, 3, 4, 0},
+                {3, -5, 1, -2, 0},
+                {4, -3, 4, 2, 0}
+        };
+        var freeMembersFlags = getEquationMemberFlags(RowEchelonFormUtil.toRowEchelonForm(linearEquationSystem), basisSize(linearEquationSystem));
+        var ref = RowEchelonFormUtil.toRowEchelonForm(linearEquationSystem);
+
+
+        System.out.println(Arrays.toString(freeMembersFlags));
+    }
+
+    double[] get(double[][] ref, Boolean[] mask) {
+        double[] result = new double[ref[0].length - 1];
+        return result;
+    }
+
+    @Test
+    void given_equation_members_coefficients_and_free_members_flag_mask_expect_basis_vectors() {
+        double[] linearEquationCoefficients = new double[]{10, -4, -16, 10};
+        var freeMemberAddresses = new Boolean[]{false, true, false, true};
+        var v = LinearEquationSystemUtil.getFreeMembersMultiplierCombinations(freeMemberAddresses);
         assertEquals(2, v.size());
+        double[] firstExpectedFundamentalSystemBasisVector = new double[]{10, -4, -16, 0};
+        double[] secondExpectedFundamentalSystemBasisVector = new double[]{10, 0, -16, 10};
+        assertArrayEquals(firstExpectedFundamentalSystemBasisVector, v.get(0));
+        assertArrayEquals(secondExpectedFundamentalSystemBasisVector, v.get(1));
+    }
+
+    @Test
+    void given_expect_fundamentsl() throws MatrixException {
+        var linearEquationSystem = new double[][]{
+                {1, 2, 3, 4, 0},
+                {3, -5, 1, -2, 0},
+                {4, -3, 4, 2, 0}
+        };
+        var ans = fundamental(linearEquationSystem);
+        for (var arr : ans)
+        System.out.println(MatrixUtil.print(arr));
     }
 }

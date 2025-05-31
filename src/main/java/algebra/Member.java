@@ -14,11 +14,13 @@ public class Member implements Comparable<Member> {
     private final String letter;
     private final double power;
     private final double coefficient;
+    private Double value;
 
-    private Member(final double p, final double c, final String l) {
+    private Member(final double p, final double c, final String l, final Double v) {
         this.power = p;
         this.coefficient = c;
         this.letter = l;
+        this.value = v;
     }
 
     public double getPower() {
@@ -31,6 +33,14 @@ public class Member implements Comparable<Member> {
 
     public String getLetter() {
         return letter;
+    }
+
+    public Double getValue() {
+        return value;
+    }
+
+    public void setValue(Double value) {
+        this.value = value;
     }
 
     @Override
@@ -64,6 +74,7 @@ public class Member implements Comparable<Member> {
         private String letter;
         private double power;
         private double coefficient;
+        private Double value;
 
         /*
          * Create it with builder()
@@ -72,6 +83,7 @@ public class Member implements Comparable<Member> {
             this.power = 0.0;
             this.coefficient = 0.0;
             this.letter = "x";
+            this.value = null;
         }
 
         public Builder power(double power) {
@@ -89,8 +101,13 @@ public class Member implements Comparable<Member> {
             return this;
         }
 
+        public Builder value(Double value) {
+            this.value = value;
+            return this;
+        }
+
         public Member build() {
-            return new Member(this.power, this.coefficient, this.letter);
+            return new Member(this.power, this.coefficient, this.letter, this.value);
         }
     }
 

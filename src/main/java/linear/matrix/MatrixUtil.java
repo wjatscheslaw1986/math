@@ -99,6 +99,7 @@ public final class MatrixUtil {
 
     /**
      * Remove a column either from the left or from the right side of this matrix.
+     * <p>This method is safe i.e. does not modify the given {@code matrix} argument.</p>
      *
      * @param matrix given
      * @param left   true if the left column to be removed, false if the right column should be removed

@@ -3,8 +3,10 @@
  */
 package algebra;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -78,6 +80,29 @@ public class EquationUtil {
     }
 
     /**
+     * Converts the two given arguments to an {@link Equation}.
+     *
+     * @param coefficients the both sides of the given linear single variable equation, as an array.
+     * @param variableIndex the index of the {@code coefficients} array with the variable whose value we want to find
+     * @return the Equation object
+     */
+    public static Equation toSingleVariableEquation(final double[] coefficients, final int variableIndex) {
+        List<Member> members = new ArrayList<>();
+        for (int i = 0; i < coefficients.length - 1; i++) {
+            var builder = Member.builder()
+                    .coefficient(coefficients[i])
+                    .power(1.0d);
+            if (i != variableIndex) {
+                builder.value(1.0d);
+            } else {
+                builder.value(null);
+            }
+            members.add(builder.build());
+        }
+        return new Equation(members, coefficients[coefficients.length - 1]);
+    }
+
+    /**
      * Solves the single variable linear equation.
      * The right side of the equation is represented by the last element of the {@code coefficients} array.
      *
@@ -99,5 +124,43 @@ public class EquationUtil {
         }
         sum = coefficients[coefficients.length - 1] - sum;
         return sum / coefficients[variableIndex];
+    }
+
+    /**
+     * Solves the single variable linear equation.
+     *
+     * @param equation the equation given
+     * @return the value of the variable found
+     */
+    public static void solveSingleVariableLinearEquation(final Equation equation) {
+        var hits = 0;
+        Member variable = null;
+        for (Member eqMember : equation.members()) if (Objects.isNull(eqMember.getValue())) {
+            variable = eqMember;
+            hits++;
+        }
+        if (hits != 1) throw new IllegalArgumentException("Not a single variable equation.");
+        double sum = .0d;
+
+        for (Member eqMember : equation.members()) {
+            if (Objects.isNull(eqMember.getValue()))
+                continue;
+            sum = sum + eqMember.getCoefficient();
+        }
+        sum = equation.equalsTo() - sum;
+        variable.setValue(sum / variable.getCoefficient());
+    }
+
+    /**
+     * This method traverses the given array and changes every -0.0d to 0.0d.
+     * <p>
+     *     This method modifies the argument.
+     * </p>
+     *
+     * @param array the given array
+     */
+    public static void cleanDoubleArrayOfNegativeZeros(final double[] array) {
+        for (int i = 0; i < array.length; i++)
+            if (array[i] == -0.0d) array[i] = 0.0d;
     }
 }
