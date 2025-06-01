@@ -3,7 +3,9 @@
  */
 package linear.equation;
 
+import algebra.Equation;
 import algebra.EquationUtil;
+import algebra.Member;
 import combinatorics.CyclicShiftPermutationsGenerator;
 import linear.matrix.MatrixCalc;
 import linear.matrix.MatrixUtil;
@@ -11,11 +13,11 @@ import linear.matrix.RowEchelonFormUtil;
 import linear.matrix.Validation;
 import linear.matrix.exception.MatrixException;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static algebra.EquationUtil.cleanDoubleArrayOfNegativeZeros;
+import static algebra.EquationUtil.solveSingleVariableLinearEquation;
 import static linear.equation.SolutionsCount.*;
 import static linear.matrix.MatrixUtil.*;
 
@@ -137,45 +139,54 @@ public final class LinearEquationSystemUtil {
     }
 
     /**
-     * TODO
+     * Given homogenous linear equation system, this method returns a fundamental solution system for it, which
+     * is also the basis of the solution space of the given homogenous linear equation system.
      *
-     * @param augmentedMatrix
-     * @return
-     * @throws MatrixException
+     * @param augmentedMatrix the linear equation system as a matrix with its last
+     *                        column representing the right side of each of the equations.
+     * @return a list of vectors
+     * @throws MatrixException if unable to produce row echelon form for the matrix
      */
     public static List<double[]> fundamental(final double[][] augmentedMatrix) throws MatrixException {
         var ref = removeAllZeroesRows(RowEchelonFormUtil.toRowEchelonForm(augmentedMatrix));
         var freeMembersLeft = basisSize(augmentedMatrix);
         var freeVariableIndices = getEquationMemberFlags(ref, freeMembersLeft);
         if (freeVariableIndices.length == 0)
-            return List.of(resolveUsingReverseMatrixMethod(
-                    MatrixUtil.removeMarginalColumn(ref, false),
-                    MatrixUtil.getColumn(ref, ref[0].length)));
+            return List.of(resolveUsingReverseMatrixMethod(MatrixUtil.removeMarginalColumn(ref, false), MatrixUtil.getColumn(ref, ref[0].length)));
         var fundamental = new ArrayList<double[]>();
-        var freeMembersMultiplierCombinations = getFreeMembersMultiplierCombinations(freeVariableIndices);
-        for (int i = 0; i < freeMembersMultiplierCombinations.size(); i++) {
-            double[] singleVariableEquationSolution = new double[ref[0].length - 1];
-            for (int j = ref[0].length - freeMembersMultiplierCombinations.size() - 2; j >= 0; j--) {
-                singleVariableEquationSolution[j] = solveForRowEchelonFormRowForGivenFreeMemberValues(ref, j, freeMembersMultiplierCombinations.get(i), freeVariableIndices);
+        var freeMembersValuesCombinations = getFreeMembersValuesCombinations(freeVariableIndices);
+        Equation eq = new Equation(new ArrayDeque<>(), new AtomicReference<>());
+        boolean first = true;
+        for (Double[] fmvCombination : freeMembersValuesCombinations) {
+            for (int i = ref.length - 1; i >= 0; i--) {
+                eq.equalsTo().set(ref[i][ref[i].length - 1]);
+                int pivotIndex = findPivotIndex(ref, i);
+                double[] coefficients = new double[ref[i].length - pivotIndex - 1];
+                System.arraycopy(ref[i], pivotIndex, coefficients, 0, coefficients.length);
+                for (int k = 1; k < coefficients.length; k++) {
+                    if (first) {
+                        var memberBuilder = Member.builder().coefficient(coefficients[k]).letter("x" + (k + pivotIndex));
+                        if (freeVariableIndices[k + pivotIndex]) memberBuilder.value(fmvCombination[k + pivotIndex]);
+                        else memberBuilder.value(eq.getMemberByIndex(k + pivotIndex).getValue());
+                        eq.members().addLast(memberBuilder.build());
+                    } else {
+                        var member = eq.members().poll();
+                        if (Objects.isNull(member))
+                            throw new RuntimeException("A Member of an Equation should never be NULL!");
+                        member.setCoefficient(coefficients[k]);
+                        eq.members().addLast(member);
+                    }
+                }
+                eq.members().push(Member.builder().value(null).coefficient(coefficients[0]).letter("x" + pivotIndex).build());
+                solveSingleVariableLinearEquation(eq);
+                first = false;
             }
-            fundamental.add(singleVariableEquationSolution);
+            fundamental.add(eq.members().stream().map(Member::getValue).mapToDouble(Double::doubleValue).toArray());
+            eq = new Equation(new ArrayDeque<>(), new AtomicReference<>());
+            first = true;
         }
         return fundamental;
     }
-
-    public static double solveForRowEchelonFormRowForGivenFreeMemberValues(double[][] augmentedMatrix, int row, double[] freeMembersMultiplierCombination, Boolean[] freeMembersMask) {
-        int pivotIndex = findPivotIndex(MatrixUtil.removeMarginalColumn(augmentedMatrix, false), row);
-        double[] coefficients = new double[augmentedMatrix[row].length - pivotIndex - 1];
-        System.arraycopy(augmentedMatrix[row], pivotIndex, coefficients, 0, coefficients.length);
-        for (int i = 0; i < coefficients.length; i++) {
-            if (freeMembersMask[i + pivotIndex]) {
-                coefficients[i] *= freeMembersMultiplierCombination[i + pivotIndex];
-            }
-        }
-        return EquationUtil.solveSingleVariableLinearEquation(coefficients, 0);
-    }
-
-
 
     /**
      * Returns an array of equation members' flags as an array of {@link Boolean}.
@@ -236,50 +247,15 @@ public final class LinearEquationSystemUtil {
     }
 
     /**
-     * TODO Remove it?
-     * The method returns a list of coefficient combinations, size of {@code freeMemberIndices}. Each combination is
-     * the given template {@code coefficientsTemplate} with only one of its free members
-     * (according to the index found in the {@code freeMemberIndices}) is equal to 1.0d,
-     * with the rest of the free members == 0.0d.
-     *
-     * @param coefficientsTemplate the given template for the resulting equations
-     * @param pivot the index of the member of the coefficientsTemplate which is supposed to be an index of a single
-     *              unknown variable in any of the resulting equations
-     * @param freeMemberIndices indices of free (i.e. volatile, may be of any value) members of the given coefficientsTemplate
-     * @return the list of coefficient combinations
-     * @deprecated use getEquationMemberFlags() instead.
-     */
-    @Deprecated(forRemoval = true)
-    public static List<double[]> deriveCoefficientCombinationsFromTemplateForFreeMembersAfterPivot(final double[] coefficientsTemplate,
-                                                                                                   final int pivot,
-                                                                                                   final List<Integer> freeMemberIndices) {
-        final List<double[]> coefficientCombinations = new ArrayList<>();
-        int counter = 0;
-        while (counter < freeMemberIndices.size()) {
-            var basisVectorTemplate = new double[coefficientsTemplate.length];
-            System.arraycopy(coefficientsTemplate, 0, basisVectorTemplate, 0, coefficientsTemplate.length);
-            int cc = 0;
-            for (int i = pivot + 1; i < basisVectorTemplate.length - 1; ++i) {
-                if (freeMemberIndices.contains(i))
-                    if (i == freeMemberIndices.get(counter))
-                        basisVectorTemplate[freeMemberIndices.get(cc++)] = 1.0d;
-                    else
-                        basisVectorTemplate[freeMemberIndices.get(cc++)] = .0d;
-                }
-            coefficientCombinations.add(basisVectorTemplate);
-            counter++;
-        }
-        return coefficientCombinations;
-    }
-
-    /**
      * Решить систему линейных уравнений.
      *
      * @param equations система линейных уравнений, в виде массива уравнений. Каждое уравнение представлено
      *                  массивом коэффициентов. Последний элемент каждого уравнения является правой
      *                  частью уравнения, обязательно константу.
      * @return решение системы линейных уравнений
+     * @deprecated use fundamental() instead
      */
+    @Deprecated(forRemoval = true)
     public static Solution resolve(final double[][] equations) {
         var ref = RowEchelonFormUtil.toREF(equations);
         int rowIndex = getLastNonFreeVariableIndex(ref);
@@ -418,9 +394,9 @@ public final class LinearEquationSystemUtil {
         return augmentedMatrix[0].length - 1 - MatrixCalc.rank(augmentedMatrix);
     }
 
-    public static List<double[]> getFreeMembersMultiplierCombinations(final Boolean[] freeMembersFlagMask) {
+    public static List<Double[]> getFreeMembersValuesCombinations(final Boolean[] freeMembersFlagMask) {
         final List<Integer> freeMemberIndexAddresses = new ArrayList<>();
-        final List<double[]> basisVectors = new ArrayList<>();
+        final List<Double[]> basisVectors = new ArrayList<>();
         for(int i = 0; i < freeMembersFlagMask.length; i++) {
             if (freeMembersFlagMask[i]) {
                 freeMemberIndexAddresses.add(i);
@@ -431,23 +407,23 @@ public final class LinearEquationSystemUtil {
                 .limit(freeMemberIndexAddresses.size())
                 .toList();
         for (int[] permutation : indexPermutations) {
-            final double[] arr = new double[freeMembersFlagMask.length];
+            final Double[] arr = new Double[freeMembersFlagMask.length];
             final List<Integer> permutationValues = new ArrayList<>();
             permutationValues.add(1);
             for (int n = 1; n < permutation.length; n++)
                 permutationValues.add(0);
             int j = 0;
             for (int i = 0; i < freeMembersFlagMask.length; i++)
-                if (freeMembersFlagMask[i]) arr[i] = permutationValues.get(permutation[j++]);
-                else arr[i] = 1.0d;
+                if (freeMembersFlagMask[i]) arr[i] = (double) permutationValues.get(permutation[j++]);
+                else arr[i] = null;
             basisVectors.add(arr);
         }
-        for (double[] vector : basisVectors) cleanDoubleArrayOfNegativeZeros(vector);
+        for (Double[] vector : basisVectors) cleanDoubleArrayOfNegativeZeros(vector);
         return reorderBasisVectorsAfterCyclicShiftPermutationsGenerator(basisVectors);
     }
 
-    private static List<double[]> reorderBasisVectorsAfterCyclicShiftPermutationsGenerator(List<double[]> permutations) {
-        final List<double[]> result = new ArrayList<>();
+    private static List<Double[]> reorderBasisVectorsAfterCyclicShiftPermutationsGenerator(List<Double[]> permutations) {
+        final List<Double[]> result = new ArrayList<>();
         result.addFirst(permutations.getFirst());
         int j = 1;
         for (int i = permutations.size() - 1; i > 0; i--)

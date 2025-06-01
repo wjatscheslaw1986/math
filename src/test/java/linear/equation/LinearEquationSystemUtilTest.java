@@ -191,20 +191,6 @@ public class LinearEquationSystemUtilTest {
     }
 
     @Test
-    void given_equation_return_combination() {
-        var linearEquationSystem = new double[][]{
-                {1, 2, 3, 4, 0},
-                {3, -5, 1, -2, 0},
-                {4, -3, 4, 2, 0}
-        };
-        var freeMemberAddresses = List.of(1,3);
-        List<double[]> combination = deriveCoefficientCombinationsFromTemplateForFreeMembersAfterPivot(linearEquationSystem[0], 0, freeMemberAddresses);
-        assertEquals(freeMemberAddresses.size(), combination.size());
-        assertArrayEquals(new double[]{1, 1.0, 3, 0.0, 0}, combination.get(0));
-        assertArrayEquals(new double[]{1, 0.0, 3, 1.0, 0}, combination.get(1));
-    }
-
-    @Test
     void given_row_echelon_form_matrix_find_pivot_for_the_row() {
         var ref = new double[][]{
                 {1.0096634218430616d, -8.772286757703684d, -0.44083720521676284d, 0.8588440971684381d},
@@ -234,7 +220,6 @@ public class LinearEquationSystemUtilTest {
         expectedResult = new Boolean[]{false, true, false, true};
         assertArrayEquals(expectedResult,
                 getEquationMemberFlags(RowEchelonFormUtil.toRowEchelonForm(linearEquationSystem), basisSize(linearEquationSystem)));
-
     }
 
     @Test
@@ -245,27 +230,8 @@ public class LinearEquationSystemUtilTest {
                 {4, -3, 4, 2, 0}
         };
         var freeMembersFlags = getEquationMemberFlags(RowEchelonFormUtil.toRowEchelonForm(linearEquationSystem), basisSize(linearEquationSystem));
-        var ref = RowEchelonFormUtil.toRowEchelonForm(linearEquationSystem);
-
-
         System.out.println(Arrays.toString(freeMembersFlags));
-    }
-
-    double[] get(double[][] ref, Boolean[] mask) {
-        double[] result = new double[ref[0].length - 1];
-        return result;
-    }
-
-    @Test
-    void given_equation_members_coefficients_and_free_members_flag_mask_expect_basis_vectors() {
-        double[] linearEquationCoefficients = new double[]{10, -4, -16, 10};
-        var freeMemberAddresses = new Boolean[]{false, true, false, true};
-        var v = LinearEquationSystemUtil.getFreeMembersMultiplierCombinations(freeMemberAddresses);
-        assertEquals(2, v.size());
-        double[] firstExpectedFundamentalSystemBasisVector = new double[]{10, -4, -16, 0};
-        double[] secondExpectedFundamentalSystemBasisVector = new double[]{10, 0, -16, 10};
-        assertArrayEquals(firstExpectedFundamentalSystemBasisVector, v.get(0));
-        assertArrayEquals(secondExpectedFundamentalSystemBasisVector, v.get(1));
+        // TODO test
     }
 
     @Test
@@ -276,7 +242,9 @@ public class LinearEquationSystemUtilTest {
                 {4, -3, 4, 2, 0}
         };
         var ans = fundamental(linearEquationSystem);
+        assertEquals(2, ans.size());
         for (var arr : ans)
-        System.out.println(MatrixUtil.print(arr));
+            System.out.println(MatrixUtil.print(arr));
+        // TODO test
     }
 }

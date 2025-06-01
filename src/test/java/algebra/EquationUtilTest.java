@@ -6,10 +6,11 @@ package algebra;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.ArrayDeque;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
+import static algebra.EquationUtil.solveSingleVariableLinearEquation;
 import static algebra.EquationUtil.toSingleVariableEquation;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -39,7 +40,7 @@ public class EquationUtilTest {
     void given_equation_as_an_array_of_coefficients_and_a_right_part_convert_it_to_Equation() {
         double[] coefficients = new double[]{.0d, .0d, 4.0d, .0d, .0d, .05d, .0d, .0d, 8.05d};
         int index = 2;
-        Equation expected = new Equation(List.of(
+        Equation expected = new Equation(new ArrayDeque<>(List.of(
                 Member.builder()
                         .coefficient(coefficients[0])
                         .value(1.0d)
@@ -79,7 +80,7 @@ public class EquationUtilTest {
                         .power(1.0d)
                         .value(1.0d)
                         .build()
-        ), 8.05d);
+        )), new AtomicReference<Double>(8.05d));
         assertEquals(expected, toSingleVariableEquation(coefficients, index));
     }
 
@@ -87,18 +88,22 @@ public class EquationUtilTest {
     void given_single_variable_linear_equation_as_Equation_find_its_solution() {
         double[] coefficients = new double[]{.0d, .0d, 4.0d, .0d, .0d, .05d, .0d, .0d, 8.05d};
         Equation equation = toSingleVariableEquation(coefficients, 2);
-        assertNull(equation.members().get(2).getValue());
+        assertNull(equation.getMemberByIndex(2).getValue());
         EquationUtil.solveSingleVariableLinearEquation(equation);
-        assertNotNull(equation.members().get(2).getValue());
-        assertEquals(2d, equation.members().get(2).getValue());
+        assertNotNull(equation.getMemberByIndex(2).getValue());
+        assertEquals(2d, equation.getMemberByIndex(2).getValue());
+
+        equation = toSingleVariableEquation(new double[]{5d, 20d}, 0);
+        solveSingleVariableLinearEquation(equation);
+        assertEquals(4d, equation.getMemberByIndex(0).getValue());
     }
 
     @Test
     void given_array_of_doubles_clean_it_of_negative_zeroes() {
-        double[] coefficients = new double[]{.0d, -.0d, 4.0d, .0d, -.0d, .05d, -0.0d, .0d, 8.05d};
-        double[] expected = new double[]{.0d, .0d, 4.0d, .0d, .0d, .05d, 0.0d, .0d, 8.05d};
+        Double[] coefficients = new Double[]{.0d, -.0d, 4.0d, .0d, -.0d, .05d, -0.0d, .0d, 8.05d};
+        Double[] expected = new Double[]{.0d, .0d, 4.0d, .0d, .0d, .05d, 0.0d, .0d, 8.05d};
         EquationUtil.cleanDoubleArrayOfNegativeZeros(coefficients);
-        assertArrayEquals(expected, coefficients, 0);
+        assertArrayEquals(expected, coefficients);
     }
 
 }

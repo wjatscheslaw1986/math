@@ -3,10 +3,8 @@
  */
 package algebra;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 /**
@@ -87,7 +85,7 @@ public class EquationUtil {
      * @return the Equation object
      */
     public static Equation toSingleVariableEquation(final double[] coefficients, final int variableIndex) {
-        List<Member> members = new ArrayList<>();
+        Deque<Member> members = new ArrayDeque<>();
         for (int i = 0; i < coefficients.length - 1; i++) {
             var builder = Member.builder()
                     .coefficient(coefficients[i])
@@ -99,7 +97,7 @@ public class EquationUtil {
             }
             members.add(builder.build());
         }
-        return new Equation(members, coefficients[coefficients.length - 1]);
+        return new Equation(members, new AtomicReference<>(coefficients[coefficients.length - 1]));
     }
 
     /**
@@ -145,9 +143,9 @@ public class EquationUtil {
         for (Member eqMember : equation.members()) {
             if (Objects.isNull(eqMember.getValue()))
                 continue;
-            sum = sum + eqMember.getCoefficient();
+            sum = sum + eqMember.getCoefficient() * eqMember.getValue();
         }
-        sum = equation.equalsTo() - sum;
+        sum = equation.equalsTo().get() - sum;
         variable.setValue(sum / variable.getCoefficient());
     }
 
@@ -159,8 +157,9 @@ public class EquationUtil {
      *
      * @param array the given array
      */
-    public static void cleanDoubleArrayOfNegativeZeros(final double[] array) {
+    public static void cleanDoubleArrayOfNegativeZeros(final Double[] array) {
+        if (Objects.isNull(array)) return;
         for (int i = 0; i < array.length; i++)
-            if (array[i] == -0.0d) array[i] = 0.0d;
+            if (!Objects.isNull(array[i]) && array[i] == -0.0d) array[i] = 0.0d;
     }
 }

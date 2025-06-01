@@ -13,8 +13,8 @@ import java.util.Objects;
 public class Member implements Comparable<Member> {
     private final String letter;
     private final double power;
-    private final double coefficient;
-    private Double value;
+    private double coefficient;
+    private Double value = null;
 
     private Member(final double p, final double c, final String l, final Double v) {
         this.power = p;
@@ -29,6 +29,10 @@ public class Member implements Comparable<Member> {
 
     public double getCoefficient() {
         return coefficient;
+    }
+
+    public void setCoefficient(double coefficient) {
+        this.coefficient = coefficient;
     }
 
     public String getLetter() {
@@ -80,7 +84,7 @@ public class Member implements Comparable<Member> {
          * Create it with builder()
          */
         private Builder() {
-            this.power = 0.0;
+            this.power = 1.0;
             this.coefficient = 0.0;
             this.letter = "x";
             this.value = null;
