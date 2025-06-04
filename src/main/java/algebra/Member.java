@@ -16,11 +16,11 @@ public class Member implements Comparable<Member> {
     private double coefficient;
     private Double value = null;
 
-    private Member(final double p, final double c, final String l, final Double v) {
-        this.power = p;
-        this.coefficient = c;
-        this.letter = l;
-        this.value = v;
+    private Member(final double pow, final double coeff, final String name, final Double val) {
+        this.power = pow;
+        this.coefficient = coeff;
+        this.letter = name;
+        this.value = val;
     }
 
     public double getPower() {
@@ -113,6 +113,15 @@ public class Member implements Comparable<Member> {
         public Member build() {
             return new Member(this.power, this.coefficient, this.letter, this.value);
         }
+    }
+
+    /**
+     * Return a deep copy of this instance.
+     *
+     * @return the new Member instance
+     */
+    public Member copy() {
+        return new Member(this.power, this.coefficient, this.letter, this.value);
     }
 
     /**

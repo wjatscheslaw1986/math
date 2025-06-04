@@ -225,5 +225,15 @@ public class LinearEquationSystemUtilTest {
         assertArrayEquals(fundamental.get(0), basisVector1);
         var basisVector2 = new double[]{-1.454545454545, -1.272727272727, 0.0, 1.0};
         assertArrayEquals(fundamental.get(1), basisVector2);
+
+        linearEquationSystem = new double[][]{
+                {3, 2, 5, 0},
+                {2, -1, 3, 0},
+                {1, -4, 1, 0},
+                {7, 7, 12, 0}
+        };
+        fundamental = fundamental(linearEquationSystem);
+        assertEquals(1, fundamental.size());
+        assertArrayEquals(new double[]{-1.571428571429d, -0.142857142857d, 1.0d}, fundamental.getFirst());
     }
  }

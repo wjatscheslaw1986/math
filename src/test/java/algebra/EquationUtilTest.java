@@ -114,6 +114,22 @@ public class EquationUtilTest {
         assertEquals("a", sum.getLetter());
         assertEquals(1.0d, sum.getPower());
         assertNull(sum.getValue());
+
+        given1 = Member.builder().coefficient(15).letter("b").build();
+        given2 = Member.builder().coefficient(-20).letter("b").build();
+        sum = EquationUtil.sum(given1, given2);
+        assertEquals(-5, sum.getCoefficient());
+        assertEquals("b", sum.getLetter());
+        assertEquals(1.0d, sum.getPower());
+        assertNull(sum.getValue());
+        assertEquals(sum.getCoefficient(), EquationUtil.sum(given2, given1).getCoefficient());
+
+        given1 = Member.builder().coefficient(15).letter("a").build();
+        given2 = Member.builder().coefficient(20).letter("b").build();
+        Member finalGiven1 = given1;
+        Member finalGiven2 = given2;
+        assertThrows(IllegalArgumentException.class, () -> EquationUtil.sum(finalGiven1, finalGiven2));
+        assertThrows(IllegalArgumentException.class, () -> EquationUtil.sum(finalGiven2, finalGiven1));
     }
 
     @Test
@@ -141,6 +157,23 @@ public class EquationUtilTest {
         );
         assertNotEquals(expected, given);
         var distinctEquation = distinct(given);
+        assertEquals(expected, distinctEquation);
+
+        given = List.of(
+                Member.builder().coefficient(136).power(.0d).build(),
+                Member.builder().coefficient(1.0d).power(2.0d).build(),
+                Member.builder().coefficient(-36).power(.0d).build(),
+                Member.builder().coefficient(-8).build(),
+                Member.builder().coefficient(-17).build()
+                );
+
+        expected = List.of(
+                Member.builder().coefficient(1.0d).power(2.0d).build(),
+                Member.builder().coefficient(-25).build(),
+                Member.builder().coefficient(100).power(.0d).build()
+        );
+        assertNotEquals(expected, given);
+        distinctEquation = distinct(given);
         assertEquals(expected, distinctEquation);
     }
 

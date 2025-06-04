@@ -270,6 +270,17 @@ public final class LinearEquationSystemUtil {
         return augmentedMatrix[0].length - 1 - MatrixCalc.rank(augmentedMatrix);
     }
 
+    /**
+     * Given an array of size of an equation, that reflects which element in the equation may
+     * have voluntary value (TRUE) and which may not (FALSE) by their index similarity, return all combinations
+     * of values for the voluntary value elements (i.e. free members) for the case where only one free member
+     * has value 1, while the rest of them have value 0.
+     *
+     * @param freeMembersFlagMask logical flags mask for an equation as an array.
+     *                            TRUE if the element has the same index as the free member in the equation,
+     *                            FALSE otherwise.
+     * @return a list of combinations of free member values for fundamental solution system
+     */
     public static List<Double[]> getFreeMembersValuesCombinations(final Boolean[] freeMembersFlagMask) {
         final List<Integer> freeMemberIndexAddresses = new ArrayList<>();
         final List<Double[]> basisVectors = new ArrayList<>();

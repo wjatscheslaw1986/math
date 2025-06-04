@@ -199,6 +199,9 @@ public final class RowEchelonFormUtil {
         if (matrix.length < 2)
             return matrix;
 
+        if (!Validation.isMatrix(matrix))
+            throw new MatrixException("The given matrix doesn't have same amount of columns for every row.");
+
         int firstNonZeroColumnIndex = -1;
 
         Outer:
