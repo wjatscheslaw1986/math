@@ -40,9 +40,12 @@ public class EquationUtil {
     public static Member sum(Member x1, Member x2) {
         if (x1.getPower() != x2.getPower())
             throw new IllegalArgumentException("An attempt to sum two variable members of different powers.");
+        if (x1.getLetter() != x2.getLetter())
+            throw new IllegalArgumentException("An attempt to sum two unknowns.");
         return Member.builder()
                 .coefficient(x1.getCoefficient() + x2.getCoefficient())
                 .power(x1.getPower())
+                .letter(x1.getLetter())
                 .build();
     }
 
@@ -55,7 +58,7 @@ public class EquationUtil {
      * @return a list of members of a single variable equation, gathered distinct by power, ordered
      */
     public static List<Member> distinct(final List<Member> input) {
-        List<Member> members = input.stream()
+        return input.stream()
                 .collect(Collectors.groupingBy(
                         (Member m) -> {
                             if (m.getPower() != .0d)
@@ -70,11 +73,11 @@ public class EquationUtil {
                         result = Member.builder()
                                 .power(result.getPower())
                                 .coefficient(result.getCoefficient() + next.getCoefficient())
+                                .letter(result.getLetter())
                                 .build();
                     }
                     return result;
                 }).sorted(Comparator.reverseOrder()).toList();
-        return members;
     }
 
     /**

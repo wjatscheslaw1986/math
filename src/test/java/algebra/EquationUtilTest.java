@@ -10,8 +10,7 @@ import java.util.ArrayDeque;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static algebra.EquationUtil.solveSingleVariableLinearEquation;
-import static algebra.EquationUtil.toSingleVariableEquation;
+import static algebra.EquationUtil.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -104,6 +103,45 @@ public class EquationUtilTest {
         Double[] expected = new Double[]{.0d, .0d, 4.0d, .0d, .0d, .05d, 0.0d, .0d, 8.05d};
         EquationUtil.cleanDoubleArrayOfNegativeZeros(coefficients);
         assertArrayEquals(expected, coefficients);
+    }
+
+    @Test
+    void given_two_members_find_sum() {
+        var given1 = Member.builder().coefficient(15).letter("a").build();
+        var given2 = Member.builder().coefficient(20).letter("a").build();
+        var sum = EquationUtil.sum(given1, given2);
+        assertEquals(35, sum.getCoefficient());
+        assertEquals("a", sum.getLetter());
+        assertEquals(1.0d, sum.getPower());
+        assertNull(sum.getValue());
+    }
+
+    @Test
+    void given_list_of_members_prepare_sorted_distinct_equation() {
+        var given = List.of(
+                Member.builder().coefficient(5).letter("a").build(),
+                Member.builder().coefficient(5).letter("b").power(2.0d).build(),
+                Member.builder().coefficient(22).letter("z").build(),
+                Member.builder().coefficient(5).letter("a").power(2.0d).build(),
+                Member.builder().coefficient(15).letter("a").build(),
+                Member.builder().coefficient(2).letter("b").build(),
+                Member.builder().coefficient(6).letter("c").build(),
+                Member.builder().coefficient(1).letter("b").build(),
+                Member.builder().coefficient(2).letter("c").build(),
+                Member.builder().coefficient(10).letter("b").power(3.0d).build()
+        );
+        var expected = List.of(
+                Member.builder().coefficient(5).letter("a").power(2.0d).build(),
+                Member.builder().coefficient(20).letter("a").build(),
+                Member.builder().coefficient(10).letter("b").power(3.0d).build(),
+                Member.builder().coefficient(5).letter("b").power(2.0d).build(),
+                Member.builder().coefficient(3).letter("b").build(),
+                Member.builder().coefficient(8).letter("c").build(),
+                Member.builder().coefficient(22).letter("z").build()
+        );
+        assertNotEquals(expected, given);
+        var distinctEquation = distinct(given);
+        assertEquals(expected, distinctEquation);
     }
 
 }

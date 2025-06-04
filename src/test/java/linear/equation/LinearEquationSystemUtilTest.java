@@ -31,6 +31,25 @@ public class LinearEquationSystemUtilTest {
         System.out.printf("Running tests in %s%s", LinearEquationSystemUtilTest.class, System.lineSeparator());
     }
 
+    @Test
+    void given_a_matrix_swap_two_values_of_one_column() {
+        var givenMatrix = new double[][]{
+                {1, 2, 3, -2, 4},
+                {2, 6, 10, -2, 14},
+                {1, 4, 8, -3, 12},
+                {2, 2, 1, -3, 0}
+        };
+        var expectedMatrix = new double[][]{
+                {1, 2, 3, -2, 4},
+                {2, 6, 1, -2, 14},
+                {1, 4, 8, -3, 12},
+                {2, 2, 10, -3, 0}
+        };
+        assertFalse(MatrixCalc.areEqual(givenMatrix, expectedMatrix));
+        MatrixUtil.swapInColumn(expectedMatrix, 1, 3, 2);
+        assertTrue(MatrixCalc.areEqual(givenMatrix, expectedMatrix));
+    }
+
     /**
      * Решить системы уравнений методом Гаусса.
      * <p>
@@ -38,7 +57,7 @@ public class LinearEquationSystemUtilTest {
      * </p>
      */
     @Test
-    public void resolveUsingJordanGaussMethodTest() {
+    public void resolveUsingJordanGaussMethodTest() throws MatrixException {
 
         // a)
 
@@ -108,9 +127,11 @@ public class LinearEquationSystemUtilTest {
         assertTrue(isSolvable(linearEquationSystem));
         assertTrue(VectorCalc.areEqual(solutionWhereFreeVariableIsZero, solution.solution()));
 
-        //TODO
-//        var basis = solution.basis();
-//        assertEquals(2, basis.size());
+        var basis = solution.basis();
+        assertEquals(2, basis.size());
+        // TODO !
+//        assertEquals(4, basis.get(0).length);
+//        assertEquals(basis.get(0).length, basis.get(1).length);
 //        assertTrue(VectorCalc.areEqual(new double[]{2, 1, -1, 0}, basis.get(0)));
 //        assertTrue(VectorCalc.areEqual(new double[]{2, 0, -1, 1}, basis.get(1)));
 
@@ -127,43 +148,6 @@ public class LinearEquationSystemUtilTest {
         assertEquals(INFINITE, solution.solutionsCount());
         assertTrue(isSolvable(linearEquationSystem));
         assertTrue(VectorCalc.areEqual(solutionWhereFreeVariableIsZero, solution.solution()));
-    }
-
-    /**
-     * Найти фундаментальную систему решений.
-     * <p>
-     * Примеры приведены по книге А.С.Киркинский - "Линейная Алгебра и Аналитическа Геометрия" - 2006
-     * </p>
-     */
-    @Test
-    public void given_linear_equations_system_find_fundamental_solutions_system() {
-        var linearEquationSystem = new double[][]{
-                {1, 2, 3, 4, 0},
-                {3, -5, 1, -2, 0},
-                {4, -3, 4, 2, 0}
-        };
-
-        int variablesCount = linearEquationSystem[0].length - 1;
-        var solution = resolve(MatrixUtil.copy(linearEquationSystem));
-        List<Map<Integer, Double>> s2;
-//        try {
-//            s2 = resolve2(MatrixUtil.copy(linearEquationSystem));
-//        } catch (MatrixException e) {
-//            throw new RuntimeException(e);
-//        }
-
-        /*
-         * Number of dimensions (vectors of the basis) of the equation system solution space must be n - r,
-         * where n is number of variables, and r is rank of the matrix.
-         */
-        assertEquals(2, MatrixCalc.rank(linearEquationSystem));
-        assertEquals(2, solution.basis().size());
-        assertEquals(2, variablesCount
-                - MatrixCalc.rank(MatrixUtil.removeMarginalColumn(MatrixUtil.copy(linearEquationSystem), false)));
-
-        //TODO find Jordan-Gauss limitations
-        assertArrayEquals(new double[]{-(17d/11d),-(8d/11d), 1d, 0d}, solution.basis().get(0));
-        assertArrayEquals(new double[]{-(16d/11d),-(14d/11d), 0d, 1d}, solution.basis().get(1));
     }
 
     @Test
@@ -222,29 +206,24 @@ public class LinearEquationSystemUtilTest {
                 getEquationMemberFlags(RowEchelonFormUtil.toRowEchelonForm(linearEquationSystem), basisSize(linearEquationSystem)));
     }
 
+    /**
+     * Найти фундаментальную систему решений для заданной системы однородных линейных уравнений.
+     * <p>
+     * Примеры приведены по книге А.С.Киркинский - "Линейная Алгебра и Аналитическа Геометрия" - 2006
+     * </p>
+     */
     @Test
-    void given_equation_system_solve_it() throws MatrixException {
+    void given_linear_equation_system_find_fundamental_solution_system() throws MatrixException {
         var linearEquationSystem = new double[][]{
                 {1, 2, 3, 4, 0},
                 {3, -5, 1, -2, 0},
                 {4, -3, 4, 2, 0}
         };
-        var freeMembersFlags = getEquationMemberFlags(RowEchelonFormUtil.toRowEchelonForm(linearEquationSystem), basisSize(linearEquationSystem));
-        System.out.println(Arrays.toString(freeMembersFlags));
-        // TODO test
+        var fundamental = fundamental(linearEquationSystem);
+        assertEquals(2, fundamental.size());
+        var basisVector1 = new double[]{-1.545454545455, -0.727272727273, 1.0, 0.0};
+        assertArrayEquals(fundamental.get(0), basisVector1);
+        var basisVector2 = new double[]{-1.454545454545, -1.272727272727, 0.0, 1.0};
+        assertArrayEquals(fundamental.get(1), basisVector2);
     }
-
-    @Test
-    void given_expect_fundamentsl() throws MatrixException {
-        var linearEquationSystem = new double[][]{
-                {1, 2, 3, 4, 0},
-                {3, -5, 1, -2, 0},
-                {4, -3, 4, 2, 0}
-        };
-        var ans = fundamental(linearEquationSystem);
-        assertEquals(2, ans.size());
-        for (var arr : ans)
-            System.out.println(MatrixUtil.print(arr));
-        // TODO test
-    }
-}
+ }

@@ -165,6 +165,33 @@ public final class MatrixUtil {
     }
 
     /**
+     * This method returns a matrix 1 column lesser than the original one, excluding
+     * one column.
+     *
+     * @param matrix - the original matrix
+     *
+     * @param columnNumber - number (index + 1) of a column to exclude
+     *
+     * @return a matrix one row one column less in size. The column to exclude are
+     * provided as an argument
+     */
+    static double[][] removeNthColumn(double[][] matrix, int columnNumber) {
+        double[][] submatrix = new double[matrix.length][matrix[0].length - 1];
+        int submatrixRow = 1, submatrixCol = 1;
+        for (int rowNum = 1; rowNum <= matrix.length; rowNum++) {
+            for (int colNum = 1; colNum <= matrix[0].length; colNum++) {
+                if (colNum == columnNumber)
+                    continue;
+                submatrix[submatrixRow - 1][submatrixCol - 1] = matrix[rowNum - 1][colNum - 1];
+                submatrixCol++;
+            }
+            submatrixCol = 1;
+            submatrixRow++;
+        }
+        return submatrix;
+    }
+
+    /**
      * Swap two values in two different rows but in the same column in the given matrix.
      *
      * @param matrix the given matrix
@@ -179,7 +206,6 @@ public final class MatrixUtil {
     }
 
     /**
-     * TODO tests!
      * This method returns a matrix 1 row and 1 column lesser than the original one.
      * The ordinals of the row and the column to exclude are provided as <i>rowNumber</i>
      * and <i>columnNumber</i>, respectively.
@@ -224,6 +250,25 @@ public final class MatrixUtil {
             resultColumn[i++] = row[column];
         }
         return resultColumn;
+    }
+
+    /**
+     * This method substitutes one column of a given matrix with a given vector,
+     * at a certain position 'index'.
+     *
+     * @param matrix  the original matrix
+     * @param column  the given vector
+     * @param index   column index
+     * @return        new matrix of same size but with one of its columns substituted by <i>column</i>
+     */
+    public static double[][] substituteColumn(final double[][] matrix, final double[] column, final int index) {
+        if (matrix[0].length <= index)
+            throw new ArrayIndexOutOfBoundsException(String
+                    .format("Column index %d is out of matrix columns size of %d", index, matrix[0].length));
+        final double[][] result = MatrixUtil.copy(matrix);
+        for (int row = 0; row < matrix.length; row++)
+            result[row][index] = column[row];
+        return result;
     }
 
     /**

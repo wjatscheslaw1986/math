@@ -201,32 +201,7 @@ public final class MatrixCalc {
     }
 
 
-    /*
-     * This method returns a matrix 1 column lesser than the original one, excluding
-     * one column.
-     *
-     * @param matrix - the original matrix
-     *
-     * @param col - number (index + 1) of a column to exclude
-     *
-     * @return a matrix one row one column less in size. The column to exclude are
-     * provided as an argument
-     */
-    static double[][] excludeColumn(double[][] matrix, int col) {
-        double[][] submatrix = new double[matrix.length][matrix[0].length - 1];
-        int submatrixRow = 1, submatrixCol = 1;
-        for (int rowNum = 1; rowNum <= matrix.length; rowNum++) {
-            for (int colNum = 1; colNum <= matrix[0].length; colNum++) {
-                if (colNum == col)
-                    continue;
-                submatrix[submatrixRow - 1][submatrixCol - 1] = matrix[rowNum - 1][colNum - 1];
-                submatrixCol++;
-            }
-            submatrixCol = 1;
-            submatrixRow++;
-        }
-        return submatrix;
-    }
+
 
     /**
      * Вырезать квадратную субматрицу (не путать с алгебраическим дополнением!) для данной матрицы.

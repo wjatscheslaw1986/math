@@ -117,4 +117,74 @@ public class MatrixUtilTest {
         assertThrows(ArrayIndexOutOfBoundsException.class, () -> MatrixUtil.removeNthRow(given, 0));
         assertThrows(ArrayIndexOutOfBoundsException.class, () -> MatrixUtil.removeNthRow(given, 4));
     }
+
+    @Test
+    void given_matrix_remove_nth_column() {
+        final double[][] given = new double[][]{
+                {1.0d, -3.0d, -5.0d, -3.0d},
+                {0.0d, 4.0d, 11.0d, 7.0d},
+                {0.0d, 0.0d, 2.0d, 0.0d}};
+        final double[][] expectedResult1 = new double[][]{
+                {-3.0d, -5.0d, -3.0d},
+                {4.0d, 11.0d, 7.0d},
+                {0.0d, 2.0d, 0.0d}};
+        final double[][] expectedResult2 = new double[][]{
+                {1.0d, -5.0d, -3.0d},
+                {0.0d, 11.0d, 7.0d},
+                {0.0d, 2.0d, 0.0d}};
+        final double[][] expectedResult3 = new double[][]{
+                {1.0d, -3.0d, -3.0d},
+                {0.0d, 4.0d, 7.0d},
+                {0.0d, 0.0d, 0.0d}};
+        final double[][] expectedResult4 = new double[][]{
+                {1.0d, -3.0d, -5.0d},
+                {0.0d, 4.0d, 11.0d},
+                {0.0d, 0.0d, 2.0d}};
+        assertTrue(areEqual(expectedResult1, MatrixUtil.removeNthColumn(given, 1)));
+        assertTrue(areEqual(expectedResult2, MatrixUtil.removeNthColumn(given, 2)));
+        assertTrue(areEqual(expectedResult3, MatrixUtil.removeNthColumn(given, 3)));
+        assertTrue(areEqual(expectedResult4, MatrixUtil.removeNthColumn(given, 4)));
+        assertThrows(ArrayIndexOutOfBoundsException.class, () -> MatrixUtil.removeNthColumn(given, 0));
+        assertThrows(ArrayIndexOutOfBoundsException.class, () -> MatrixUtil.removeNthColumn(given, 5));
+    }
+
+    @Test
+    void given_matrix_substitute_one_column_for_another_one() {
+        var matrix = new double[][]{
+                {1, 2, 3, 4, 0},
+                {3, -5, 1, -2, 0},
+                {4, -3, 4, 2, 0}
+        };
+        var column = new double[]{55,44,33};
+        var expectedResult1 = new double[][]{
+                {55, 2, 3, 4, 0},
+                {44, -5, 1, -2, 0},
+                {33, -3, 4, 2, 0}
+        };
+        var expectedResult2 = new double[][]{
+                {1, 55, 3, 4, 0},
+                {3, 44, 1, -2, 0},
+                {4, 33, 4, 2, 0}
+        };
+        var expectedResult3 = new double[][]{
+                {1, 2, 55, 4, 0},
+                {3, -5, 44, -2, 0},
+                {4, -3, 33, 2, 0}
+        };
+        var expectedResult4 = new double[][]{
+                {1, 2, 3, 55, 0},
+                {3, -5,1, 44, 0},
+                {4, -3,4, 33, 0}
+        };
+        var expectedResult5 = new double[][]{
+                {1, 2, 3, 4,  55 },
+                {3, -5, 1, -2, 44},
+                {4, -3, 4, 2, 33}
+        };
+        assertTrue(MatrixCalc.areEqual(expectedResult1, substituteColumn(matrix, column, 0)));
+        assertTrue(MatrixCalc.areEqual(expectedResult2, substituteColumn(matrix, column, 1)));
+        assertTrue(MatrixCalc.areEqual(expectedResult3, substituteColumn(matrix, column, 2)));
+        assertTrue(MatrixCalc.areEqual(expectedResult4, substituteColumn(matrix, column, 3)));
+        assertTrue(MatrixCalc.areEqual(expectedResult5, substituteColumn(matrix, column, 4)));
+    }
 }
