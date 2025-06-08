@@ -73,7 +73,7 @@ public class LinearEquationSystemUtilTest {
         assertTrue(isSolvable(linearEquationSystem));
         assertTrue(VectorCalc.areEqual(solutionWhereFreeVariableIsZero, solution.solution()));
 
-        // б)
+//         б)
 
         linearEquationSystem = new double[][]{
                 {3, -2, 1, -3, 2},
@@ -129,9 +129,10 @@ public class LinearEquationSystemUtilTest {
 
         var basis = solution.basis();
         assertEquals(2, basis.size());
-        // TODO !
-//        assertEquals(4, basis.get(0).length);
-//        assertEquals(basis.get(0).length, basis.get(1).length);
+        assertEquals(4, basis.get(0).length);
+        assertEquals(basis.get(0).length, basis.get(1).length);
+
+        //TODO!
 //        assertTrue(VectorCalc.areEqual(new double[]{2, 1, -1, 0}, basis.get(0)));
 //        assertTrue(VectorCalc.areEqual(new double[]{2, 0, -1, 1}, basis.get(1)));
 
@@ -222,9 +223,9 @@ public class LinearEquationSystemUtilTest {
         var fundamental = fundamental(linearEquationSystem);
         assertEquals(2, fundamental.size());
         var basisVector1 = new double[]{-1.545454545455, -0.727272727273, 1.0, 0.0};
-        assertArrayEquals(fundamental.get(0), basisVector1);
+        assertArrayEquals(basisVector1, fundamental.get(0), 1e-12);
         var basisVector2 = new double[]{-1.454545454545, -1.272727272727, 0.0, 1.0};
-        assertArrayEquals(fundamental.get(1), basisVector2);
+        assertArrayEquals(basisVector2, fundamental.get(1), 1e-12);
 
         linearEquationSystem = new double[][]{
                 {3, 2, 5, 0},

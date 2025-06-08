@@ -11,11 +11,14 @@ import linear.matrix.MatrixUtil;
 import linear.matrix.RowEchelonFormUtil;
 import linear.matrix.exception.MatrixException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static algebra.EquationUtil.cleanDoubleArrayOfNegativeZeros;
 import static algebra.EquationUtil.solveSingleVariableLinearEquation;
+import static approximation.RoundingUtil.cleanDoubleArrayOfNegativeZeros;
 import static linear.equation.SolutionsCount.*;
 import static linear.matrix.MatrixUtil.*;
 
@@ -153,35 +156,30 @@ public final class LinearEquationSystemUtil {
             return List.of(resolveUsingReverseMatrixMethod(MatrixUtil.removeMarginalColumn(ref, false), MatrixUtil.getColumn(ref, ref[0].length)));
         var fundamental = new ArrayList<double[]>();
         var freeMembersValuesCombinations = getFreeMembersValuesCombinations(freeVariableIndices);
-        Equation eq = new Equation(new ArrayDeque<>(), new AtomicReference<>());
-        boolean first = true;
+        Equation eq = new Equation(new ArrayList<>(), new AtomicReference<>());
         for (Double[] fmvCombination : freeMembersValuesCombinations) {
             for (int i = ref.length - 1; i >= 0; i--) {
                 eq.equalsTo().set(ref[i][ref[i].length - 1]);
                 int pivotIndex = findPivotIndex(ref, i);
                 double[] coefficients = new double[ref[i].length - pivotIndex - 1];
                 System.arraycopy(ref[i], pivotIndex, coefficients, 0, coefficients.length);
-                for (int k = 1; k < coefficients.length; k++) {
-                    if (first) {
-                        var memberBuilder = Member.builder().coefficient(coefficients[k]).letter("x" + (k + pivotIndex));
-                        if (freeVariableIndices[k + pivotIndex]) memberBuilder.value(fmvCombination[k + pivotIndex]);
-                        else memberBuilder.value(eq.getMemberByIndex(k + pivotIndex).getValue());
-                        eq.members().addLast(memberBuilder.build());
-                    } else {
-                        var member = eq.members().poll();
-                        if (Objects.isNull(member))
-                            throw new RuntimeException("A Member of an Equation should never be NULL!");
-                        member.setCoefficient(coefficients[k]);
-                        eq.members().addLast(member);
-                    }
+                int k = 1;
+                for (; k < coefficients.length; k++) {
+                        var member = eq.getMemberByLetter("x" + (k + pivotIndex));
+                        if (Objects.isNull(member)) {
+                            var memberBuilder = Member.builder().coefficient(coefficients[k]).letter("x" + (k + pivotIndex));
+                            if (freeVariableIndices[k + pivotIndex]) memberBuilder.value(fmvCombination[k + pivotIndex]);
+                            else memberBuilder.value(eq.getMemberByIndex(k + pivotIndex).getValue());
+                            eq.members().add(memberBuilder.build());
+                        } else {
+                            member.setCoefficient(coefficients[k]);
+                        }
                 }
-                eq.members().push(Member.builder().value(null).coefficient(coefficients[0]).letter("x" + pivotIndex).build());
+                eq.members().addFirst(Member.builder().value(null).coefficient(coefficients[0]).letter("x" + pivotIndex).build());
                 solveSingleVariableLinearEquation(eq);
-                first = false;
             }
             fundamental.add(eq.members().stream().map(Member::getValue).mapToDouble(Double::doubleValue).toArray());
-            eq = new Equation(new ArrayDeque<>(), new AtomicReference<>());
-            first = true;
+            eq = new Equation(new ArrayList<>(), new AtomicReference<>());
         }
         for (var basisVector : fundamental) roundValues(12, basisVector);
         return fundamental;
