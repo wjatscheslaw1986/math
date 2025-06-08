@@ -7,6 +7,8 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
+import static approximation.RoundingUtil.roundToNDecimals;
+
 /**
  * A utility class for equations.
  *
@@ -88,7 +90,7 @@ public class EquationUtil {
      * @return the Equation object
      */
     public static Equation toSingleVariableEquation(final double[] coefficients, final int variableIndex) {
-        Deque<Member> members = new ArrayDeque<>();
+        List<Member> members = new ArrayList<>();
         for (int i = 0; i < coefficients.length - 1; i++) {
             var builder = Member.builder()
                     .coefficient(coefficients[i])
@@ -149,20 +151,6 @@ public class EquationUtil {
             sum = sum + eqMember.getCoefficient() * eqMember.getValue();
         }
         sum = equation.equalsTo().get() - sum;
-        variable.setValue(sum / variable.getCoefficient());
-    }
-
-    /**
-     * This method traverses the given array and changes every -0.0d to 0.0d.
-     * <p>
-     *     This method modifies the argument.
-     * </p>
-     *
-     * @param array the given array
-     */
-    public static void cleanDoubleArrayOfNegativeZeros(final Double[] array) {
-        if (Objects.isNull(array)) return;
-        for (int i = 0; i < array.length; i++)
-            if (!Objects.isNull(array[i]) && array[i] == -0.0d) array[i] = 0.0d;
+        variable.setValue(roundToNDecimals(sum / variable.getCoefficient(), 12));
     }
 }
