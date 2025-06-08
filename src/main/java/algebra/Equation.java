@@ -4,8 +4,8 @@
 package algebra;
 
 import java.util.Arrays;
-import java.util.Deque;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -17,7 +17,24 @@ import java.util.concurrent.atomic.AtomicReference;
  *
  * @author Viacheslav Mikhailov
  */
-public record Equation(Deque<Member> members, AtomicReference<Double> equalsTo) {
+public record Equation(List<Member> members, AtomicReference<Double> equalsTo) {
+
+    /**
+     *
+     * @param letter
+     * @return
+     */
+    public Member getMemberByLetter(String letter) {
+        Objects.requireNonNull(letter);
+        Iterator<Member> iterator = members.iterator();
+        while (iterator.hasNext()) {
+            Member member = iterator.next();
+            if (member.getLetter().equals(letter)) {
+                return member;
+            }
+        }
+        return null;
+    }
 
     /**
      *
@@ -25,14 +42,7 @@ public record Equation(Deque<Member> members, AtomicReference<Double> equalsTo) 
      * @return
      */
     public Member getMemberByIndex(int index) {
-        if (index < 0 || index >= members().size()) {
-            throw new IndexOutOfBoundsException("Invalid index");
-        }
-        Iterator<Member> iterator = members.iterator();
-        for (int i = 0; i < index; i++) {
-            iterator.next();
-        }
-        return iterator.next();
+        return members.get(index);
     }
 
     @Override
