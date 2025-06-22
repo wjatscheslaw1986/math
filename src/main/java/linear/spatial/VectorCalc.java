@@ -42,10 +42,10 @@ public final class VectorCalc {
      */
     public static double[] sum(double[] vector1, double[] vector2) {
         if (vector1.length != vector2.length) throw new IllegalArgumentException("In order to sum both vectors must have same number of coordinates.");
-        double[] summarizeCoordinates = new double[vector1.length];
+        double[] coordinatesSum = new double[vector1.length];
         for (int i = 0; i < vector1.length; i++)
-            summarizeCoordinates[i] = vector1[i]+vector2[i];
-        return summarizeCoordinates;
+            coordinatesSum[i] = vector1[i] + vector2[i];
+        return coordinatesSum;
     }
 
     /**

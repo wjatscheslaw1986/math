@@ -5,6 +5,7 @@ package linear.matrix;
 
 import combinatorics.CombinationsGenerator;
 import linear.matrix.exception.MatrixException;
+import linear.spatial.Vector;
 import linear.spatial.VectorCalc;
 
 import java.util.ArrayDeque;
@@ -13,8 +14,7 @@ import java.util.stream.IntStream;
 
 import static linear.matrix.MatrixUtil.copy;
 import static linear.matrix.MatrixUtil.excludeColumnAndRow;
-import static linear.matrix.Validation.isEqualDimensions;
-import static linear.matrix.Validation.isSquareMatrix;
+import static linear.matrix.Validation.*;
 
 /**
  * Matrix calculator util class.
@@ -47,11 +47,10 @@ public final class MatrixCalc {
     }
 
     /**
-     * The method multiplies the argument matrix (on the left) on a vector-column (a
-     * single column matrix, on the right) The method does not modify the original
-     * matrix object
+     * Multiply the given matrix (on the left) on a vector-column (a
+     * single column matrix, on the right) The method does not modify the given matrix.
      *
-     * @param matrix - the original matrix object
+     * @param matrix - the given matrix
      * @param column - the vector-column to multiply on
      * @return a new matrix object which is a result of multiplication
      */
@@ -89,6 +88,19 @@ public final class MatrixCalc {
             }
         }
         return result;
+    }
+
+    /**
+     * The method multiplies a given vector (from the left side of the expression)
+     * on a given matrix (on the right side of the expression).
+     *
+     * @param vector   - the given vector on the left side of the expression
+     * @param matrixRight- the given matrix on the right side of the expression
+     * @return the resulting matrix
+     * @throws MatrixException - if the given multiplicand and the given multiplier cannot be multiplied together.
+     */
+    public static double[][] multiply(Vector vector, double[][] matrixRight) throws MatrixException {
+        return multiply(new double[][]{vector.coordinates()}, matrixRight);
     }
 
     /**
@@ -195,8 +207,7 @@ public final class MatrixCalc {
      * @return a new matrix object which is a reversed matrix passed as an argument
      */
     public static double[][] inverse(final double[][] matrix) {
-        var det = det(matrix);
-        if (det == 0) throw new IllegalArgumentException("You cannot find a reverse matrix for a degenerate one!");
+        if (!isInvertible(matrix)) throw new IllegalArgumentException("You cannot find a reverse matrix for a degenerate one!");
         return multiply(transpose(cofactors(matrix)), 1.0d / det(matrix));
     }
 

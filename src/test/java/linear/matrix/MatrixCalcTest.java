@@ -5,13 +5,11 @@ package linear.matrix;
 
 import linear.MatrixGenerator;
 import linear.matrix.exception.MatrixException;
+import linear.spatial.Vector;
 import linear.spatial.VectorCalc;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import java.util.random.RandomGenerator;
-import java.util.random.RandomGeneratorFactory;
 
 import static linear.matrix.MatrixCalc.*;
 import static linear.matrix.MatrixUtil.EPS;
@@ -152,25 +150,80 @@ public class MatrixCalcTest {
     }
 
     /**
+     * Даны матрица и вектор, найти произведение вектора на матрицу.
+     *
+     * Примеры приведены по книге А.С.Киркинский - "Линейная Алгебра и Аналитическая
+     * Геометрия" - 2006
+     */
+    @Test
+    void givenMatrixAndVector_whenMultiply_thenReturnExpectedVector() throws MatrixException {
+        var expectedVector = new double[]{-33.0d, -50.0d, -45.0d};
+        var matrix = new double[][]{{-8.0d, -12.0d, -11.0d}, {7.0d, 10.0d, 9.0d}, {-6.0d, -9.0d, -8.0d}};
+        var vector = new double[][]{{2.0d, 1.0d, 4.0d}};
+        var result = MatrixCalc.multiply(vector, matrix);
+        assertArrayEquals(expectedVector, result[0]);
+        result = MatrixCalc.multiply(Vector.of(2.0d, 1.0d, 4.0d), matrix);
+        assertArrayEquals(expectedVector, result[0]);
+    }
+
+    /**
+     * Даны матрицы, найти обратные для каждой из них.
+     *
+     * Примеры приведены по книге А.С.Киркинский - "Линейная Алгебра и Аналитическая
+     * Геометрия" - 2006
+     */
+    @Test
+    public void givenMatrix_whenIsInvertible_thenTrue() {
+        final double[][] a = new double[][]{{6.0d, 4.0d}, {-2.0d, -1.0d}};
+        final double[][] b = new double[][]{{3.0f, 4.0f}, {9.0f, 12.0f}};
+        final double[][] c = new double[][]{{2.0d, 0.0d, 2.0d}, {-3.0d, 2.0d, 0.0d}, {6.0d, -2.0d, 4.0d}};
+        final double[][] a_inv = new double[][]{{-.5d, -2.0d}, {1.0d, 3.0d}};
+        final double[][] c_inv = new double[][]{{2.0d, -1.0d, -1.0d}, {3.0d, -1.0d, -1.5d}, {-1.5d, 1.0d, 1.0d}};
+
+        Assertions.assertTrue(Validation.isInvertible(a));
+        Assertions.assertDoesNotThrow(() -> inverse(a));
+        Assertions.assertTrue(areEqual(inverse(a), a_inv));
+        Assertions.assertFalse(Validation.isInvertible(b));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> inverse(b));
+        Assertions.assertDoesNotThrow(() -> inverse(c));
+        Assertions.assertTrue(areEqual(inverse(c), c_inv));
+    }
+
+    /**
      * Даны матрицы, найти обратные для каждой из них.
      * Примеры приведены по книге А.С.Киркинский - "Линейная Алгебра и Аналитическая
      * Геометрия" - 2006
      */
     @Test
-    public void inverseTest() {
+    public void givenMatrices_whenIsInvertible_thenTrueAndDoesNotThrow() {
         final double[][] a = new double[][]{{6.0d, 4.0d}, {-2.0d, -1.0d}};
         final double[][] b = new double[][]{{3.0f, 4.0f}, {9.0f, 12.0f}};
         final double[][] c = new double[][]{{2.0d, 0.0d, 2.0d}, {-3.0d, 2.0d, 0.0d}, {6.0d, -2.0d, 4.0d}};
-        final double[][] a_rev = new double[][]{{-.5d, -2.0d}, {1.0d, 3.0d}};
-        final double[][] c_rev = new double[][]{{2.0d, -1.0d, -1.0d}, {3.0d, -1.0d, -1.5d}, {-1.5d, 1.0d, 1.0d}};
 
         Assertions.assertTrue(Validation.isInvertible(a));
         Assertions.assertDoesNotThrow(() -> inverse(a));
-        Assertions.assertTrue(areEqual(inverse(a), a_rev));
         Assertions.assertFalse(Validation.isInvertible(b));
         Assertions.assertThrows(IllegalArgumentException.class, () -> inverse(b));
         Assertions.assertDoesNotThrow(() -> inverse(c));
-        Assertions.assertTrue(areEqual(inverse(c), c_rev));
+    }
+
+    /**
+     * Даны матрицы, найти обратные для каждой из них.
+     * Примеры приведены по книге А.С.Киркинский - "Линейная Алгебра и Аналитическая
+     * Геометрия" - 2006
+     */
+    @Test
+    public void givenMatrices_whenInvert_thenEqualToExpected() {
+        final double[][] a = new double[][]{{6.0d, 4.0d}, {-2.0d, -1.0d}};
+        final double[][] b = new double[][]{{1.0d, 3.0d, 2.0d}, {2.0d, -2.0d, -5.0d}, {-3.0d, .0d, 4.0d}};
+        final double[][] c = new double[][]{{2.0d, 0.0d, 2.0d}, {-3.0d, 2.0d, 0.0d}, {6.0d, -2.0d, 4.0d}};
+        final double[][] a_inv = new double[][]{{-.5d, -2.0d}, {1.0d, 3.0d}};
+        final double[][] b_inv = new double[][]{{-8.0d, -12.0d, -11.0d}, {7.0d, 10.0d, 9.0d}, {-6.0d, -9.0d, -8.0d}};
+        final double[][] c_inv = new double[][]{{2.0d, -1.0d, -1.0d}, {3.0d, -1.0d, -1.5d}, {-1.5d, 1.0d, 1.0d}};
+
+        Assertions.assertTrue(areEqual(inverse(a), a_inv));
+        Assertions.assertTrue(areEqual(inverse(b), b_inv));
+        Assertions.assertTrue(areEqual(inverse(c), c_inv));
     }
 
     /**
@@ -230,26 +283,11 @@ public class MatrixCalcTest {
     }
 
     /**
-     * Given a matrix, convert it to a trapezoidal matrix. TODO
-     */
-    @Test
-    public void tryTrapezoid() {
-        final RandomGenerator rnd = RandomGeneratorFactory.getDefault().create();
-        for (int i = 0; i < 10; i++) {
-            var matrix = MatrixGenerator.generateRandomDoubleMatrix(rnd.nextInt(3, 7), rnd.nextInt(3, 7));
-            // TODO трапецевидную форму
-            // assertFalse(DoubleMatrixCalc.isTrapezoid(matrix));
-            // assertTrue(DoubleMatrixCalc.isTrapezoid(DoubleMatrixCalc.tryTrapezoid(matrix)));
-        }
-    }
-
-    /**
-     * Given a matrix, check if it is a trapezoidal one.
      * Примеры приведены по книге А.С.Киркинский - "Линейная Алгебра и Аналитическая
      * Геометрия" - 2006
      */
     @Test
-    public void isTrapezoid() {
+    public void givenTrapezoidFormMatrix_whenCheckIsTrapezoid_thenTrue() {
         final double[][] matrix = new double[][]{{1.0d, -3.0d, -5.0d, -3.0d}, {0.0d, 4.0d, 11.0d, 7.0d},
                 {0.0d, 0.0d, 2.0d, 0.0d}};
         assertTrue(isTrapezoidForm(matrix));

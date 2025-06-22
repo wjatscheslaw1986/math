@@ -109,14 +109,14 @@ public final class Validation {
     /**
      * Checks if the given matrix is invertible.
      * <p>
-     *     A matrix is invertible only in case it is square and has a full rank.
+     *     A matrix is invertible only in case it is a square one, not degenerate and has a full rank.
      * </p>
      *
      * @param matrix the given matrix
      * @return true if the given matrix is degenerate, false otherwise
      */
     public static boolean isInvertible(final double[][] matrix) {
-        return isSquareMatrix(matrix) && rank(matrix) == matrix.length;
+        return isSquareMatrix(matrix) && MatrixCalc.det(matrix) != .0d && rank(matrix) == matrix.length;
     }
 
     /**
