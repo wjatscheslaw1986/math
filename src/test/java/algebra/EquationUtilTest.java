@@ -102,7 +102,7 @@ public class EquationUtilTest {
         var given2 = Member.builder().coefficient(20).letter("a").build();
         var sum = EquationUtil.sum(given1, given2);
         assertEquals(35, sum.getCoefficient());
-        assertEquals("a", sum.getLetter());
+        assertEquals("a0", sum.getLetter().toString());
         assertEquals(1.0d, sum.getPower());
         assertNull(sum.getValue());
 
@@ -110,7 +110,7 @@ public class EquationUtilTest {
         given2 = Member.builder().coefficient(-20).letter("b").build();
         sum = EquationUtil.sum(given1, given2);
         assertEquals(-5, sum.getCoefficient());
-        assertEquals("b", sum.getLetter());
+        assertEquals("b0", sum.getLetter().toString());
         assertEquals(1.0d, sum.getPower());
         assertNull(sum.getValue());
         assertEquals(sum.getCoefficient(), EquationUtil.sum(given2, given1).getCoefficient());

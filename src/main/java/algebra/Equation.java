@@ -24,7 +24,7 @@ public record Equation(List<Member> members, AtomicReference<Double> equalsTo) {
      * @param letter
      * @return
      */
-    public Member getMemberByLetter(String letter) {
+    public Member getMemberByLetter(Letter letter) {
         Objects.requireNonNull(letter);
         Iterator<Member> iterator = members.iterator();
         while (iterator.hasNext()) {

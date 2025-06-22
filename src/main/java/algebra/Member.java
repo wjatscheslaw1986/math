@@ -11,12 +11,12 @@ import java.util.Objects;
  * @author Viacheslav Mikhailov
  */
 public class Member implements Comparable<Member> {
-    private final String letter;
+    private final Letter letter;
     private final double power;
     private double coefficient;
     private Double value = null;
 
-    private Member(final double pow, final double coeff, final String name, final Double val) {
+    private Member(final double pow, final double coeff, final Letter name, final Double val) {
         this.power = pow;
         this.coefficient = coeff;
         this.letter = name;
@@ -35,7 +35,7 @@ public class Member implements Comparable<Member> {
         this.coefficient = coefficient;
     }
 
-    public String getLetter() {
+    public Letter getLetter() {
         return letter;
     }
 
@@ -62,9 +62,10 @@ public class Member implements Comparable<Member> {
 
     @Override
     public int compareTo(Member m) {
-        if (this.letter.compareTo(m.letter) != 0) return -this.letter.compareTo(m.letter);
-        if (Double.compare(this.power, m.power) != 0) return Double.compare(this.power, m.power);
-        return Double.compare(this.coefficient, m.coefficient);
+        int result = -this.letter.compareTo(m.letter);
+        if (result == 0) result = Double.compare(this.power, m.power);
+        if (result == 0) result = Double.compare(this.coefficient, m.coefficient);
+        return result;
     }
 
     /**
@@ -75,7 +76,7 @@ public class Member implements Comparable<Member> {
     }
 
     public static class Builder {
-        private String letter;
+        private Letter letter;
         private double power;
         private double coefficient;
         private Double value;
@@ -86,7 +87,7 @@ public class Member implements Comparable<Member> {
         private Builder() {
             this.power = 1.0;
             this.coefficient = 0.0;
-            this.letter = "x";
+            this.letter = Letter.of("x", 0);
             this.value = null;
         }
 
@@ -100,8 +101,13 @@ public class Member implements Comparable<Member> {
             return this;
         }
 
-        public Builder letter(String letter) {
+        public Builder letter(Letter letter) {
             this.letter = letter;
+            return this;
+        }
+
+        public Builder letter(String letter) {
+            this.letter = Letter.of(letter, 0);
             return this;
         }
 

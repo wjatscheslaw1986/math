@@ -4,6 +4,7 @@
 package linear.equation;
 
 import algebra.Equation;
+import algebra.Letter;
 import algebra.Member;
 import combinatorics.CyclicShiftPermutationsGenerator;
 import linear.matrix.MatrixCalc;
@@ -165,9 +166,10 @@ public final class LinearEquationSystemUtil {
                 System.arraycopy(ref[i], pivotIndex, coefficients, 0, coefficients.length);
                 int k = 1;
                 for (; k < coefficients.length; k++) {
-                        var member = eq.getMemberByLetter("x" + (k + pivotIndex));
+                        var member = eq.getMemberByLetter(Letter.of("x", k + pivotIndex));
                         if (Objects.isNull(member)) {
-                            var memberBuilder = Member.builder().coefficient(coefficients[k]).letter("x" + (k + pivotIndex));
+                            var memberBuilder = Member.builder().coefficient(coefficients[k])
+                                    .letter(Letter.of("x", k + pivotIndex));
                             if (freeVariableIndices[k + pivotIndex]) memberBuilder.value(fmvCombination[k + pivotIndex]);
                             else memberBuilder.value(eq.getMemberByIndex(k + pivotIndex).getValue());
                             eq.members().add(memberBuilder.build());
@@ -175,9 +177,10 @@ public final class LinearEquationSystemUtil {
                             member.setCoefficient(coefficients[k]);
                         }
                 }
-                eq.members().addFirst(Member.builder().value(null).coefficient(coefficients[0]).letter("x" + pivotIndex).build());
+                eq.members().addFirst(Member.builder().value(null).coefficient(coefficients[0]).letter(Letter.of("x", pivotIndex)).build());
                 solveSingleVariableLinearEquation(eq);
             }
+            eq.members().sort((m1, m2) -> (-1) * m1.compareTo(m2));
             fundamental.add(eq.members().stream().map(Member::getValue).mapToDouble(Double::doubleValue).toArray());
             eq = new Equation(new ArrayList<>(), new AtomicReference<>());
         }

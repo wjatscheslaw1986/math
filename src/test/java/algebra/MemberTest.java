@@ -32,7 +32,7 @@ public class MemberTest {
         assertEquals(1.0d, copy.getValue());
 
         assertEquals(2.0d, copy.getPower());
-        assertEquals(letter, copy.getLetter());
+        assertEquals(letter, copy.getLetter().symbol());
         assertEquals(5, copy.getCoefficient());
     }
 

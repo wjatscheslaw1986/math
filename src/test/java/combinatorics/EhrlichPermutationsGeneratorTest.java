@@ -24,7 +24,7 @@ public class EhrlichPermutationsGeneratorTest {
     }
 
     @Test
-    void given_indices_array_generate_permutations_verify_integrity() {
+    void givenIndicesArray_whenGeneratePermutations_thenVerifyIntegrity() {
         var initialPermutation = new Integer[]{0, 1, 2, 3, 4, 5, 6};
         List<Integer[]> controlArray = CyclicShiftPermutationsGenerator.generate(initialPermutation.length)
                 .stream().map(arr -> Arrays.stream(arr).boxed().toArray(Integer[]::new))

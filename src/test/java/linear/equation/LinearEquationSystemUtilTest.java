@@ -73,7 +73,7 @@ public class LinearEquationSystemUtilTest {
         assertTrue(isSolvable(linearEquationSystem));
         assertTrue(VectorCalc.areEqual(solutionWhereFreeVariableIsZero, solution.solution()));
 
-//         б)
+        // б)
 
         linearEquationSystem = new double[][]{
                 {3, -2, 1, -3, 2},
@@ -132,9 +132,8 @@ public class LinearEquationSystemUtilTest {
         assertEquals(4, basis.get(0).length);
         assertEquals(basis.get(0).length, basis.get(1).length);
 
-        //TODO!
-//        assertTrue(VectorCalc.areEqual(new double[]{2, 1, -1, 0}, basis.get(0)));
-//        assertTrue(VectorCalc.areEqual(new double[]{2, 0, -1, 1}, basis.get(1)));
+        assertTrue(VectorCalc.areEqual(new double[]{.5, 1, -1, 0}, basis.get(0)));
+        assertTrue(VectorCalc.areEqual(new double[]{1, 0, -1, 1}, basis.get(1)));
 
         // е)
 
@@ -158,21 +157,6 @@ public class LinearEquationSystemUtilTest {
                 {0.0d, 0.0d, -10.0d, 2.0d, 8.0d},
                 {0.0d, 0.0d, 5.0d, -1.0d, -4.0d}};
         assertEquals(2, basisSize(matrix));
-    }
-
-    @Test
-    void given_resolve() {
-        var linearEquationSystem = new double[][]{
-                {1, 2, 3, -2, 4},
-                {2, 6, 10, -2, 14},
-                {1, 4, 8, -3, 12},
-                {2, 2, 1, -3, 0}
-        };
-        var left = MatrixUtil.removeMarginalColumn(linearEquationSystem, false);
-        System.out.println(MatrixUtil.print(linearEquationSystem));
-        RowEchelonFormUtil.toRREF(linearEquationSystem);
-        System.out.println(MatrixUtil.print(linearEquationSystem));
-
     }
 
     @Test

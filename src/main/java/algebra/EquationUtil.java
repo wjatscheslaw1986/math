@@ -42,7 +42,7 @@ public class EquationUtil {
     public static Member sum(Member x1, Member x2) {
         if (x1.getPower() != x2.getPower())
             throw new IllegalArgumentException("An attempt to sum two variable members of different powers.");
-        if (x1.getLetter() != x2.getLetter())
+        if (!x1.getLetter().symbol().equals(x2.getLetter().symbol()))
             throw new IllegalArgumentException("An attempt to sum two unknowns.");
         return Member.builder()
                 .coefficient(x1.getCoefficient() + x2.getCoefficient())
@@ -64,7 +64,7 @@ public class EquationUtil {
                 .collect(Collectors.groupingBy(
                         (Member m) -> {
                             if (m.getPower() != .0d)
-                                return m.getLetter() + m.getPower();
+                                return m.getLetter().toString() + m.getPower();
                             else return m.getPower();
                             }, Collectors.toList())).values().stream()
                 .map(listOfMembers -> {
