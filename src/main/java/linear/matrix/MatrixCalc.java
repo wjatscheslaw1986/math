@@ -200,19 +200,29 @@ public final class MatrixCalc {
     }
 
     /**
-     * The method calculates a reversed matrix of the provided one as an argument
-     * The method does not modify the original matrix object
+     * The method calculates an inverse matrix for the given one.
      *
-     * @param matrix - the original matrix object
-     * @return a new matrix object which is a reversed matrix passed as an argument
+     * The method does not modify the original matrix object.
+     *
+     * @param matrix   the given matrix
+     * @return a new matrix which is an inverse matrix for the one passed as an argument
      */
     public static double[][] inverse(final double[][] matrix) {
-        if (!isInvertible(matrix)) throw new IllegalArgumentException("You cannot find a reverse matrix for a degenerate one!");
+        if (!isInvertible(matrix)) throw new IllegalArgumentException("You cannot find an inverse matrix for a degenerate one!");
         return multiply(transpose(cofactors(matrix)), 1.0d / det(matrix));
     }
 
-
-
+    /**
+     * Given two bases, return transformation from the first basis to the second one.
+     *
+     * @param fromBasis
+     * @param toBasis
+     * @return transformation matrix from one basis to another one
+     * @throws MatrixException if failed to multiply matrices
+     */
+    public static double[][] transformation(final double[][] fromBasis, final double[][] toBasis) throws MatrixException {
+        return multiply(toBasis, inverse(fromBasis));
+    }
 
     /**
      * Вырезать квадратную субматрицу (не путать с алгебраическим дополнением!) для данной матрицы.
