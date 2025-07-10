@@ -149,6 +149,7 @@ public class EquationUtilTest {
         assertNotEquals(expected, given);
         var distinctEquation = distinct(given);
         assertEquals(expected, distinctEquation);
+        assertTrue(EquationUtil.isDistinct(distinctEquation));
 
         given = List.of(
                 Member.builder().coefficient(136).power(.0d).build(),
@@ -166,6 +167,52 @@ public class EquationUtilTest {
         assertNotEquals(expected, given);
         distinctEquation = distinct(given);
         assertEquals(expected, distinctEquation);
+        assertTrue(EquationUtil.isDistinct(distinctEquation));
     }
 
+    /**
+     * Примеры взяты из "Справочник по Элементарной Математике" - М.Я.Выгодский - 1965 - стр.184
+     */
+    @Test
+    void given_quadratic_equation_when_solve_then_expected_roots() {
+        var equation1 = new Equation(List.of(
+                Member.builder().coefficient(3).letter("x").power(2.0d).build(),
+                Member.builder().coefficient(-7).letter("x").power(1.0d).build(),
+                Member.builder().coefficient(4).letter("x").power(0.0d).build()
+        ), new AtomicReference<Double>(.0d));
+        var expectedRoots1 = new EquationRoots<Double>(List.of(1.3333333333333333d,  1d), 1d);
+        var solution1 = EquationUtil.solveEquation(equation1);
+        assertTrue(solution1.isPresent());
+        assertEquals(expectedRoots1, solution1.get());
+
+        var equation2 = new Equation(List.of(
+                Member.builder().coefficient(1).letter("x").power(2.0d).build(),
+                Member.builder().coefficient(7).letter("x").power(1.0d).build(),
+                Member.builder().coefficient(12).letter("x").power(0.0d).build()
+        ), new AtomicReference<Double>(.0d));
+        var expectedRoots2 = new EquationRoots<Double>(List.of(-3.0d,  -4.0d), 1d);
+        var solution2 = EquationUtil.solveEquation(equation2);
+        assertTrue(solution2.isPresent());
+        assertEquals(expectedRoots2, solution2.get());
+
+        var equation3 = new Equation(List.of(
+                Member.builder().coefficient(.6).letter("x").power(2.0d).build(),
+                Member.builder().coefficient(3.2).letter("x").power(1.0d).build(),
+                Member.builder().coefficient(-8.4).letter("x").power(0.0d).build()
+        ), new AtomicReference<Double>(.0d));
+        var expectedRoots3 = new EquationRoots<Double>(List.of(1.928016250696741d,  -7.261349584030074d), (-3.2 * -3.2 - 4 * .60 * (-8.4)));
+        var solution3 = EquationUtil.solveEquation(equation3);
+        assertTrue(solution3.isPresent());
+        assertEquals(expectedRoots3, solution3.get());
+
+        var equation4 = new Equation(List.of(
+                Member.builder().coefficient(3).letter("x").power(2.0d).build(),
+                Member.builder().coefficient(-14).letter("x").power(1.0d).build(),
+                Member.builder().coefficient(-80).letter("x").power(0.0d).build()
+        ), new AtomicReference<Double>(.0d));
+        var expectedRoots4 = new EquationRoots<Double>(List.of(8d,  -1d*(10d/3d)), (-14.0d * -14.0d - 4d * 3d * -80d));
+        var solution4 = EquationUtil.solveEquation(equation4);
+        assertTrue(solution4.isPresent());
+        assertEquals(expectedRoots4, solution4.get());
+    }
 }

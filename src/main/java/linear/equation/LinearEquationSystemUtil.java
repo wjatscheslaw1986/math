@@ -257,7 +257,8 @@ public final class LinearEquationSystemUtil {
      * @return true if the given system of linear equations is solvable, false otherwise
      */
     public static boolean isSolvable(final double[][] augmentedMatrix) {
-        return MatrixCalc.rank(MatrixUtil.removeMarginalColumn(augmentedMatrix, false)) == MatrixCalc.rank(augmentedMatrix);
+        return MatrixCalc.rank(MatrixUtil.removeMarginalColumn(augmentedMatrix, false))
+                == MatrixCalc.rank(augmentedMatrix);
     }
 
     /**

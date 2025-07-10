@@ -65,11 +65,11 @@ public class EquationUtil {
                         (Member m) -> {
                             if (m.getPower() != .0d)
                                 return m.getLetter().toString() + m.getPower();
-                            else return m.getPower();
+                            else return String.valueOf(m.getPower());
                             }, Collectors.toList())).values().stream()
                 .map(listOfMembers -> {
                     var iterator = listOfMembers.iterator();
-                    var result = iterator.next();
+                    Member result = iterator.next();
                     while (iterator.hasNext()) {
                         var next = iterator.next();
                         result = Member.builder()
@@ -79,7 +79,31 @@ public class EquationUtil {
                                 .build();
                     }
                     return result;
-                }).sorted(Comparator.reverseOrder()).toList();
+                })
+                .filter(member -> member.getCoefficient() != 0)
+                .sorted(Comparator.reverseOrder()).toList();
+    }
+
+    /**
+     *
+     * @param input
+     * @return
+     */
+    public static boolean isDistinct(final List<Member> input) {
+        if (Objects.requireNonNull(input).isEmpty()) {
+            return true;
+        }
+
+        Map<String, List<Member>> grouped = input.stream()
+                .collect(Collectors.groupingBy(
+                        (Member m) -> {
+                            if (m.getPower() != 0.0d)
+                                return m.getLetter().toString() + m.getPower();
+                            else
+                                return String.valueOf(m.getPower());
+                        }));
+
+        return grouped.size() == input.size();
     }
 
     /**
@@ -102,7 +126,7 @@ public class EquationUtil {
             }
             members.add(builder.build());
         }
-        return new Equation(members, new AtomicReference<>(coefficients[coefficients.length - 1]));
+        return new Equation(members, new AtomicReference<Double>(coefficients[coefficients.length - 1]));
     }
 
     /**
@@ -152,5 +176,20 @@ public class EquationUtil {
         }
         sum = equation.equalsTo().get() - sum;
         variable.setValue(roundToNDecimals(sum / variable.getCoefficient(), 12));
+    }
+
+    /**
+     * Solves the given polynomial equation.
+     *
+     * @param equation equation the equation given
+     * @return quadratic equation roots
+     */
+    public static Optional<EquationRoots<Double>> solveEquation(final Equation equation) {
+        var equationType = EquationValidator.determineSingleVariableEquationType(equation);
+        return switch (equationType) {
+            case QUADRATIC -> Optional.of(QuadraticEquationSolver.solve(equation));
+            case CUBIC -> Optional.of(CubicEquationSolver.solve(equation));
+            default -> Optional.empty();
+        };
     }
 }
