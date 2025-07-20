@@ -214,5 +214,27 @@ public class EquationUtilTest {
         var solution4 = EquationUtil.solveEquation(equation4);
         assertTrue(solution4.isPresent());
         assertEquals(expectedRoots4, solution4.get());
+
+        var equation5 = new Equation(List.of(
+                Member.builder().coefficient(1).letter("x").power(3.0d).build(),
+                Member.builder().coefficient(5).letter("x").power(2.0d).build(),
+                Member.builder().coefficient(-14).letter("x").power(1.0d).build(),
+                Member.builder().coefficient(0).letter("x").power(0.0d).build()
+        ), new AtomicReference<Double>(.0d));
+        var expectedRoots5 = new EquationRoots<Double>(List.of(2d, -7d, 0d), -147d);
+        var solution5 = EquationUtil.solveEquation(equation5);
+        assertTrue(solution5.isPresent());
+        assertEquals(expectedRoots5, solution5.get());
+
+        var equation6 = new Equation(List.of(
+                Member.builder().coefficient(2).letter("x").power(3.0d).build(),
+                Member.builder().coefficient(9).letter("x").power(2.0d).build(),
+                Member.builder().coefficient(13).letter("x").power(1.0d).build(),
+                Member.builder().coefficient(6).letter("x").power(0.0d).build()
+        ), new AtomicReference<Double>(.0d));
+        var expectedRoots6 = new EquationRoots<Double>(List.of(-1d, -2d, -1.5d), -.0005787037d);
+        var solution6 = EquationUtil.solveEquation(equation6);
+        assertTrue(solution6.isPresent());
+        assertEquals(expectedRoots6, solution6.get());
     }
 }

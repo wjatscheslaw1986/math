@@ -2,6 +2,8 @@ package algebra;
 
 import java.util.List;
 
+import static approximation.RoundingUtil.roundToNDecimals;
+
 /**
  *
  */
@@ -40,7 +42,7 @@ final class CubicEquationSolver {
         double a_coeff = q - (p * p) / 3;
         double b_coeff = (2 * p * p * p - 9 * p * q + 27 * r) / 27;
         // Calculate discriminant
-        var discriminant = (b_coeff * b_coeff / 4) + (a_coeff * a_coeff * a_coeff / 27);
+        var discriminant = roundToNDecimals((b_coeff * b_coeff / 4) + (a_coeff * a_coeff * a_coeff / 27), 10);
         var discriminantSqrt = Math.sqrt(discriminant);
 
         if (discriminant > 0) {
@@ -71,6 +73,10 @@ final class CubicEquationSolver {
             root3 = magnitude * Math.cos((phi + 4 * Math.PI) / 3) - p / 3;
 //            System.out.printf("Three real roots: x1 = %.4f, x2 = %.4f, x3 = %.4f%n", root1, root2, root3);
         }
-        return new EquationRoots<Double>(List.of(root1, root2, root3), discriminant);
+        return new EquationRoots<Double>(List.of(
+                roundToNDecimals(root1, 10),
+                roundToNDecimals(root2, 10),
+                roundToNDecimals(root3, 10)),
+                discriminant);
     }
 }

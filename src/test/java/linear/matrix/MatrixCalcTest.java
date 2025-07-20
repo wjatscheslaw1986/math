@@ -162,8 +162,14 @@ public class MatrixCalcTest {
         var vector = new double[][]{{2.0d, 1.0d, 4.0d}};
         var result = MatrixCalc.multiply(vector, matrix);
         assertArrayEquals(expectedVector, result[0]);
+
+        // Умножение вектора на матрицу перехода к другому базису производит тот же вектор, но в другом базисе
         result = MatrixCalc.multiply(Vector.of(2.0d, 1.0d, 4.0d), matrix);
         assertArrayEquals(expectedVector, result[0]);
+
+        // Умножение вектора на обратную матрицу перехода возвращает значения его координат в прежний базис
+        result = MatrixCalc.multiply(Vector.of(expectedVector), MatrixCalc.inverse(matrix));
+        assertArrayEquals(vector[0], result[0]);
     }
 
     /**
@@ -231,11 +237,20 @@ public class MatrixCalcTest {
      */
     @Test
     public void given_a_matrix_crop_it() {
-        final double[][] matrix0 = new double[][]{{0.0d, 2.0d, -4.0d}, {-1.0d, -4.0d, 5.0d}, {3.0d, 1.0d, 7.0d},
+        final double[][] matrix0 = new double[][]{
+                {0.0d, 2.0d, -4.0d},
+                {-1.0d, -4.0d, 5.0d},
+                {3.0d, 1.0d, 7.0d},
                 {0.0d, 5.0d, -10.0d}};
 
-        final double[][] matrix1 = new double[][]{{0.0d, 2.0d, -4.0d}, {-1.0d, -4.0d, 5.0d}, {3.0d, 1.0d, 7.0d}};
-        final double[][] matrix2 = new double[][]{{-1.0d, -4.0d, 5.0d}, {3.0d, 1.0d, 7.0d}, {0.0d, 5.0d, -10.0d}};
+        final double[][] matrix1 = new double[][]{
+                {0.0d, 2.0d, -4.0d},
+                {-1.0d, -4.0d, 5.0d},
+                {3.0d, 1.0d, 7.0d}};
+        final double[][] matrix2 = new double[][]{
+                {-1.0d, -4.0d, 5.0d},
+                {3.0d, 1.0d, 7.0d},
+                {0.0d, 5.0d, -10.0d}};
 
         assertTrue(areEqual(matrix1, crop(matrix0, 0, 0, 3)));
         assertTrue(areEqual(matrix2, crop(matrix0, 1, 0, 3)));

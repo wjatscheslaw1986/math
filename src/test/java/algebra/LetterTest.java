@@ -19,5 +19,9 @@ public class LetterTest {
         var x0_1 = new Letter("x", 0);
         var x0_2 = new Letter("x", 1);
         assertNotEquals(x0_1, x0_2);
+
+        var x0_3 = new Letter("x", 0);
+        var x0_4 = new Letter("X", 0);
+        assertNotEquals(x0_3, x0_4);
     }
 }
