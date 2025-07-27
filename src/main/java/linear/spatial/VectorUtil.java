@@ -4,10 +4,8 @@
 package linear.spatial;
 
 import linear.equation.LinearEquationSystemUtil;
-import linear.equation.Solution;
 import linear.matrix.exception.MatrixException;
 
-import static linear.equation.SolutionsCount.INFINITE;
 import static linear.equation.SolutionsCount.SINGLE;
 
 /**

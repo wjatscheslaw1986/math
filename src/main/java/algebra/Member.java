@@ -122,6 +122,36 @@ public class Member implements Comparable<Member> {
     }
 
     /**
+     * Return a real constant {@link Member}.
+     *
+     * @param value the real value of the constant
+     * @return a member of a real coefficient
+     */
+    public static Member asRealConstant(double value) {
+        return Member.builder()
+                .value(Double.NaN)
+                .power(Double.NaN)
+                .letter(Letter.of("", 0))
+                .coefficient(value)
+                .build();
+    }
+
+    /**
+     * Return a {@link Member} of 'x' variable with power of 1 with the given coefficient.
+     *
+     * @param coefficient the given coefficient
+     * @return the variable
+     */
+    public static Member asVariableX(double coefficient) {
+        return Member.builder()
+                .value(Double.NaN)
+                .power(1.0d)
+                .letter("x")
+                .coefficient(coefficient)
+                .build();
+    }
+
+    /**
      * Return a deep copy of this instance.
      *
      * @return the new Member instance

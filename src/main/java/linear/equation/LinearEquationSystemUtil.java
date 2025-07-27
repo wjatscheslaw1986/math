@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static algebra.EquationUtil.solveSingleVariableLinearEquation;
 import static approximation.RoundingUtil.cleanDoubleArrayOfNegativeZeros;
@@ -157,10 +156,10 @@ public final class LinearEquationSystemUtil {
             return List.of(resolveUsingReverseMatrixMethod(MatrixUtil.removeMarginalColumn(ref, false), MatrixUtil.getColumn(ref, ref[0].length)));
         var fundamental = new ArrayList<double[]>();
         var freeMembersValuesCombinations = getFreeMembersValuesCombinations(freeVariableIndices);
-        Equation eq = new Equation(new ArrayList<>(), new AtomicReference<>());
+        Equation eq = new Equation(new ArrayList<>(), Member.asRealConstant(.0d));
         for (Double[] fmvCombination : freeMembersValuesCombinations) {
             for (int i = ref.length - 1; i >= 0; i--) {
-                eq.equalsTo().set(ref[i][ref[i].length - 1]);
+                eq.setEqualsTo(ref[i][ref[i].length - 1]);
                 int pivotIndex = findPivotIndex(ref, i);
                 double[] coefficients = new double[ref[i].length - pivotIndex - 1];
                 System.arraycopy(ref[i], pivotIndex, coefficients, 0, coefficients.length);
@@ -182,7 +181,7 @@ public final class LinearEquationSystemUtil {
             }
             eq.members().sort((m1, m2) -> (-1) * m1.compareTo(m2));
             fundamental.add(eq.members().stream().map(Member::getValue).mapToDouble(Double::doubleValue).toArray());
-            eq = new Equation(new ArrayList<>(), new AtomicReference<>());
+            eq = new Equation(new ArrayList<>(), Member.asRealConstant(.0d));
         }
         for (var basisVector : fundamental) roundValues(12, basisVector);
         return fundamental;

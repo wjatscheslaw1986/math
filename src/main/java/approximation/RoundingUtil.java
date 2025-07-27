@@ -12,6 +12,10 @@ import java.util.Objects;
  */
 public final class RoundingUtil {
 
+    private RoundingUtil() {
+        // static context only
+    }
+
     /**
      * Rounding to N decimal places after the floating point.
      *
@@ -25,10 +29,7 @@ public final class RoundingUtil {
     }
 
     /**
-     * This method traverses the given array and changes every -0.0d to 0.0d.
-     * <p>
-     *     This method modifies the argument.
-     * </p>
+     * This method traverses the given array and changes every -0.0d to 0.0d in the given array in place.
      *
      * @param array the given array
      */
@@ -36,5 +37,26 @@ public final class RoundingUtil {
         if (Objects.isNull(array)) return;
         for (int i = 0; i < array.length; i++)
             if (!Objects.isNull(array[i]) && array[i] == -0.0d) array[i] = 0.0d;
+    }
+
+    /**
+     * This method traverses the given array and changes every -0.0d to 0.0d in the given array in place.
+     *
+     * @param array the given array
+     */
+    public static void cleanDoubleArrayOfNegativeZeros(final double[] array) {
+        if (Objects.isNull(array)) return;
+        for (int i = 0; i < array.length; i++)
+            if (array[i] == -0.0d) array[i] = 0.0d;
+    }
+
+    /**
+     * Is the value passed as an argument is approximately zero?
+     *
+     * @param value the given value
+     * @return true if the given value is approximately zero, false otherwise
+     */
+    public static boolean isEffectivelyZero(final double value) {
+        return Math.abs(value) < 1e-10;
     }
 }

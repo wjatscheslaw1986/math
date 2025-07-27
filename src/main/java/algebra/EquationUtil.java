@@ -4,7 +4,6 @@
 package algebra;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import static approximation.RoundingUtil.roundToNDecimals;
@@ -66,7 +65,7 @@ public class EquationUtil {
                             if (m.getPower() != .0d)
                                 return m.getLetter().toString() + m.getPower();
                             else return String.valueOf(m.getPower());
-                            }, Collectors.toList())).values().stream()
+                        }, Collectors.toList())).values().stream()
                 .map(listOfMembers -> {
                     var iterator = listOfMembers.iterator();
                     Member result = iterator.next();
@@ -80,21 +79,32 @@ public class EquationUtil {
                     }
                     return result;
                 })
-                .filter(member -> member.getCoefficient() != 0)
+//                .filter(member -> member.getCoefficient() != 0)
                 .sorted(Comparator.reverseOrder()).toList();
     }
 
     /**
+     * Are the given members grouped from left to right descending by their power?
      *
-     * @param input
-     * @return
+     * @param members left part of the equation
+     * @return true if members of the given equation are grouped by their power. False otherwise.
      */
-    public static boolean isDistinct(final List<Member> input) {
-        if (Objects.requireNonNull(input).isEmpty()) {
+    public static boolean isDistinct(final List<Member> members) {
+        return isDistinct(Equation.of(members, Member.asRealConstant(.0d)));
+    }
+
+    /**
+     * Is the given equation has its members grouped from left to right descending by their power?
+     *
+     * @param equation the given equation
+     * @return true if members of the given equation are grouped by their power. False otherwise.
+     */
+    public static boolean isDistinct(final Equation equation) {
+        if (Objects.requireNonNull(Objects.requireNonNull(equation).members()).isEmpty()) {
             return true;
         }
 
-        Map<String, List<Member>> grouped = input.stream()
+        Map<String, List<Member>> grouped = equation.members().stream()
                 .collect(Collectors.groupingBy(
                         (Member m) -> {
                             if (m.getPower() != 0.0d)
@@ -103,13 +113,13 @@ public class EquationUtil {
                                 return String.valueOf(m.getPower());
                         }));
 
-        return grouped.size() == input.size();
+        return grouped.size() == equation.members().size();
     }
 
     /**
      * Converts the two given arguments to an {@link Equation}.
      *
-     * @param coefficients the both sides of the given linear single variable equation, as an array.
+     * @param coefficients  the both sides of the given linear single variable equation, as an array.
      * @param variableIndex the index of the {@code coefficients} array with the variable whose value we want to find
      * @return the Equation object
      */
@@ -126,14 +136,14 @@ public class EquationUtil {
             }
             members.add(builder.build());
         }
-        return new Equation(members, new AtomicReference<Double>(coefficients[coefficients.length - 1]));
+        return Equation.of(members, Member.asRealConstant(coefficients[coefficients.length - 1]));
     }
 
     /**
      * Solves the single variable linear equation.
      * The right side of the equation is represented by the last element of the {@code coefficients} array.
      *
-     * @param coefficients the both sides of the linear single variable equation, as an array.
+     * @param coefficients  the both sides of the linear single variable equation, as an array.
      * @param variableIndex the index of the {@code coefficients} array with the variable
      * @return the value of the variable found
      */
@@ -162,10 +172,11 @@ public class EquationUtil {
     public static void solveSingleVariableLinearEquation(final Equation equation) {
         var hits = 0;
         Member variable = null;
-        for (Member eqMember : equation.members()) if (Objects.isNull(eqMember.getValue())) {
-            variable = eqMember;
-            hits++;
-        }
+        for (Member eqMember : equation.members())
+            if (Objects.isNull(eqMember.getValue())) {
+                variable = eqMember;
+                hits++;
+            }
         if (hits != 1) throw new IllegalArgumentException("Not a single variable equation.");
         double sum = .0d;
 
@@ -174,7 +185,7 @@ public class EquationUtil {
                 continue;
             sum = sum + eqMember.getCoefficient() * eqMember.getValue();
         }
-        sum = equation.equalsTo().get() - sum;
+        sum = equation.equalsTo().getCoefficient() - sum;
         variable.setValue(roundToNDecimals(sum / variable.getCoefficient(), 12));
     }
 
@@ -184,12 +195,14 @@ public class EquationUtil {
      * @param equation equation the equation given
      * @return quadratic equation roots
      */
-    public static Optional<EquationRoots<Double>> solveEquation(final Equation equation) {
-        var equationType = EquationValidator.determineSingleVariableEquationType(equation);
+    public static EquationRoots<Complex> solve(final Equation equation) {
+        var equationType = EquationValidator.determinePolynomialEquationType(equation);
+        var groupedByPowerMembersEquation = Equation.of(distinct(equation.members()), equation.equalsTo());
         return switch (equationType) {
-            case QUADRATIC -> Optional.of(QuadraticEquationSolver.solve(equation));
-            case CUBIC -> Optional.of(CubicEquationSolver.solve(equation));
-            default -> Optional.empty();
+            case LINEAR -> LinearEquationSolver.solve(groupedByPowerMembersEquation);
+            case QUADRATIC -> QuadraticEquationSolver.solve(groupedByPowerMembersEquation);
+            case CUBIC -> CubicEquationSolver.solve(groupedByPowerMembersEquation);
+            default -> throw new IllegalArgumentException(String.format("The equation type %s is not supported.", equationType.name()));
         };
     }
 }

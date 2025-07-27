@@ -1,84 +1,116 @@
+/*
+ * Viacheslav Mikhailov (taleskeeper@yandex.com) © 2025
+ */
+
 package algebra;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static approximation.RoundingUtil.isEffectivelyZero;
 
 /**
+ * A utility class for solving quartic equation.
  *
+ * @author Viacheslav Mikhailov
  */
-final class QuarticEquationSolver {
+public class QuarticEquationSolver {
 
     /**
-     * Solves the given cubic equation.
+     * Find roots of the given equation.
      *
-     * @param equation the equation given
-     * @return cubic equation roots
+     * @param equation given equation
+     * @return the roots
      */
-    public static List<Double> solveQuartic(double[] coeffs) {
-        List<Double> roots = new ArrayList<>();
-        if (coeffs.length != 5) {
-            throw new IllegalArgumentException("Array must contain exactly 5 coefficients");
+    public static EquationRoots<Complex> solveQuartic(Equation equation) {
+        // Extract coefficients
+        Map<Double, Double> mapPowerOnCoefficient = new HashMap<>();
+        if (equation.members().isEmpty())
+            throw new IllegalArgumentException("Empty equation");
+
+        String letter = equation.members().getFirst().getLetter().toString();
+        for (Member member : equation.members()) {
+            if (!member.getLetter().toString().equals(letter))
+                throw new IllegalArgumentException("Multiple variables in equation");
+
+            double power = member.getPower();
+            double coeff = member.getCoefficient();
+            mapPowerOnCoefficient.put(power, coeff);
         }
+        double constant = mapPowerOnCoefficient.getOrDefault(0.0, 0.0) - equation.equalsTo().getCoefficient();
+        mapPowerOnCoefficient.put(0.0, constant);
 
-        double a = coeffs[0], b = coeffs[1], c = coeffs[2], d = coeffs[3], e = coeffs[4];
+        double a = mapPowerOnCoefficient.getOrDefault(4.0, 0.0);
+        double b = mapPowerOnCoefficient.getOrDefault(3.0, 0.0);
+        double c = mapPowerOnCoefficient.getOrDefault(2.0, 0.0);
+        double d = mapPowerOnCoefficient.getOrDefault(1.0, 0.0);
+        double e = mapPowerOnCoefficient.getOrDefault(0.0, 0.0);
 
-        // Handle case where a=0 (not a quartic)
-        if (Math.abs(a) < 1e-10) {
-            throw new IllegalArgumentException("Leading coefficient cannot be zero");
-        }
+        if (isEffectivelyZero(a))
+            throw new IllegalArgumentException("Not a quartic equation (leading coefficient is zero)");
 
-        // Normalize coefficients
-        b /= a; c /= a; d /= a; e /= a; a = 1.0;
+        // Depress the quartic
+        double p = (8 * a * c - 3 * b * b) / (8 * a * a);
+        double q = (b * b * b - 4 * a * b * c + 8 * a * a * d) / (8 * a * a * a);
+        double r = (-3 * b * b * b * b + 256 * a * a * a * e - 64 * a * a * b * d + 16 * a * b * b * c) / (256 * a * a * a * a);
 
-        // Depressed quartic: t^4 + pt^2 + qt + r = 0
-        double p = c - (3.0 * b * b / 8.0);
-        double q = d + (b * b * b / 8.0) - (b * c / 2.0);
-        double r = e - (b * b * b * b / 256.0) + (b * b * c / 16.0) - (b * d / 4.0);
+        // Resolvent cubic: m^3 - (p/2)m^2 - rm + (pr/2 - q^2/8) = 0
+        List<Complex> mRoots = EquationUtil.solve(Equation.of(List.of(
+                Member.builder().letter("m").power(3.0d).coefficient(1.0d).build(),
+                Member.builder().letter("m").power(2.0d).coefficient(-p / 2d).build(),
+                Member.builder().letter("m").power(1.0d).coefficient(-r).build(),
+                Member.builder().letter("m").power(.0d).coefficient((p * r / 2d) - (Math.pow(q, 2) / 8d)).build()
+        ), Member.asRealConstant(.0d))).roots();
 
-        // Solve the resolvent cubic: y^3 + py^2 + qy + r = 0
-        double p_cubic = -p / 2.0;
-        double q_cubic = (p * p - 4.0 * r) / 8.0;
-        double r_cubic = (-q * q) / 8.0;
+        // Use the first root m
+        Complex m = mRoots.getFirst();
+        Complex s = ComplexUtil.sqrt(ComplexUtil.subtract(
+                ComplexUtil.multiply(Complex.of(2.0, 0.0), m),
+                Complex.of(p, 0.0)
+        ));
 
-        // Solve cubic using Cardano's method
-        double Q = (p_cubic * p_cubic - 3.0 * q_cubic) / 9.0;
-        double R = (2.0 * p_cubic * p_cubic * p_cubic - 9.0 * p_cubic * q_cubic + 27.0 * r_cubic) / 54.0;
-        double D = Q * Q * Q - R * R;
+        // Form and solve the two quadratics
+        Complex sOver2 = ComplexUtil.divide(s, Complex.of(2.0, 0.0));
+        Complex qOver2s = ComplexUtil.divide(
+                Complex.of(q, 0.0),
+                ComplexUtil.multiply(Complex.of(2.0, 0.0), s));
+        Complex aQuad = Complex.of(1.0, 0.0);
 
-        double y;
-        if (D >= 0) {
-            double theta = Math.acos(R / Math.sqrt(Q * Q * Q));
-            y = -2.0 * Math.sqrt(Q) * Math.cos(theta / 3.0) - p_cubic / 3.0;
-        } else {
-            double A = Math.pow(Math.abs(R) + Math.sqrt(-D), 1.0 / 3.0);
-            double B = (R > 0 ? A : -A);
-            y = (B + Q / B) - p_cubic / 3.0;
-        }
+        List<Complex> yRoots = new ArrayList<>();
+        yRoots.addAll(EquationUtil.solve(Equation.of(List.of(
+                Member.builder().letter("x").power(2.0d).coefficient(aQuad.real()).build(),
+                Member.builder().letter("x").power(1.0d).coefficient(sOver2.real()).build(),
+                Member.builder().letter("x").power(.0d).coefficient(ComplexUtil.add(m, qOver2s).real()).build()),
+                Member.asRealConstant(.0d))).roots());
+        yRoots.addAll(EquationUtil.solve(Equation.of(List.of(
+                Member.builder().letter("x").power(2.0d).coefficient(aQuad.real()).build(),
+                Member.builder().letter("x").power(1.0d).coefficient(ComplexUtil.negate(sOver2).real()).build(),
+                Member.builder().letter("x").power(.0d).coefficient(ComplexUtil.subtract(m, qOver2s).real()).build()),
+                Member.asRealConstant(.0d))).roots());
 
-        // Use y to factor the quartic into two quadratics
-        double m = Math.sqrt(y);
-        double n = q / (2.0 * m);
-        double p1 = p / 2.0 + y / 2.0;
-        double p2 = p / 2.0 - y / 2.0;
+        // Back-substitute: x = y - b/(4a)
+        double shift = -b / (4 * a);
+        List<Complex> xRoots = yRoots.stream()
+                .map(y -> ComplexUtil.add(y, Complex.of(shift, 0.0)))
+                .collect(Collectors.toList());
 
-        // Solve the two quadratics
-        double sqrt1 = Math.sqrt(m * m - 4.0 * (p1 + n));
-        double sqrt2 = Math.sqrt(m * m - 4.0 * (p2 - n));
+        // Compute discriminant
+        double discriminant = computeQuarticDiscriminant(a, b, c, d, e);
 
-        // Quadratic 1: x^2 + mx + (p1 + n) = 0
-        double disc1 = m * m - 4.0 * (p1 + n);
-        if (disc1 >= 0) {
-            roots.add((-m + Math.sqrt(disc1)) / 2.0 - b / 4.0);
-            roots.add((-m - Math.sqrt(disc1)) / 2.0 - b / 4.0);
-        }
+        return EquationRoots.of(xRoots, discriminant);
+    }
 
-        // Quadratic 2: x^2 - mx + (p2 - n) = 0
-        double disc2 = m * m - 4.0 * (p2 - n);
-        if (disc2 >= 0) {
-            roots.add((m + Math.sqrt(disc2)) / 2.0 - b / 4.0);
-            roots.add((m - Math.sqrt(disc2)) / 2.0 - b / 4.0);
-        }
-
-        return roots;
+    private static double computeQuarticDiscriminant(double a, double b, double c, double d, double e) {
+        double a2 = a * a, a3 = a2 * a;
+        double b2 = b * b, b3 = b2 * b, b4 = b3 * b;
+        double c2 = c * c, c3 = c2 * c, c4 = c3 * c;
+        double d2 = d * d, d3 = d2 * d, d4 = d3 * d;
+        double e2 = e * e, e3 = e2 * e;
+        return 256 * a3 * e3 - 192 * a2 * b * d * e2 - 128 * a2 * c2 * e2 + 144 * a2 * c * d2 * e - 27 * a2 * d4
+                + 144 * a * b2 * e2 - 6 * a * b * d2 * e - 80 * a * b * c * d * e + 18 * a * b * c3 - 4 * a * c3 * e
+                + 16 * a * c4 - 27 * b4 * e2 + 18 * b3 * d * e - 4 * b3 * c3 - 4 * b2 * d3 + b2 * c2 * d2;
     }
 }

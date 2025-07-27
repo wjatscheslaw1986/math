@@ -160,7 +160,7 @@ public final class MatrixCalc {
     public static double det(final double[][] matrix) {
         if (!isSquareMatrix(matrix))
             throw new IllegalArgumentException("A non-square matrix has no determinant.");
-        double result = Double.NaN;
+        double result;
         if (matrix.length < 2)
             return matrix[0][0];
         if (matrix.length == 2)
@@ -171,7 +171,7 @@ public final class MatrixCalc {
         for (int col = 0; col < matrix[0].length; col++)
             if (matrix[0][col] != 0)
                 result = result + matrix[0][col] * cofactor(matrix, 1, col + 1);
-        return result;
+        return result == -.0d ? .0d : result;
     }
 
     /**

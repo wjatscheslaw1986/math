@@ -2,8 +2,6 @@ package algebra;
 
 import java.util.List;
 
-import static algebra.EquationUtil.isDistinct;
-
 public final class EquationValidator {
 
     /**
@@ -11,14 +9,14 @@ public final class EquationValidator {
      * Uses the distinct method to combine like terms and sort by power.
      *
      * @param equation the equation
-     * @return EquationType indicating QUADRATIC, CUBIC, NEITHER, or INVALID
+     * @return EquationType indicating LINEAR, QUADRATIC, CUBIC, QUARTIC, NEITHER, or INVALID
      */
-    public static EquationType determineSingleVariableEquationType(Equation equation) {
+    public static EquationType determinePolynomialEquationType(Equation equation) {
 
         List<Member> members = equation.members();
 
         // Check for empty or null input
-        if (members == null || members.isEmpty() || !isDistinct(members)) {
+        if (members == null || members.isEmpty()) {
             return EquationType.INVALID;
         }
 
@@ -41,11 +39,13 @@ public final class EquationValidator {
             return EquationType.INVALID;
         }
 
-        // Use switch expression to determine equation type
+        // Use switch expression to determine the equation type
         return switch ((int) maxPower) {
+            case 1 -> EquationType.LINEAR;
             case 2 -> EquationType.QUADRATIC;
             case 3 -> EquationType.CUBIC;
-            default -> EquationType.NEITHER; // Other degrees
+            case 4 -> EquationType.QUARTIC;
+            default -> EquationType.NEITHER; // Other max power degrees
         };
     }
 }

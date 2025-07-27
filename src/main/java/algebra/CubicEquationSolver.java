@@ -2,10 +2,13 @@ package algebra;
 
 import java.util.List;
 
+import static approximation.RoundingUtil.isEffectivelyZero;
 import static approximation.RoundingUtil.roundToNDecimals;
 
 /**
+ * A utility class for solving cubic equation.
  *
+ * @author Viacheslav Mikhailov
  */
 final class CubicEquationSolver {
 
@@ -15,21 +18,19 @@ final class CubicEquationSolver {
      * @param equation the equation given
      * @return cubic equation roots
      */
-    static EquationRoots<Double> solve(final Equation equation) {
+    static EquationRoots<Complex> solve(final Equation equation) {
 
         if (equation.members().size() != 4)
             throw new IllegalArgumentException("Malformed cubic equation. Must have 4 members on the left.");
 
         var a = equation.members().get(0).getCoefficient();
 
-        if (a == 0)
+        if (isEffectivelyZero(a))
             throw new IllegalArgumentException("Malformed cubic equation ('a' cannot be zero).");
 
         var b = equation.members().get(1).getCoefficient();
         var c = equation.members().get(2).getCoefficient();
         var d = equation.members().get(3).getCoefficient();
-
-        var twoA = 2 * a;
 
         double root1, root2, root3;
 
@@ -52,18 +53,21 @@ final class CubicEquationSolver {
             root1 = u + v - p / 3;
             double realPart = -(u + v) / 2 - p / 3;
             double imaginaryPart = (u - v) * Math.sqrt(3) / 2;
-//            System.out.printf("One real root: x1 = %.4f%n", root1);
-//            System.out.printf("Two complex roots: x2 = %.4f + %.4fi, x3 = %.4f - %.4fi%n",
-//                    realPart, imaginaryPart, realPart, imaginaryPart);
-            root2 = realPart + imaginaryPart;
-            root3 = realPart - imaginaryPart;
+            return new EquationRoots<Complex>(List.of(
+                    Complex.of(roundToNDecimals(root1, 10), Double.NaN),
+                    Complex.of(roundToNDecimals(realPart, 10), imaginaryPart),
+                    Complex.of(roundToNDecimals(realPart, 10), -imaginaryPart)),
+                    discriminant);
         } else if (discriminant == 0) {
             // Three real roots, at least two are equal
             double u = Math.cbrt(-b_coeff / 2);
             root1 = 2 * u - p / 3;
             root2 = -u - p / 3;
-            root3 = root1;
-//            System.out.printf("Three real roots (at least two equal): x1 = %.4f, x2 = x3 = %.4f%n", root1, root2);
+            return new EquationRoots<Complex>(List.of(
+                    Complex.of(roundToNDecimals(root1, 10), Double.NaN),
+                    Complex.of(roundToNDecimals(root2, 10), Double.NaN),
+                    Complex.of(roundToNDecimals(root1, 10), Double.NaN)),
+                    discriminant);
         } else {
             // Three distinct real roots
             double phi = Math.acos(-b_coeff / (2 * Math.sqrt(-a_coeff * a_coeff * a_coeff / 27)));
@@ -71,12 +75,11 @@ final class CubicEquationSolver {
             root1 = magnitude * Math.cos(phi / 3) - p / 3;
             root2 = magnitude * Math.cos((phi + 2 * Math.PI) / 3) - p / 3;
             root3 = magnitude * Math.cos((phi + 4 * Math.PI) / 3) - p / 3;
-//            System.out.printf("Three real roots: x1 = %.4f, x2 = %.4f, x3 = %.4f%n", root1, root2, root3);
+            return new EquationRoots<Complex>(List.of(
+                    Complex.of(roundToNDecimals(root1, 10), Double.NaN),
+                    Complex.of(roundToNDecimals(root2, 10), Double.NaN),
+                    Complex.of(roundToNDecimals(root3, 10), Double.NaN)),
+                    discriminant);
         }
-        return new EquationRoots<Double>(List.of(
-                roundToNDecimals(root1, 10),
-                roundToNDecimals(root2, 10),
-                roundToNDecimals(root3, 10)),
-                discriminant);
     }
 }

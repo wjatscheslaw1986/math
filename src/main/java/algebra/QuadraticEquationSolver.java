@@ -1,9 +1,17 @@
+/**
+ * Viacheslav Mikhailov (taleskeeper@yandex.com) © 2025.
+ */
 package algebra;
 
 import java.util.List;
+import java.util.Objects;
+
+import static approximation.RoundingUtil.isEffectivelyZero;
 
 /**
+ * A utility class for solving quadratic equation.
  *
+ * @author Viacheslav Mikhailov
  */
 final class QuadraticEquationSolver {
 
@@ -13,14 +21,14 @@ final class QuadraticEquationSolver {
      * @param equation equation the equation given
      * @return quadratic equation roots
      */
-    static EquationRoots<Double> solve(final Equation equation) {
-
+    static EquationRoots<Complex> solve(final Equation equation) {
+        Objects.requireNonNull(equation, "Equation cannot be null");
         if (equation.members().size() != 3)
             throw new IllegalArgumentException("Malformed quadratic equation. Must have 3 members on the left side of the equation.");
 
         var a = equation.members().get(0).getCoefficient();
 
-        if (a == 0)
+        if (isEffectivelyZero(a))
             throw new IllegalArgumentException("Malformed quadratic equation ('a' cannot be zero).");
 
         var b = equation.members().get(1).getCoefficient();
@@ -30,27 +38,31 @@ final class QuadraticEquationSolver {
         var discriminant = b * b - 4 * a * c;
         var twoA = 2 * a;
 
-        double root1, root2;
-
         // Calculate roots based on discriminant
-        if (discriminant > 0) {
+        if (discriminant > .0d) {
             // Two distinct real roots
             var discriminantRoot = Math.sqrt(discriminant);
-            root1 = (-b + discriminantRoot) / twoA;
-            root2 = (-b - discriminantRoot) / twoA;
-//            System.out.printf("Two real roots: x1 = %.4f, x2 = %.4f%n", root1, root2);
-        } else if (discriminant == 0) {
+            var root1 = (-b + discriminantRoot) / twoA;
+            var root2 = (-b - discriminantRoot) / twoA;
+            return new EquationRoots<Complex>(List.of(
+                    Complex.of(root1, Double.NaN),
+                    Complex.of(root2, Double.NaN)
+            ), discriminant);
+        } else if (discriminant == .0d) {
             // One real root (repeated)
-            root1 = -b / twoA;
-            root2 = root1;
-//            System.out.printf("One real root: x = %.4f%n", root1);
+            var root = -b / twoA;
+            return new EquationRoots<Complex>(List.of(
+                    Complex.of(root, Double.NaN),
+                    Complex.of(root, Double.NaN)
+            ), discriminant);
         } else {
             // Complex roots
             var realPart = -b / twoA;
             var imaginaryPart = Math.sqrt(-discriminant) / twoA;
-            root1 = realPart + imaginaryPart;
-            root2 = realPart - imaginaryPart;
+            return new EquationRoots<Complex>(List.of(
+                    Complex.of(realPart, imaginaryPart),
+                    Complex.of(realPart, -imaginaryPart)
+            ), discriminant);
         }
-        return new EquationRoots<Double>(List.of(root1, root2), discriminant);
     }
 }
