@@ -48,4 +48,13 @@ public record Letter(String symbol, int index) implements Comparable<Letter> {
     public int hashCode() {
         return Objects.hash(symbol, index);
     }
+
+    /**
+     * Copying.
+     *
+     * @return the copy of this instance
+     */
+    public Letter copy() {
+        return new Letter(this.symbol, this.index);
+    }
 }

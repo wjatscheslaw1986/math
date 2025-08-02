@@ -2,7 +2,7 @@
  * Viacheslav Mikhailov (taleskeeper@yandex.com) © 2025.
  */
 module math {
-	exports combinatorics;
+    exports combinatorics;
 	exports approximation;
 	exports probnstat;
 	exports linear.equation;

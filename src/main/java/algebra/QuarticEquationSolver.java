@@ -13,9 +13,7 @@ import java.util.stream.Collectors;
 import static approximation.RoundingUtil.isEffectivelyZero;
 
 /**
- * A utility class for solving quartic equation.
- *
- * @author Viacheslav Mikhailov
+ * A utility class for solving quartic equation. TODO not working.
  */
 public class QuarticEquationSolver {
 

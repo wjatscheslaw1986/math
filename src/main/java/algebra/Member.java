@@ -3,14 +3,20 @@
  */
 package algebra;
 
+import series.SeriesPart;
+
+import java.util.List;
 import java.util.Objects;
 
+import static algebra.MemberUtil.isConstant;
+
 /**
- * A member of an equation. For example <i>2.5*(x^(1/9))</i>.
+ * Either a term of a series, or a member of an equation.
+ * For example <i>2.5*(x^(1/9))</i>.
  *
  * @author Viacheslav Mikhailov
  */
-public class Member implements Comparable<Member> {
+public class Member implements Comparable<Member>, SeriesPart {
     private final Letter letter;
     private final double power;
     private double coefficient;
@@ -19,7 +25,7 @@ public class Member implements Comparable<Member> {
     private Member(final double pow, final double coeff, final Letter name, final Double val) {
         this.power = pow;
         this.coefficient = coeff;
-        this.letter = name;
+        this.letter = Objects.requireNonNull(name);
         this.value = val;
     }
 
@@ -66,6 +72,73 @@ public class Member implements Comparable<Member> {
         if (result == 0) result = Double.compare(this.power, m.power);
         if (result == 0) result = Double.compare(this.coefficient, m.coefficient);
         return result;
+    }
+
+    @Override
+    public int size() {
+        return 1;
+    }
+
+    @Override
+    public void add(SeriesPart seriesPart) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void remove(SeriesPart seriesPart) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public SeriesPart getChild(int index) {
+        throw new UnsupportedOperationException("A Member is a leaf in the graph");
+    }
+
+    @Override
+    public List<SeriesPart> getSeriesParts() {
+        return List.of(this);
+    }
+
+    @Override
+    public SeriesPart multiply(SeriesPart seriesPart) {
+        if (seriesPart instanceof Member m) {
+            return MemberUtil.multiply(this, m);
+        } else if (seriesPart instanceof Members ms) {
+            return Members.of(ms.getSeriesParts().stream()
+                    .map(this::multiply).toList());
+        }
+        throw new IllegalArgumentException("Unsupported series part type " + seriesPart.getClass());
+    }
+
+    /**
+     * Multiplies two Members.
+     *
+     * @param factor the second Member
+     * @return a new Member representing the product
+     * @throws IllegalArgumentException if both are variable members with different letters
+     */
+    public Member multiply(Member factor) {
+        if (isConstant(this) && isConstant(factor))
+            return Member.asRealConstant(this.getCoefficient() * factor.getCoefficient());
+        else if (isConstant(this) && !isConstant(factor))
+            return Member.builder()
+                    .letter(factor.getLetter())
+                    .power(factor.getPower())
+                    .coefficient(this.getCoefficient() * factor.getCoefficient())
+                    .build();
+        else if (!isConstant(this) && isConstant(factor))
+            return Member.builder()
+                    .letter(this.getLetter())
+                    .power(this.getPower())
+                    .coefficient(this.getCoefficient() * factor.getCoefficient())
+                    .build();
+        else if (!isConstant(this) && !isConstant(factor) && this.getLetter().equals(factor.getLetter()))
+            return Member.builder()
+                    .letter(this.getLetter())
+                    .power(this.getPower() + factor.getPower())
+                    .coefficient(this.getCoefficient() * factor.getCoefficient())
+                    .build();
+        else throw new IllegalArgumentException("Cannot multiply members with different letters");
     }
 
     /**
@@ -156,8 +229,9 @@ public class Member implements Comparable<Member> {
      *
      * @return the new Member instance
      */
+    @Override
     public Member copy() {
-        return new Member(this.power, this.coefficient, this.letter, this.value);
+        return new Member(this.power, this.coefficient, this.letter.copy(), Objects.isNull(this.value) ? null : this.value);
     }
 
     /**

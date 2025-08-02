@@ -202,7 +202,20 @@ public class EquationUtil {
             case LINEAR -> LinearEquationSolver.solve(groupedByPowerMembersEquation);
             case QUADRATIC -> QuadraticEquationSolver.solve(groupedByPowerMembersEquation);
             case CUBIC -> CubicEquationSolver.solve(groupedByPowerMembersEquation);
+            // TODO QUARTIC ->
             default -> throw new IllegalArgumentException(String.format("The equation type %s is not supported.", equationType.name()));
         };
+    }
+
+    /**
+     * Cleans the given equation of terms that are multiplied by zero coefficient.
+     *
+     * @param equation the given equation
+     * @return the cleaned equation
+     */
+    public static Equation removeZeroMembers(final Equation equation) {
+        var result = new ArrayList<>(equation.members());
+        result.removeIf(member -> member.getCoefficient() == .0d);
+        return new Equation(result, equation.equalsTo());
     }
 }
