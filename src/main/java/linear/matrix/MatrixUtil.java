@@ -3,6 +3,7 @@
  */
 package linear.matrix;
 
+import algebra.Member;
 import approximation.RoundingUtil;
 
 /**
@@ -217,6 +218,34 @@ public final class MatrixUtil {
      */
     public static double[][] excludeColumnAndRow(double[][] matrix, int rowNumber, int columnNumber) {
         double[][] submatrix = new double[matrix.length - 1][matrix[0].length - 1];
+        int submatrixRow = 1, submatrixCol = 1;
+        for (int rowNum = 1; rowNum <= matrix.length; rowNum++) {
+            if (rowNum == rowNumber)
+                continue;
+            for (int colNum = 1; colNum <= matrix[0].length; colNum++) {
+                if (colNum == columnNumber)
+                    continue;
+                submatrix[submatrixRow - 1][submatrixCol - 1] = matrix[rowNum - 1][colNum - 1];
+                submatrixCol++;
+            }
+            submatrixCol = 1;
+            submatrixRow++;
+        }
+        return submatrix;
+    }
+
+    /**
+     * This method returns a matrix 1 row and 1 column lesser than the original one.
+     * The ordinals of the row and the column to exclude are provided as <i>rowNumber</i>
+     * and <i>columnNumber</i>, respectively.
+     *
+     * @param matrix       - the original matrix
+     * @param rowNumber    - number (index + 1) of a row to exclude
+     * @param columnNumber - number (index + 1) of a column to exclude
+     * @return a matrix one row one column less in size.
+     */
+    public static Member[][] excludeColumnAndRow(Member[][] matrix, int rowNumber, int columnNumber) {
+        Member[][] submatrix = new Member[matrix.length - 1][matrix[0].length - 1];
         int submatrixRow = 1, submatrixCol = 1;
         for (int rowNum = 1; rowNum <= matrix.length; rowNum++) {
             if (rowNum == rowNumber)

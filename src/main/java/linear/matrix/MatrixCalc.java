@@ -3,12 +3,15 @@
  */
 package linear.matrix;
 
+import algebra.Member;
+import algebra.MemberUtil;
 import combinatorics.CombinationsGenerator;
 import linear.matrix.exception.MatrixException;
 import linear.spatial.Vector;
 import linear.spatial.VectorCalc;
 
 import java.util.ArrayDeque;
+import java.util.Arrays;
 import java.util.Deque;
 import java.util.stream.IntStream;
 
@@ -28,8 +31,9 @@ public final class MatrixCalc {
     }
 
     /**
-     * The method multiplies the argument matrix on a 64-bit floating point number
-     * The method does not modify the original matrix object
+     * The method multiplies the argument matrix on a 64-bit floating point number.
+     *
+     * The method does not modify the given argument matrix.
      *
      * @param matrix     - the original matrix object
      * @param multiplier - the number to multiply the matrix on
@@ -47,8 +51,10 @@ public final class MatrixCalc {
     }
 
     /**
-     * Multiply the given matrix (on the left) on a vector-column (a
-     * single column matrix, on the right) The method does not modify the given matrix.
+     * Multiply the given matrix (on the left) on a vector-column
+     * (a single column matrix, on the right).
+     *
+     * The method does not modify the given argument matrix.
      *
      * @param matrix - the given matrix
      * @param column - the vector-column to multiply on
@@ -91,6 +97,31 @@ public final class MatrixCalc {
     }
 
     /**
+     * The method multiplies the two argument matrices The method does not modify
+     * the original matrix object
+     *
+     * @param matrixLeft   - the matrix on the left of the multiplication equation
+     * @param matrixRight- the matrix on the right of the multiplication equation
+     * @return a new matrix object which is a result of multiplication
+     * @throws MatrixException - if the matrix is malformed
+     */
+    public static Member[][] multiply(Member[][] matrixLeft, Member[][] matrixRight) throws MatrixException {
+        if (!Validation.canMultiply(matrixLeft, matrixRight))
+            throw new MatrixException("In order to multiply matrices, the one on the left should have same row length as the column length of the one on the right");
+        Member[][] result = new Member[matrixLeft.length][matrixRight[0].length];
+        for (int rowNumLeft = 0; rowNumLeft < matrixLeft.length; rowNumLeft++) {
+            for (int colNumRight = 0; colNumRight < matrixRight[0].length; colNumRight++) {
+                for (int colNumLeft = 0; colNumLeft < matrixLeft[0].length; colNumLeft++) {
+                    result[rowNumLeft][colNumRight] = result[rowNumLeft][colNumRight] != null
+                            ? MemberUtil.sum(result[rowNumLeft][colNumRight], matrixLeft[rowNumLeft][colNumLeft].multiply(matrixRight[colNumLeft][colNumRight]))
+                            : matrixLeft[rowNumLeft][colNumLeft].multiply(matrixRight[colNumLeft][colNumRight]);
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
      * The method multiplies a given vector (from the left side of the expression)
      * on a given matrix (on the right side of the expression).
      *
@@ -101,6 +132,19 @@ public final class MatrixCalc {
      */
     public static double[][] multiply(Vector vector, double[][] matrixRight) throws MatrixException {
         return multiply(new double[][]{vector.coordinates()}, matrixRight);
+    }
+
+    /**
+     * The method multiplies a given vector (from the left side of the expression)
+     * on a given matrix (on the right side of the expression).
+     *
+     * @param vector - the given vector on the left side of the expression
+     * @param membersMatrix - the given matrix on the right side of the expression
+     * @return the resulting matrix
+     * @throws MatrixException - if the given multiplicand and the given multiplier cannot be multiplied together.
+     */
+    public static Member[][] multiply(Vector vector, Member[][] membersMatrix) throws MatrixException {
+        return multiply(new Member[][]{Arrays.stream(vector.coordinates()).mapToObj(Member::asRealConstant).toList().toArray(new Member[0])}, membersMatrix);
     }
 
     /**

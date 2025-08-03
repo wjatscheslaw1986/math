@@ -80,8 +80,12 @@ public class Member implements Comparable<Member>, SeriesPart {
     }
 
     @Override
-    public void add(SeriesPart seriesPart) {
-        throw new UnsupportedOperationException();
+    public SeriesPart add(SeriesPart seriesPart) {
+        return switch (seriesPart) {
+            case Member m -> MemberUtil.sum(this, m);
+            case Members ms -> Members.of(ms.getSeriesParts().stream().map(this::multiply).toList());
+            default -> throw new IllegalArgumentException("Unsupported series part type " + seriesPart.getClass());
+        };
     }
 
     @Override
@@ -101,13 +105,11 @@ public class Member implements Comparable<Member>, SeriesPart {
 
     @Override
     public SeriesPart multiply(SeriesPart seriesPart) {
-        if (seriesPart instanceof Member m) {
-            return MemberUtil.multiply(this, m);
-        } else if (seriesPart instanceof Members ms) {
-            return Members.of(ms.getSeriesParts().stream()
-                    .map(this::multiply).toList());
-        }
-        throw new IllegalArgumentException("Unsupported series part type " + seriesPart.getClass());
+        return switch (seriesPart) {
+            case Member m -> MemberUtil.multiply(this, m);
+            case Members ms -> Members.of(ms.getSeriesParts().stream().map(this::multiply).toList());
+            default -> throw new IllegalArgumentException("Unsupported series part type " + seriesPart.getClass());
+        };
     }
 
     /**
@@ -203,8 +205,8 @@ public class Member implements Comparable<Member>, SeriesPart {
     public static Member asRealConstant(double value) {
         return Member.builder()
                 .value(Double.NaN)
-                .power(Double.NaN)
-                .letter(Letter.of("", 0))
+                .power(.0d)
+                .letter(Letter.of("x", 0))
                 .coefficient(value)
                 .build();
     }

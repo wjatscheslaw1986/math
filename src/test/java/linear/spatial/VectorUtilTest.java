@@ -3,6 +3,8 @@ package linear.spatial;
 import linear.matrix.exception.MatrixException;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -25,9 +27,9 @@ public class VectorUtilTest {
     @Test
     void givenBasisVectors_whechCheckIsIndependent_thenTrue() throws MatrixException {
         Vector[] vectors = new Vector[]{
-                Vector.of(1,1,1),
-                Vector.of(1,2,3),
-                Vector.of(1,4,5)
+                Vector.of(1, 1, 1),
+                Vector.of(1, 2, 3),
+                Vector.of(1, 4, 5)
         };
         assertTrue(VectorUtil.isBasis(vectors));
     }
@@ -44,10 +46,21 @@ public class VectorUtilTest {
     @Test
     void givenNonBasisVectors_whechCheckIsIndependent_thenFalse() throws MatrixException {
         Vector[] vectors = new Vector[]{
-                Vector.of(1,2,3),
-                Vector.of(3,5,1),
-                Vector.of(5,9,7)
+                Vector.of(1, 2, 3),
+                Vector.of(3, 5, 1),
+                Vector.of(5, 9, 7)
         };
         assertFalse(VectorUtil.isBasis(vectors));
+    }
+
+//    @Test
+    void givenMatrix_whenEigenvectors_thenGetExpectedVectors() {
+        var matrix = new double[][]{
+                {17, 6},
+                {6, 8}
+        };
+
+        var eigenvectors = VectorCalc.eigenvectors(matrix);
+        Arrays.stream(eigenvectors).forEach(System.out::println);
     }
 }

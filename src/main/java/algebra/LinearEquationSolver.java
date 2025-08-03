@@ -9,17 +9,17 @@ import java.util.Objects;
 import static approximation.RoundingUtil.isEffectivelyZero;
 
 /**
- * A utility class for solving quadratic equation.
+ * A utility class for solving linear equations.
  *
  * @author Viacheslav Mikhailov
  */
 final class LinearEquationSolver {
 
     /**
-     * Solves the given quadratic equation.
+     * Solves the given linear equation.
      *
-     * @param equation equation the equation given
-     * @return quadratic equation roots
+     * @param equation the equation given
+     * @return linear equation roots
      */
     static EquationRoots<Complex> solve(final Equation equation) {
         Objects.requireNonNull(equation, "Equation cannot be null");

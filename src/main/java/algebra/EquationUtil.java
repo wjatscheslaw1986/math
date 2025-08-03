@@ -3,10 +3,16 @@
  */
 package algebra;
 
+import linear.matrix.MatrixUtil;
+import series.SeriesPart;
+
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import static algebra.MemberUtil.doubleArrayToMembersArrayForCharacteristicPolynomial;
 import static approximation.RoundingUtil.roundToNDecimals;
+import static linear.matrix.Validation.isSquareMatrix;
 
 /**
  * A utility class for equations.
@@ -199,6 +205,7 @@ public class EquationUtil {
         var equationType = EquationValidator.determinePolynomialEquationType(equation);
         var groupedByPowerMembersEquation = Equation.of(distinct(equation.members()), equation.equalsTo());
         return switch (equationType) {
+            case INVALID -> LinearEquationSolver.solve(groupedByPowerMembersEquation);
             case LINEAR -> LinearEquationSolver.solve(groupedByPowerMembersEquation);
             case QUADRATIC -> QuadraticEquationSolver.solve(groupedByPowerMembersEquation);
             case CUBIC -> CubicEquationSolver.solve(groupedByPowerMembersEquation);
@@ -217,5 +224,60 @@ public class EquationUtil {
         var result = new ArrayList<>(equation.members());
         result.removeIf(member -> member.getCoefficient() == .0d);
         return new Equation(result, equation.equalsTo());
+    }
+
+    /**
+     * The method calculates a determinant of the given matrix.
+     * Only a square matrix may have a determinant.
+     *
+     * @param matrix - the given matrix
+     * @return the determinant of the matrix
+     */
+    public static Equation toCharacteristicPolynomial(final double[][] matrix) {
+        if (!isSquareMatrix(matrix))
+            throw new IllegalArgumentException("A non-square matrix has no determinant.");
+        if (matrix.length < 2)
+            return removeZeroMembers(Equation.of(List.of(Member.asRealConstant(matrix[0][0]), Member.asVariableX(-1.0d)), Member.asRealConstant(.0d)));
+        if (matrix.length == 2)
+            return removeZeroMembers(Equation.of(distinct(Stream.concat(
+                    Members.of(List.of(Member.asRealConstant(matrix[0][0]), Member.asVariableX(-1.0d)))
+                            .multiply(Members.of(List.of(Member.asRealConstant(matrix[1][1]), Member.asVariableX(-1.0d)))).asList().stream(),
+                    Stream.of(Member.asRealConstant(-1.0d).multiply(Member.asRealConstant(matrix[0][1]).multiply(
+                            Member.asRealConstant(matrix[1][0]))))).sorted().toList()), Member.asRealConstant(.0d)));
+        if (matrix.length == 3)
+            return removeZeroMembers(Equation.of(distinct(Stream.of(
+                    Members.of(List.of(Member.asRealConstant(matrix[0][0]), Member.asVariableX(-1.0d)))
+                            .multiply(Members.of(List.of(Member.asRealConstant(matrix[1][1]), Member.asVariableX(-1.0d))))
+                            .multiply(Members.of(List.of(Member.asRealConstant(matrix[2][2]), Member.asVariableX(-1.0d)))).asList(),
+                    Members.of(List.of(Member.asRealConstant(matrix[0][1]).multiply(
+                            Member.asRealConstant(matrix[1][2])).multiply(
+                            Member.asRealConstant(matrix[2][0])))).asList(),
+                    Members.of(List.of(Member.asRealConstant(matrix[1][0]).multiply(
+                            Member.asRealConstant(matrix[2][1])).multiply(
+                            Member.asRealConstant(matrix[0][2])))).asList(),
+                    Members.of(List.of(Member.asRealConstant(-1.0d)
+                            .multiply(Member.asRealConstant(matrix[0][2]).multiply(
+                                    Members.of(List.of(Member.asRealConstant(matrix[1][1]), Member.asVariableX(-1.0d))).multiply(
+                                            Member.asRealConstant(matrix[2][0])))))).asList(),
+                    Members.of(List.of(Member.asRealConstant(-1.0d)
+                            .multiply(Member.asRealConstant(matrix[1][0]).multiply(
+                                    Member.asRealConstant(matrix[0][1])).multiply(
+                                    Members.of(List.of(Member.asRealConstant(matrix[2][2]), Member.asVariableX(-1.0d))))))).asList(),
+                    Members.of(List.of(Member.asRealConstant(-1.0d)
+                            .multiply(Members.of(List.of(Member.asRealConstant(matrix[0][0]), Member.asVariableX(-1.0d))).multiply(
+                                    Member.asRealConstant(matrix[2][1])).multiply(
+                                    Member.asRealConstant(matrix[1][2]))))).asList()
+            ).flatMap(List::stream).sorted().toList()), Member.asRealConstant(.0d)));
+        Members[][] diagonalPolynomnialMatrix = doubleArrayToMembersArrayForCharacteristicPolynomial(matrix);
+        Members sumOfSums = Members.of(new ArrayList<>());
+        for (int col = 0; col < diagonalPolynomnialMatrix[0].length; col++) {
+                var mmbrz = Members.of(List.of(
+                        diagonalPolynomnialMatrix[0][col].multiply(
+                        Members.of(toCharacteristicPolynomial(MatrixUtil.excludeColumnAndRow(matrix, 1, col + 1)).members()
+                                .stream().map(SeriesPart.class::cast).collect(Collectors.toList())))));
+                if (col % 2 != 0) mmbrz = mmbrz.multiply(Member.asRealConstant(-1.0d));
+            sumOfSums = (Members) sumOfSums.add(mmbrz);
+            }
+        return removeZeroMembers(Equation.of(distinct(sumOfSums.asList().stream().sorted().toList()), Member.asRealConstant(.0d)));
     }
 }

@@ -5,7 +5,8 @@ package linear.matrix;
 
 import linear.matrix.exception.MatrixException;
 
-import static linear.matrix.ElementaryTransformationUtil.*;
+import static linear.matrix.ElementaryTransformationUtil.addMultipliedRow;
+import static linear.matrix.ElementaryTransformationUtil.swapRows;
 import static linear.matrix.MatrixUtil.*;
 
 /**
@@ -378,42 +379,5 @@ public final class RowEchelonFormUtil {
         }
 
         return true;
-    }
-
-    /**
-     * This method produces a trapezoid matrix of any matrix or returns the original one.
-     * This method does not modify the original matrix object.
-     *
-     * @param matrix - a link to original matrix argument object
-     * @return a trapezoid form of a given <i>matrix</i> argument, or the original matrix if trapezoid
-     * can not be found for this matrix.
-     * @throws MatrixException if the given matrix cannot have a trapezoid form
-     */
-    public static double[][] tryTrapezoid(double[][] matrix) throws MatrixException {
-        final String errMsg = String.format("The given matrix\n%s\ncannot have a trapezoid form.", MatrixUtil.print(matrix));
-        double[][] result = copy(matrix);
-        int shortestSideLength = Math.min(result.length, result[0].length);
-        for (int i = 0; i < shortestSideLength; i++) {
-            int maxSwitchRowNumber = result.length - 1, maxSwitchColNumber = result[0].length - 1;
-            while (maxSwitchRowNumber + maxSwitchColNumber > 0 && result[i][i] == .0d) {
-                if (maxSwitchRowNumber > 0)
-                    result = swapRows(result, i, maxSwitchRowNumber--);
-                else if (maxSwitchColNumber > 0)
-                    result = swapColumns(result, i, maxSwitchColNumber--);
-            }
-            if (result[i][i] == .0d)
-                throw new MatrixException(errMsg);
-            for (int j = i + 1; j < result.length; j++)
-                if (result[j][i] != .0d)
-                    result = addMultipliedRow(result, j + 1, i + 1, (-1) * result[j][i] / result[i][i]);
-            result = shrinkZeroColumns(matrix);
-            shortestSideLength = Math.min(result.length, result[0].length);
-        }
-        if (isTrapezoidForm(result))
-            return result;
-        if (isTrapezoidForm(matrix))
-            return matrix;
-        else
-            throw new MatrixException(errMsg);
     }
 }

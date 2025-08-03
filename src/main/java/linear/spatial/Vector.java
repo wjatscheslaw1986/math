@@ -34,4 +34,9 @@ public record Vector(double... coordinates) {
     public int hashCode() {
         return Arrays.hashCode(coordinates);
     }
+
+    @Override
+    public String toString() {
+        return Arrays.toString(coordinates);
+    }
 }

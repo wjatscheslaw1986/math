@@ -4,17 +4,10 @@
 
 package algebra;
 
-import linear.matrix.MatrixCalc;
 import series.SeriesPart;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Stream;
-
-import static algebra.EquationUtil.distinct;
-import static algebra.EquationUtil.removeZeroMembers;
-import static linear.matrix.Validation.isSquareMatrix;
 
 /**
  * Utility class providing arithmetic operations for Member objects.
@@ -34,7 +27,8 @@ public final class MemberUtil {
      * @return true if the Member is a constant, false otherwise
      */
     static boolean isConstant(SeriesPart m) {
-        return m.size() == 1 && ((Member) m.getSeriesParts().getFirst()).getLetter().symbol().isEmpty();
+        return m.getSeriesParts().stream().allMatch(element ->
+                ((Member) element).getPower() == .0d);
     }
 
     /**
@@ -119,17 +113,18 @@ public final class MemberUtil {
 
     /**
      * Calculates a sum of multiplications, known as opening of the brackets.
-     * A cartesian product operation.
+     * A Cartesian product operation.
      *
-     * @param firstSum the first bracket with sum of members
-     * @param secondSum the second bracket with sum of members
+     * @param <T> the member type
+     * @param firstSeries the first bracket with sum of members
+     * @param secondSeries the second bracket with sum of members
      * @return the result of opening the brackets
      */
-    public static <T extends SeriesPart> List<T> openBrackets(List<T> firstSum, List<T> secondSum) {
+    public static <T extends SeriesPart> List<T> openBrackets(List<T> firstSeries, List<T> secondSeries) {
         List<T> result = new ArrayList<>();
-        for (T m : firstSum) {
+        for (T m : firstSeries) {
             T accumulator = (T) m.copy();
-            for (T s : secondSum) {
+            for (T s : secondSeries) {
                 accumulator = (T) accumulator.multiply(s);
             }
             result.add(accumulator);
@@ -171,10 +166,11 @@ public final class MemberUtil {
 
     /**
      *
+     *
      * @param matrix
      * @return
      */
-    private static Members[][] doubleArrayToMembersArrayForCharacteristicPolynomial(final double[][] matrix) {
+    static Members[][] doubleArrayToMembersArrayForCharacteristicPolynomial(final double[][] matrix) {
         Members[][] membersArray = new Members[matrix.length][matrix[0].length];
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix[i].length; j++) {
@@ -185,49 +181,5 @@ public final class MemberUtil {
         return membersArray;
     }
 
-    /**
-     * The method calculates a determinant of the given matrix.
-     * Only a square matrix may have a determinant.
-     *
-     * @param matrix - the given matrix
-     * @return the determinant of the matrix
-     */
-    public static Equation toCharacteristicPolynomial(final double[][] matrix) {
-        if (!isSquareMatrix(matrix))
-            throw new IllegalArgumentException("A non-square matrix has no determinant.");
-        if (matrix.length < 2)
-            return removeZeroMembers(Equation.of(List.of(Member.asRealConstant(matrix[0][0]), Member.asVariableX(-1.0d)), Member.asRealConstant(.0d)));
-        if (matrix.length == 2)
-            return removeZeroMembers(Equation.of(distinct(Stream.concat(
-                    Members.of(List.of(Member.asRealConstant(matrix[0][0]), Member.asVariableX(-1.0d)))
-                            .multiply(Members.of(List.of(Member.asRealConstant(matrix[1][1]), Member.asVariableX(-1.0d)))).asList().stream(),
-                    Stream.of(Member.asRealConstant(-1.0d).multiply(Member.asRealConstant(matrix[0][1]).multiply(
-                            Member.asRealConstant(matrix[1][0]))))).toList()), Member.asRealConstant(.0d)));
-        if (matrix.length == 3)
-            return removeZeroMembers(Equation.of(distinct(Stream.of(
-                            Members.of(List.of(Member.asRealConstant(matrix[0][0]), Member.asVariableX(-1.0d)))
-                                    .multiply(Members.of(List.of(Member.asRealConstant(matrix[1][1]), Member.asVariableX(-1.0d))))
-                                    .multiply(Members.of(List.of(Member.asRealConstant(matrix[2][2]), Member.asVariableX(-1.0d)))).asList(),
-                            Members.of(List.of(Member.asRealConstant(matrix[0][1]).multiply(
-                                    Member.asRealConstant(matrix[1][2])).multiply(
-                                            Member.asRealConstant(matrix[2][0])))).asList(),
-                            Members.of(List.of(Member.asRealConstant(matrix[1][0]).multiply(
-                                    Member.asRealConstant(matrix[2][1])).multiply(
-                                    Member.asRealConstant(matrix[0][2])))).asList(),
-                            Members.of(List.of(Member.asRealConstant(-1.0d)
-                                    .multiply(Member.asRealConstant(matrix[0][2]).multiply(
-                                            Members.of(List.of(Member.asRealConstant(matrix[1][1]), Member.asVariableX(-1.0d))).multiply(
-                                    Member.asRealConstant(matrix[2][0])))))).asList(),
-                            Members.of(List.of(Member.asRealConstant(-1.0d)
-                                    .multiply(Member.asRealConstant(matrix[1][0]).multiply(
-                                            Member.asRealConstant(matrix[0][1])).multiply(
-                                            Members.of(List.of(Member.asRealConstant(matrix[2][2]), Member.asVariableX(-1.0d))))))).asList(),
-                            Members.of(List.of(Member.asRealConstant(-1.0d)
-                                    .multiply(Members.of(List.of(Member.asRealConstant(matrix[0][0]), Member.asVariableX(-1.0d))).multiply(
-                                            Member.asRealConstant(matrix[2][1])).multiply(
-                                            Member.asRealConstant(matrix[1][2]))))).asList()
-                            ).flatMap(List::stream).toList()), Member.asRealConstant(.0d)));
-        // TODO  if (matrix.length == 4)
-        throw new IllegalArgumentException("Matrices lager than 3x3 aren't supported.");
-    }
+
 }

@@ -11,10 +11,6 @@ import linear.spatial.VectorCalc;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
 import static linear.equation.LinearEquationSystemUtil.*;
 import static linear.equation.SolutionsCount.*;
 import static org.junit.jupiter.api.Assertions.*;

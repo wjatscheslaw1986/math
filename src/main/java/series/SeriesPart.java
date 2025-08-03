@@ -13,7 +13,7 @@ import java.util.List;
  */
 public interface SeriesPart {
     int size();
-    void add(SeriesPart seriesPart);
+    SeriesPart add(SeriesPart seriesPart);
     void remove(SeriesPart seriesPart);
     SeriesPart getChild(int index);
     List<SeriesPart> getSeriesParts();

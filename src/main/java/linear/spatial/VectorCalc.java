@@ -3,7 +3,13 @@
  */
 package linear.spatial;
 
+import algebra.*;
+
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+
+import static algebra.EquationUtil.distinct;
 
 /**
  * A utility class for calculations of vectors.
@@ -14,6 +20,40 @@ public final class VectorCalc {
 
     private VectorCalc() {
         // static context only
+    }
+
+    /**
+     *
+     * @param transformationMatrix
+     * @return
+     */
+    public static Vector[] eigenvectors(final double[][] transformationMatrix) {
+        EquationRoots<Complex> roots = EquationUtil.solve(EquationUtil.toCharacteristicPolynomial(transformationMatrix));
+        List<Vector> vectors = new ArrayList<>();
+        int i = 1;
+        for (var root : roots.roots()) {
+            List<Member> linearEquationMembers = new ArrayList<>();
+            for (int j = 1; j <= transformationMatrix[i-1].length; j++) {
+                linearEquationMembers.add(Member.builder()
+                                .power(1.0d)
+                                .coefficient(transformationMatrix[i-1][j-1])
+                                .letter(Letter.of("x", j))
+                                .value(Double.NaN)
+                        .build());
+            }
+            linearEquationMembers.add(Member.builder()
+                    .power(1.0d)
+                    .coefficient(-root.real())
+                    .letter(Letter.of("x", i))
+                    .value(Double.NaN)
+                    .build());
+            EquationRoots<Complex> coords = EquationUtil.solve(Equation.of(distinct(linearEquationMembers), Member.asRealConstant(.0d)));
+            vectors.add(Vector.of(coords.roots().stream().mapToDouble(Complex::real).toArray()));
+            // TODO all matrix rows per root
+            ++i;
+        }
+        return vectors.toArray(new Vector[0]);
+
     }
 
     /**

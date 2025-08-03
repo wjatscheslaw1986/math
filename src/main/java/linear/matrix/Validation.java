@@ -3,6 +3,7 @@
  */
 package linear.matrix;
 
+import algebra.Member;
 import linear.matrix.exception.MatrixException;
 
 import static linear.matrix.MatrixCalc.*;
@@ -26,6 +27,18 @@ public final class Validation {
      * @return true if the matrix on the left has as many columns as the matrix on the right has rows, false otherwise
      */
     public static boolean canMultiply(double[][] matrixLeft, double[]... matrixRight) {
+        return isMatrix(matrixLeft) && isMatrix(matrixRight)
+                && matrixLeft[0].length == matrixRight.length;
+    }
+
+    /**
+     * Checks if the given two matrices can be multiplied in the provided order of parameters.
+     *
+     * @param matrixLeft  given
+     * @param matrixRight given
+     * @return true if the matrix on the left has as many columns as the matrix on the right has rows, false otherwise
+     */
+    public static boolean canMultiply(Member[][] matrixLeft, Member[]... matrixRight) {
         return isMatrix(matrixLeft) && isMatrix(matrixRight)
                 && matrixLeft[0].length == matrixRight.length;
     }
@@ -75,12 +88,41 @@ public final class Validation {
     }
 
     /**
+     * Checks if the given double array is a matrix. We consider a matrix
+     * to have the same length for all of its columns.
+     *
+     * @param matrix an array of arrays of equal length
+     * @return true if the given array of arrays is a matrix, false otherwise
+     */
+    public static boolean isMatrix(Member[][] matrix) {
+        if (isEmpty(matrix)) {
+            return false;
+        }
+        final int cols = matrix[0].length;
+        for (int i = 1; i < matrix.length; i++) {
+            if (matrix[i].length != cols)
+                return false;
+        }
+        return true;
+    }
+
+    /**
      * Checks if this matrix is empty.
      *
      * @param matrix checked
      * @return true if matrix is empty, false otherwise
      */
     public static boolean isEmpty(double[][] matrix) {
+        return matrix.length < 1 || matrix[0].length < 1;
+    }
+
+    /**
+     * Checks if this matrix is empty.
+     *
+     * @param matrix checked
+     * @return true if matrix is empty, false otherwise
+     */
+    public static boolean isEmpty(Member[][] matrix) {
         return matrix.length < 1 || matrix[0].length < 1;
     }
 

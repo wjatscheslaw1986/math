@@ -35,10 +35,18 @@ public class Members implements SeriesPart {
     }
 
     @Override
-    public void add(SeriesPart seriesPart) {
-        if (seriesPart instanceof Member m)
-            members.add(m);
-        else throw new IllegalArgumentException("This class supports only Member.");
+    public SeriesPart add(SeriesPart seriesPart) {
+        return switch (seriesPart) {
+            case Member m -> {
+                this.members.add(m);
+                yield this;
+            }
+            case Members ms -> {
+                this.members.addAll(ms.getSeriesParts());
+                yield this;
+            }
+            default -> throw new IllegalArgumentException("Unsupported series part type " + seriesPart.getClass());
+        };
     }
 
     @Override

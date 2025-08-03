@@ -291,7 +291,6 @@ public class EquationUtilTest {
         assertEquals(expectedRoots6, solution6);
     }
 
-
     @Test
     void given_quartic_equation_when_solve_then_expected_roots() {
         var equation6 = new Equation(List.of(
@@ -304,5 +303,59 @@ public class EquationUtilTest {
 
         var roots = QuarticEquationSolver.solveQuartic(equation6);
         System.out.println(roots);
+    }
+
+    @Test
+    void given_a_2x2_matrix_when_toCharacteristicPolynomial_then_get_expected_Equation() {
+        var matrix = new double[][]{
+                {.5d, -.5d},
+                {-.5d, .5d}
+        };
+
+        var expected = Equation.of(List.of(
+                Member.builder().coefficient(1.0d).letter("x").power(2.0d).build(),
+                Member.builder().coefficient(-1.0d).letter("x").power(1.0d).build()
+        ), Member.asRealConstant(.0d));
+
+        var result = toCharacteristicPolynomial(matrix);
+
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void given_a_3x3_matrix_when_toCharacteristicPolynomial_then_get_expected_Equation() {
+        var matrix = new double[][]{
+                {3, -1, 1},
+                {0, 2, -5},
+                {1, -1, 2}
+        };
+
+        var expected = Equation.of(List.of(
+                Member.builder().coefficient(-1.0d).letter("x").power(3.0d).build(),
+                Member.builder().coefficient(7).letter("x").power(2.0d).build(),
+                Member.builder().coefficient(-10).letter("x").power(1.0d).build()
+        ), Member.asRealConstant(0));
+
+        assertEquals(expected, toCharacteristicPolynomial(matrix));
+    }
+
+    @Test
+    void given_a_4x4_matrix_when_toCharacteristicPolynomial_then_get_expected_Equation() {
+        var matrix = new double[][]{
+                {2.0d, 3.0d, 5.0d, 3.0d},
+                {2.0d, 5.0d, 2.0d, 2.0d},
+                {1.0d, 6.0d, 2.0d, 2.0d},
+                {66.0d, 6.0d, 2.0d, 4.0d}
+        };
+        assertEquals(4, toCharacteristicPolynomial(matrix).members().getFirst().getPower());
+
+        matrix = new double[][]{
+                {2.0d, 3.0d, 5.0d, 3.0d, 1.0d},
+                {2.0d, 5.0d, 2.0d, 2.0d, 2.0d},
+                {1.0d, 6.0d, 2.0d, 2.0d, 2.0d},
+                {66.0d, 6.0d, 2.0d, 4.0d, 2.0d},
+                {1.0d, 3.0d, 2.0d, 9.0d, 6.0d}
+        };
+        assertEquals(5, toCharacteristicPolynomial(matrix).members().getFirst().getPower());
     }
 }

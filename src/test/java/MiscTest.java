@@ -1,6 +1,11 @@
+import algebra.Complex;
+import algebra.EquationRoots;
+import algebra.EquationUtil;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+
+import static algebra.EquationUtil.toCharacteristicPolynomial;
 
 public class MiscTest {
 
