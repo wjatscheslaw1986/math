@@ -26,16 +26,16 @@ public class QuarticEquationSolver {
     public static EquationRoots<Complex> solveQuartic(Equation equation) {
         // Extract coefficients
         Map<Double, Double> mapPowerOnCoefficient = new HashMap<>();
-        if (equation.members().isEmpty())
+        if (equation.terms().isEmpty())
             throw new IllegalArgumentException("Empty equation");
 
-        String letter = equation.members().getFirst().getLetter().toString();
-        for (Member member : equation.members()) {
-            if (!member.getLetter().toString().equals(letter))
+        String letter = equation.terms().getFirst().getLetter().toString();
+        for (Term term : equation.terms()) {
+            if (!term.getLetter().toString().equals(letter))
                 throw new IllegalArgumentException("Multiple variables in equation");
 
-            double power = member.getPower();
-            double coeff = member.getCoefficient();
+            double power = term.getPower();
+            double coeff = term.getCoefficient();
             mapPowerOnCoefficient.put(power, coeff);
         }
         double constant = mapPowerOnCoefficient.getOrDefault(0.0, 0.0) - equation.equalsTo().getCoefficient();
@@ -57,11 +57,11 @@ public class QuarticEquationSolver {
 
         // Resolvent cubic: m^3 - (p/2)m^2 - rm + (pr/2 - q^2/8) = 0
         List<Complex> mRoots = EquationUtil.solve(Equation.of(List.of(
-                Member.builder().letter("m").power(3.0d).coefficient(1.0d).build(),
-                Member.builder().letter("m").power(2.0d).coefficient(-p / 2d).build(),
-                Member.builder().letter("m").power(1.0d).coefficient(-r).build(),
-                Member.builder().letter("m").power(.0d).coefficient((p * r / 2d) - (Math.pow(q, 2) / 8d)).build()
-        ), Member.asRealConstant(.0d))).roots();
+                Term.builder().letter("m").power(3.0d).coefficient(1.0d).build(),
+                Term.builder().letter("m").power(2.0d).coefficient(-p / 2d).build(),
+                Term.builder().letter("m").power(1.0d).coefficient(-r).build(),
+                Term.builder().letter("m").power(.0d).coefficient((p * r / 2d) - (Math.pow(q, 2) / 8d)).build()
+        ), Term.asRealConstant(.0d))).roots();
 
         // Use the first root m
         Complex m = mRoots.getFirst();
@@ -79,15 +79,15 @@ public class QuarticEquationSolver {
 
         List<Complex> yRoots = new ArrayList<>();
         yRoots.addAll(EquationUtil.solve(Equation.of(List.of(
-                Member.builder().letter("x").power(2.0d).coefficient(aQuad.real()).build(),
-                Member.builder().letter("x").power(1.0d).coefficient(sOver2.real()).build(),
-                Member.builder().letter("x").power(.0d).coefficient(ComplexUtil.add(m, qOver2s).real()).build()),
-                Member.asRealConstant(.0d))).roots());
+                Term.builder().letter("x").power(2.0d).coefficient(aQuad.real()).build(),
+                Term.builder().letter("x").power(1.0d).coefficient(sOver2.real()).build(),
+                Term.builder().letter("x").power(.0d).coefficient(ComplexUtil.add(m, qOver2s).real()).build()),
+                Term.asRealConstant(.0d))).roots());
         yRoots.addAll(EquationUtil.solve(Equation.of(List.of(
-                Member.builder().letter("x").power(2.0d).coefficient(aQuad.real()).build(),
-                Member.builder().letter("x").power(1.0d).coefficient(ComplexUtil.negate(sOver2).real()).build(),
-                Member.builder().letter("x").power(.0d).coefficient(ComplexUtil.subtract(m, qOver2s).real()).build()),
-                Member.asRealConstant(.0d))).roots());
+                Term.builder().letter("x").power(2.0d).coefficient(aQuad.real()).build(),
+                Term.builder().letter("x").power(1.0d).coefficient(ComplexUtil.negate(sOver2).real()).build(),
+                Term.builder().letter("x").power(.0d).coefficient(ComplexUtil.subtract(m, qOver2s).real()).build()),
+                Term.asRealConstant(.0d))).roots());
 
         // Back-substitute: x = y - b/(4a)
         double shift = -b / (4 * a);

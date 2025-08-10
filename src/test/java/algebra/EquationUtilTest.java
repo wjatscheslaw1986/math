@@ -38,46 +38,46 @@ public class EquationUtilTest {
         double[] coefficients = new double[]{.0d, .0d, 4.0d, .0d, .0d, .05d, .0d, .0d, 8.05d};
         int index = 2;
         Equation expected = new Equation(List.of(
-                Member.builder()
+                Term.builder()
                         .coefficient(coefficients[0])
                         .value(1.0d)
                         .power(1.0d)
                         .build(),
-                Member.builder()
+                Term.builder()
                         .coefficient(coefficients[1])
                         .value(1.0d)
                         .power(1.0d)
                         .build(),
-                Member.builder()
+                Term.builder()
                         .coefficient(coefficients[2])
                         .power(1.0d)
                         .build(),
-                Member.builder()
+                Term.builder()
                         .coefficient(coefficients[3])
                         .power(1.0d)
                         .value(1.0d)
                         .build(),
-                Member.builder()
+                Term.builder()
                         .coefficient(coefficients[4])
                         .power(1.0d)
                         .value(1.0d)
                         .build(),
-                Member.builder()
+                Term.builder()
                         .coefficient(coefficients[5])
                         .power(1.0d)
                         .value(1.0d)
                         .build(),
-                Member.builder()
+                Term.builder()
                         .coefficient(coefficients[6])
                         .power(1.0d)
                         .value(1.0d)
                         .build(),
-                Member.builder()
+                Term.builder()
                         .coefficient(coefficients[7])
                         .power(1.0d)
                         .value(1.0d)
                         .build()
-        ), Member.asRealConstant(8.05d));
+        ), Term.asRealConstant(8.05d));
         assertEquals(expected, toSingleVariableEquation(coefficients, index));
     }
 
@@ -85,65 +85,65 @@ public class EquationUtilTest {
     void given_single_variable_linear_equation_as_Equation_find_its_solution() {
         double[] coefficients = new double[]{.0d, .0d, 4.0d, .0d, .0d, .05d, .0d, .0d, 8.05d};
         Equation equation = toSingleVariableEquation(coefficients, 2);
-        assertNull(equation.getMemberByIndex(2).getValue());
+        assertNull(equation.getTermByIndex(2).getValue());
         EquationUtil.solveSingleVariableLinearEquation(equation);
-        assertNotNull(equation.getMemberByIndex(2).getValue());
-        assertEquals(2d, equation.getMemberByIndex(2).getValue());
+        assertNotNull(equation.getTermByIndex(2).getValue());
+        assertEquals(2d, equation.getTermByIndex(2).getValue());
 
         equation = toSingleVariableEquation(new double[]{5d, 20d}, 0);
         solveSingleVariableLinearEquation(equation);
-        assertEquals(4d, equation.getMemberByIndex(0).getValue());
+        assertEquals(4d, equation.getTermByIndex(0).getValue());
     }
 
     @Test
-    void given_two_members_find_sum() {
-        var given1 = Member.builder().coefficient(15).letter("a").build();
-        var given2 = Member.builder().coefficient(20).letter("a").build();
-        var sum = EquationUtil.sum(given1, given2);
+    void given_two_terms_find_sum() {
+        var given1 = Term.builder().coefficient(15).letter("a").build();
+        var given2 = Term.builder().coefficient(20).letter("a").build();
+        var sum = TermUtil.sum(given1, given2);
         assertEquals(35, sum.getCoefficient());
         assertEquals("a0", sum.getLetter().toString());
         assertEquals(1.0d, sum.getPower());
         assertNull(sum.getValue());
 
-        given1 = Member.builder().coefficient(15).letter("b").build();
-        given2 = Member.builder().coefficient(-20).letter("b").build();
-        sum = EquationUtil.sum(given1, given2);
+        given1 = Term.builder().coefficient(15).letter("b").build();
+        given2 = Term.builder().coefficient(-20).letter("b").build();
+        sum = TermUtil.sum(given1, given2);
         assertEquals(-5, sum.getCoefficient());
         assertEquals("b0", sum.getLetter().toString());
         assertEquals(1.0d, sum.getPower());
         assertNull(sum.getValue());
-        assertEquals(sum.getCoefficient(), EquationUtil.sum(given2, given1).getCoefficient());
+        assertEquals(sum.getCoefficient(), TermUtil.sum(given2, given1).getCoefficient());
 
-        given1 = Member.builder().coefficient(15).letter("a").build();
-        given2 = Member.builder().coefficient(20).letter("b").build();
-        Member finalGiven1 = given1;
-        Member finalGiven2 = given2;
-        assertThrows(IllegalArgumentException.class, () -> EquationUtil.sum(finalGiven1, finalGiven2));
-        assertThrows(IllegalArgumentException.class, () -> EquationUtil.sum(finalGiven2, finalGiven1));
+        given1 = Term.builder().coefficient(15).letter("a").build();
+        given2 = Term.builder().coefficient(20).letter("b").build();
+        Term finalGiven1 = given1;
+        Term finalGiven2 = given2;
+        assertThrows(IllegalArgumentException.class, () -> TermUtil.sum(finalGiven1, finalGiven2));
+        assertThrows(IllegalArgumentException.class, () -> TermUtil.sum(finalGiven2, finalGiven1));
     }
 
     @Test
-    void given_list_of_members_prepare_sorted_distinct_equation() {
+    void given_list_of_terms_prepare_sorted_distinct_equation() {
         var given = List.of(
-                Member.builder().coefficient(5).letter("a").build(),
-                Member.builder().coefficient(5).letter("b").power(2.0d).build(),
-                Member.builder().coefficient(22).letter("z").build(),
-                Member.builder().coefficient(5).letter("a").power(2.0d).build(),
-                Member.builder().coefficient(15).letter("a").build(),
-                Member.builder().coefficient(2).letter("b").build(),
-                Member.builder().coefficient(6).letter("c").build(),
-                Member.builder().coefficient(1).letter("b").build(),
-                Member.builder().coefficient(2).letter("c").build(),
-                Member.builder().coefficient(10).letter("b").power(3.0d).build()
+                Term.builder().coefficient(5).letter("a").build(),
+                Term.builder().coefficient(5).letter("b").power(2.0d).build(),
+                Term.builder().coefficient(22).letter("z").build(),
+                Term.builder().coefficient(5).letter("a").power(2.0d).build(),
+                Term.builder().coefficient(15).letter("a").build(),
+                Term.builder().coefficient(2).letter("b").build(),
+                Term.builder().coefficient(6).letter("c").build(),
+                Term.builder().coefficient(1).letter("b").build(),
+                Term.builder().coefficient(2).letter("c").build(),
+                Term.builder().coefficient(10).letter("b").power(3.0d).build()
         );
         var expected = List.of(
-                Member.builder().coefficient(5).letter("a").power(2.0d).build(),
-                Member.builder().coefficient(20).letter("a").build(),
-                Member.builder().coefficient(10).letter("b").power(3.0d).build(),
-                Member.builder().coefficient(5).letter("b").power(2.0d).build(),
-                Member.builder().coefficient(3).letter("b").build(),
-                Member.builder().coefficient(8).letter("c").build(),
-                Member.builder().coefficient(22).letter("z").build()
+                Term.builder().coefficient(5).letter("a").power(2.0d).build(),
+                Term.builder().coefficient(20).letter("a").build(),
+                Term.builder().coefficient(10).letter("b").power(3.0d).build(),
+                Term.builder().coefficient(5).letter("b").power(2.0d).build(),
+                Term.builder().coefficient(3).letter("b").build(),
+                Term.builder().coefficient(8).letter("c").build(),
+                Term.builder().coefficient(22).letter("z").build()
         );
         assertNotEquals(expected, given);
         assertFalse(EquationUtil.isDistinct(given));
@@ -152,17 +152,17 @@ public class EquationUtilTest {
         assertTrue(EquationUtil.isDistinct(distinctEquation));
 
         given = List.of(
-                Member.builder().coefficient(136).power(.0d).build(),
-                Member.builder().coefficient(1.0d).power(2.0d).build(),
-                Member.builder().coefficient(-36).power(.0d).build(),
-                Member.builder().coefficient(-8).build(),
-                Member.builder().coefficient(-17).build()
+                Term.builder().coefficient(136).power(.0d).build(),
+                Term.builder().coefficient(1.0d).power(2.0d).build(),
+                Term.builder().coefficient(-36).power(.0d).build(),
+                Term.builder().coefficient(-8).build(),
+                Term.builder().coefficient(-17).build()
         );
 
         expected = List.of(
-                Member.builder().coefficient(1.0d).power(2.0d).build(),
-                Member.builder().coefficient(-25).build(),
-                Member.builder().coefficient(100).power(.0d).build()
+                Term.builder().coefficient(1.0d).power(2.0d).build(),
+                Term.builder().coefficient(-25).build(),
+                Term.builder().coefficient(100).power(.0d).build()
         );
         assertFalse(EquationUtil.isDistinct(given));
         assertNotEquals(expected, given);
@@ -174,26 +174,26 @@ public class EquationUtilTest {
     @Test
     void given_linear_equation_when_solve_then_expected_roots() {
         var equation = new Equation(List.of(
-                Member.builder().coefficient(4).letter("x").power(1.0d).build(),
-                Member.builder().coefficient(8).letter("x").power(0.0d).build()
-        ), Member.asRealConstant(.0d));
+                Term.builder().coefficient(4).letter("x").power(1.0d).build(),
+                Term.builder().coefficient(8).letter("x").power(0.0d).build()
+        ), Term.asRealConstant(.0d));
         var roots = EquationUtil.solve(equation);
         assertEquals(roots.roots().getFirst(), Complex.of(-2.0d, .0d));
 
         equation = new Equation(List.of(
-                Member.builder().coefficient(-4).letter("x").power(1.0d).build(),
-                Member.builder().coefficient(8).letter("x").power(0.0d).build()
-        ), Member.asRealConstant(.0d));
+                Term.builder().coefficient(-4).letter("x").power(1.0d).build(),
+                Term.builder().coefficient(8).letter("x").power(0.0d).build()
+        ), Term.asRealConstant(.0d));
         roots = EquationUtil.solve(equation);
         assertEquals(roots.roots().getFirst(), Complex.of(2.0d, .0d));
 
         equation = new Equation(List.of(
-                Member.builder().coefficient(-1).letter("x").power(1.0d).build(),
-                Member.builder().coefficient(8).letter("x").power(0.0d).build(),
-                Member.builder().coefficient(-1).letter("x").power(1.0d).build(),
-                Member.builder().coefficient(-1).letter("x").power(1.0d).build(),
-                Member.builder().coefficient(-1).letter("x").power(1.0d).build()
-        ), Member.asRealConstant(.0d));
+                Term.builder().coefficient(-1).letter("x").power(1.0d).build(),
+                Term.builder().coefficient(8).letter("x").power(0.0d).build(),
+                Term.builder().coefficient(-1).letter("x").power(1.0d).build(),
+                Term.builder().coefficient(-1).letter("x").power(1.0d).build(),
+                Term.builder().coefficient(-1).letter("x").power(1.0d).build()
+        ), Term.asRealConstant(.0d));
         roots = EquationUtil.solve(equation);
         assertEquals(roots.roots().getFirst(), Complex.of(2.0d, .0d));
     }
@@ -204,10 +204,10 @@ public class EquationUtilTest {
     @Test
     void given_quadratic_equation_when_solve_then_expected_roots() {
         var equation1 = new Equation(List.of(
-                Member.builder().coefficient(3).letter("x").power(2.0d).build(),
-                Member.builder().coefficient(-7).letter("x").power(1.0d).build(),
-                Member.builder().coefficient(4).letter("x").power(0.0d).build()
-        ), Member.asRealConstant(.0d));
+                Term.builder().coefficient(3).letter("x").power(2.0d).build(),
+                Term.builder().coefficient(-7).letter("x").power(1.0d).build(),
+                Term.builder().coefficient(4).letter("x").power(0.0d).build()
+        ), Term.asRealConstant(.0d));
         var expectedRoots1 = new EquationRoots<Complex>(
                 List.of(
                         Complex.of(1.3333333333333333d, Double.NaN),
@@ -217,10 +217,10 @@ public class EquationUtilTest {
         assertEquals(expectedRoots1, solution1);
 
         var equation2 = new Equation(List.of(
-                Member.builder().coefficient(1).letter("x").power(2.0d).build(),
-                Member.builder().coefficient(7).letter("x").power(1.0d).build(),
-                Member.builder().coefficient(12).letter("x").power(0.0d).build()
-        ), Member.asRealConstant(.0d));
+                Term.builder().coefficient(1).letter("x").power(2.0d).build(),
+                Term.builder().coefficient(7).letter("x").power(1.0d).build(),
+                Term.builder().coefficient(12).letter("x").power(0.0d).build()
+        ), Term.asRealConstant(.0d));
         var expectedRoots2 = new EquationRoots<Complex>(
                 List.of(
                         Complex.of(-3.0d, Double.NaN),
@@ -230,10 +230,10 @@ public class EquationUtilTest {
         assertEquals(expectedRoots2, solution2);
 
         var equation3 = new Equation(List.of(
-                Member.builder().coefficient(.6).letter("x").power(2.0d).build(),
-                Member.builder().coefficient(3.2).letter("x").power(1.0d).build(),
-                Member.builder().coefficient(-8.4).letter("x").power(0.0d).build()
-        ), Member.asRealConstant(.0d));
+                Term.builder().coefficient(.6).letter("x").power(2.0d).build(),
+                Term.builder().coefficient(3.2).letter("x").power(1.0d).build(),
+                Term.builder().coefficient(-8.4).letter("x").power(0.0d).build()
+        ), Term.asRealConstant(.0d));
         var expectedRoots3 = new EquationRoots<Complex>(
                 List.of(
                         Complex.of(1.928016250696741d, Double.NaN),
@@ -243,10 +243,10 @@ public class EquationUtilTest {
         assertEquals(expectedRoots3, solution3);
 
         var equation4 = new Equation(List.of(
-                Member.builder().coefficient(3).letter("x").power(2.0d).build(),
-                Member.builder().coefficient(-14).letter("x").power(1.0d).build(),
-                Member.builder().coefficient(-80).letter("x").power(0.0d).build()
-        ), Member.asRealConstant(.0d));
+                Term.builder().coefficient(3).letter("x").power(2.0d).build(),
+                Term.builder().coefficient(-14).letter("x").power(1.0d).build(),
+                Term.builder().coefficient(-80).letter("x").power(0.0d).build()
+        ), Term.asRealConstant(.0d));
         var expectedRoots4 = new EquationRoots<Complex>(
                 List.of(
                         Complex.of(8d, Double.NaN),
@@ -263,11 +263,11 @@ public class EquationUtilTest {
     @Test
     void given_cubic_equation_when_solve_then_expected_roots() {
         var equation5 = new Equation(List.of(
-                Member.builder().coefficient(1).letter("x").power(3.0d).build(),
-                Member.builder().coefficient(5).letter("x").power(2.0d).build(),
-                Member.builder().coefficient(-14).letter("x").power(1.0d).build(),
-                Member.builder().coefficient(0).letter("x").power(0.0d).build()
-        ), Member.asRealConstant(.0d));
+                Term.builder().coefficient(1).letter("x").power(3.0d).build(),
+                Term.builder().coefficient(5).letter("x").power(2.0d).build(),
+                Term.builder().coefficient(-14).letter("x").power(1.0d).build(),
+                Term.builder().coefficient(0).letter("x").power(0.0d).build()
+        ), Term.asRealConstant(.0d));
         var expectedRoots5 = new EquationRoots<Complex>(List.of(
                 Complex.of(2d, Double.NaN),
                 Complex.of(-7d, Double.NaN),
@@ -277,11 +277,11 @@ public class EquationUtilTest {
         assertEquals(expectedRoots5, solution5);
 
         var equation6 = new Equation(List.of(
-                Member.builder().coefficient(2).letter("x").power(3.0d).build(),
-                Member.builder().coefficient(9).letter("x").power(2.0d).build(),
-                Member.builder().coefficient(13).letter("x").power(1.0d).build(),
-                Member.builder().coefficient(6).letter("x").power(0.0d).build()
-        ), Member.asRealConstant(.0d));
+                Term.builder().coefficient(2).letter("x").power(3.0d).build(),
+                Term.builder().coefficient(9).letter("x").power(2.0d).build(),
+                Term.builder().coefficient(13).letter("x").power(1.0d).build(),
+                Term.builder().coefficient(6).letter("x").power(0.0d).build()
+        ), Term.asRealConstant(.0d));
         var expectedRoots6 = new EquationRoots<Complex>(List.of(
                 Complex.of(-1d, Double.NaN),
                 Complex.of(-2d, Double.NaN),
@@ -294,12 +294,12 @@ public class EquationUtilTest {
     @Test
     void given_quartic_equation_when_solve_then_expected_roots() {
         var equation6 = new Equation(List.of(
-                Member.builder().coefficient(1).letter("x").power(4.0d).build(),
-                Member.builder().coefficient(-2).letter("x").power(3.0d).build(),
-                Member.builder().coefficient(-3).letter("x").power(2.0d).build(),
-                Member.builder().coefficient(4).letter("x").power(1.0d).build(),
-                Member.builder().coefficient(4).letter("x").power(0.0d).build()
-        ), Member.asRealConstant(.0d));
+                Term.builder().coefficient(1).letter("x").power(4.0d).build(),
+                Term.builder().coefficient(-2).letter("x").power(3.0d).build(),
+                Term.builder().coefficient(-3).letter("x").power(2.0d).build(),
+                Term.builder().coefficient(4).letter("x").power(1.0d).build(),
+                Term.builder().coefficient(4).letter("x").power(0.0d).build()
+        ), Term.asRealConstant(.0d));
 
         var roots = QuarticEquationSolver.solveQuartic(equation6);
         System.out.println(roots);
@@ -313,9 +313,9 @@ public class EquationUtilTest {
         };
 
         var expected = Equation.of(List.of(
-                Member.builder().coefficient(1.0d).letter("x").power(2.0d).build(),
-                Member.builder().coefficient(-1.0d).letter("x").power(1.0d).build()
-        ), Member.asRealConstant(.0d));
+                Term.builder().coefficient(1.0d).letter("x").power(2.0d).build(),
+                Term.builder().coefficient(-1.0d).letter("x").power(1.0d).build()
+        ), Term.asRealConstant(.0d));
 
         var result = toCharacteristicPolynomial(matrix);
 
@@ -331,10 +331,10 @@ public class EquationUtilTest {
         };
 
         var expected = Equation.of(List.of(
-                Member.builder().coefficient(-1.0d).letter("x").power(3.0d).build(),
-                Member.builder().coefficient(7).letter("x").power(2.0d).build(),
-                Member.builder().coefficient(-10).letter("x").power(1.0d).build()
-        ), Member.asRealConstant(0));
+                Term.builder().coefficient(-1.0d).letter("x").power(3.0d).build(),
+                Term.builder().coefficient(7).letter("x").power(2.0d).build(),
+                Term.builder().coefficient(-10).letter("x").power(1.0d).build()
+        ), Term.asRealConstant(0));
 
         assertEquals(expected, toCharacteristicPolynomial(matrix));
     }
@@ -347,7 +347,7 @@ public class EquationUtilTest {
                 {1.0d, 6.0d, 2.0d, 2.0d},
                 {66.0d, 6.0d, 2.0d, 4.0d}
         };
-        assertEquals(4, toCharacteristicPolynomial(matrix).members().getFirst().getPower());
+        assertEquals(4, toCharacteristicPolynomial(matrix).terms().getFirst().getPower());
 
         matrix = new double[][]{
                 {2.0d, 3.0d, 5.0d, 3.0d, 1.0d},
@@ -356,6 +356,6 @@ public class EquationUtilTest {
                 {66.0d, 6.0d, 2.0d, 4.0d, 2.0d},
                 {1.0d, 3.0d, 2.0d, 9.0d, 6.0d}
         };
-        assertEquals(5, toCharacteristicPolynomial(matrix).members().getFirst().getPower());
+        assertEquals(5, toCharacteristicPolynomial(matrix).terms().getFirst().getPower());
     }
 }

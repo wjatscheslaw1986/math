@@ -3,7 +3,7 @@
  */
 package linear.matrix;
 
-import algebra.Member;
+import algebra.Term;
 import linear.matrix.exception.MatrixException;
 
 import static linear.matrix.MatrixCalc.*;
@@ -38,7 +38,7 @@ public final class Validation {
      * @param matrixRight given
      * @return true if the matrix on the left has as many columns as the matrix on the right has rows, false otherwise
      */
-    public static boolean canMultiply(Member[][] matrixLeft, Member[]... matrixRight) {
+    public static boolean canMultiply(Term[][] matrixLeft, Term[]... matrixRight) {
         return isMatrix(matrixLeft) && isMatrix(matrixRight)
                 && matrixLeft[0].length == matrixRight.length;
     }
@@ -94,7 +94,7 @@ public final class Validation {
      * @param matrix an array of arrays of equal length
      * @return true if the given array of arrays is a matrix, false otherwise
      */
-    public static boolean isMatrix(Member[][] matrix) {
+    public static boolean isMatrix(Term[][] matrix) {
         if (isEmpty(matrix)) {
             return false;
         }
@@ -122,7 +122,7 @@ public final class Validation {
      * @param matrix checked
      * @return true if matrix is empty, false otherwise
      */
-    public static boolean isEmpty(Member[][] matrix) {
+    public static boolean isEmpty(Term[][] matrix) {
         return matrix.length < 1 || matrix[0].length < 1;
     }
 

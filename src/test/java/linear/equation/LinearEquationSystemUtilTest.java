@@ -3,6 +3,7 @@
  */
 package linear.equation;
 
+import algebra.Term;
 import linear.matrix.MatrixCalc;
 import linear.matrix.MatrixUtil;
 import linear.matrix.RowEchelonFormUtil;
@@ -10,6 +11,8 @@ import linear.matrix.exception.MatrixException;
 import linear.spatial.VectorCalc;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 import static linear.equation.LinearEquationSystemUtil.*;
 import static linear.equation.SolutionsCount.*;
@@ -176,7 +179,7 @@ public class LinearEquationSystemUtilTest {
         };
         var expectedResult = new Boolean[]{false, false, true, true};
         assertArrayEquals(expectedResult,
-                getEquationMemberFlags(RowEchelonFormUtil.toRowEchelonForm(linearEquationSystem), basisSize(linearEquationSystem)));
+                getEquationTermFlags(RowEchelonFormUtil.toRowEchelonForm(linearEquationSystem), basisSize(linearEquationSystem)));
         linearEquationSystem = new double[][]{
                 {5, -2, -3, 4, 7},
                 {10, -4, -16, 10, 22},
@@ -184,7 +187,7 @@ public class LinearEquationSystemUtilTest {
         };
         expectedResult = new Boolean[]{false, true, false, true};
         assertArrayEquals(expectedResult,
-                getEquationMemberFlags(RowEchelonFormUtil.toRowEchelonForm(linearEquationSystem), basisSize(linearEquationSystem)));
+                getEquationTermFlags(RowEchelonFormUtil.toRowEchelonForm(linearEquationSystem), basisSize(linearEquationSystem)));
     }
 
     /**
@@ -216,5 +219,22 @@ public class LinearEquationSystemUtilTest {
         fundamental = fundamental(linearEquationSystem);
         assertEquals(1, fundamental.size());
         assertArrayEquals(new double[]{-1.571428571429d, -0.142857142857d, 1.0d}, fundamental.getFirst());
+    }
+
+    @Test
+    void givenLinearEquationSystemAsListOfListsOfTerms_whenConvertToMatrixOfCoefficients_thenGetExpectedMatrix() {
+        var terms = List.of(
+                List.of(Term.asVariableX(2.0), Term.asVariableX(3.0), Term.asVariableX(5.0)),
+                List.of(Term.asVariableX(12.0), Term.asVariableX(13.0), Term.asVariableX(15.0)),
+                List.of(Term.asVariableX(22.0), Term.asVariableX(23.0), Term.asVariableX(25.0))
+        );
+        var expectedLinearEquationSystem = new double[][]{
+                {2.0, 3.0, 5.0, .0d},
+                {12.0d, 13.0, 15.0, .0d},
+                {22.0d, 23.0d, 25.0d, .0d}
+        };
+        var result = convertLinearEquationSystem(terms);
+        for (int i = 0; i < terms.size(); i++)
+            assertArrayEquals(result[i], expectedLinearEquationSystem[i], .0d);
     }
  }

@@ -18,15 +18,15 @@ import java.util.function.BiFunction;
 public class CramerLinearEquationSystem {
 
     private final double[][] coefficients;
-    private final double[] freeMembers;
+    private final double[] freeTerms;
     private final double[] resolved;
 
     public double[][] getCoefficients() {
         return coefficients;
     }
 
-    public double[] getFreeMembers() {
-        return freeMembers;
+    public double[] getFreeTerms() {
+        return freeTerms;
     }
 
     public double[] getResolved() {
@@ -35,18 +35,18 @@ public class CramerLinearEquationSystem {
 
     /**
      * Solve the given Cramer Linear Equation System.
-     * The last column of the given matrix is the column of free members (after the 'equals' math symbol).
+     * The last column of the given matrix is the column of free terms (after the 'equals' math symbol).
      *
      * @param method the solving algorithm
      * @param rows the given equations. The last element of each 'row' is the right side of the equation
      */
     public CramerLinearEquationSystem(final BiFunction<double[][], double[], double[]> method, final double[]... rows) {
-        this.freeMembers = new double[rows.length];
+        this.freeTerms = new double[rows.length];
         this.coefficients = new double[rows.length][rows[0].length - 1];
         for (int row = 0; row < rows.length; row++) {
             for (int col = 0; col < rows[0].length; col++) {
                 if (col == rows[0].length - 1)
-                    this.freeMembers[row] = rows[row][col];
+                    this.freeTerms[row] = rows[row][col];
                 else
                     this.coefficients[row][col] = rows[row][col];
             }
@@ -57,7 +57,7 @@ public class CramerLinearEquationSystem {
                             .add("Not a Cramer linear equation system")
                             .add(MatrixUtil.print(this.coefficients))));
 
-        this.resolved = method.apply(coefficients, freeMembers);
+        this.resolved = method.apply(coefficients, freeTerms);
         MatrixUtil.eliminateEpsilon(this.resolved);
     }
 }

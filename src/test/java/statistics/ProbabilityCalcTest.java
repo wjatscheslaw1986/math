@@ -1,7 +1,7 @@
 /**
  * Viacheslav Mikhailov (taleskeeper@yandex.com) © 2025.
  */
-package probnstat;
+package statistics;
 
 import org.junit.jupiter.api.Test;
 
@@ -10,10 +10,10 @@ import java.util.Arrays;
 import static combinatorics.CombinatoricsCalc.binomialCoefficient;
 import static combinatorics.CombinatoricsCalc.countPermutations;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static probnstat.ProbabilityCalc.atLeastOneHappensProbability;
+import static statistics.ProbabilityCalc.atLeastOneHappensProbability;
 
 /**
- * Tests for {@linkplain probnstat.ProbabilityCalc} class.
+ * Tests for {@linkplain statistics.ProbabilityCalc} class.
  *
  * @author Viacheslav Mikhailov
  */

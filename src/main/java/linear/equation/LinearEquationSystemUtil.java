@@ -5,7 +5,7 @@ package linear.equation;
 
 import algebra.Equation;
 import algebra.Letter;
-import algebra.Member;
+import algebra.Term;
 import combinatorics.CyclicShiftPermutationsGenerator;
 import linear.matrix.MatrixCalc;
 import linear.matrix.MatrixUtil;
@@ -39,14 +39,14 @@ public final class LinearEquationSystemUtil {
      * beforehand to make sure you aren't getting wrong results.</p>
      *
      * @param coefficients matrix made of left part of the equations
-     * @param freeMembers  a vector made of right part of the equations
+     * @param freeTerms  a vector made of right part of the equations
      * @return a vector of variable values (answers) for the equations, regarding their order in the equation.
      */
-    public static double[] resolveUsingCramerMethod(final double[][] coefficients, final double[] freeMembers) {
-        final var resolved = new double[freeMembers.length];
+    public static double[] resolveUsingCramerMethod(final double[][] coefficients, final double[] freeTerms) {
+        final var resolved = new double[freeTerms.length];
         final double determinant = MatrixCalc.det(coefficients);
-        for (int i = 0; i < freeMembers.length; i++)
-            resolved[i] = MatrixCalc.det(substituteColumn(coefficients, freeMembers, i))
+        for (int i = 0; i < freeTerms.length; i++)
+            resolved[i] = MatrixCalc.det(substituteColumn(coefficients, freeTerms, i))
                     / determinant;
         return resolved;
     }
@@ -57,11 +57,11 @@ public final class LinearEquationSystemUtil {
      * beforehand to be sure you aren't getting wrong results.</p>
      *
      * @param coefficients a square matrix of coefficients of the left parts of each equation
-     * @param freeMembers  a vector of free members (i.e. right parts of each equation)
+     * @param freeTerms  a vector of free terms (i.e. right parts of each equation)
      * @return a vector of variable values (answers) for the equations, regarding their order in the equation.
      */
-    public static double[] resolveUsingReverseMatrixMethod(double[][] coefficients, double[] freeMembers) {
-        var solution = MatrixCalc.multiply(MatrixCalc.inverse(coefficients), freeMembers);
+    public static double[] resolveUsingReverseMatrixMethod(double[][] coefficients, double[] freeTerms) {
+        var solution = MatrixCalc.multiply(MatrixCalc.inverse(coefficients), freeTerms);
         MatrixUtil.eliminateEpsilon(solution);
         return solution;
     }
@@ -150,14 +150,14 @@ public final class LinearEquationSystemUtil {
      */
     public static List<double[]> fundamental(final double[][] augmentedMatrix) throws MatrixException {
         var ref = removeAllZeroesRows(RowEchelonFormUtil.toRowEchelonForm(augmentedMatrix));
-        var freeMembersLeft = basisSize(augmentedMatrix);
-        var freeVariableIndices = getEquationMemberFlags(ref, freeMembersLeft);
+        var freeTermsLeft = basisSize(augmentedMatrix);
+        var freeVariableIndices = getEquationTermFlags(ref, freeTermsLeft);
         if (freeVariableIndices.length == 0)
             return List.of(resolveUsingReverseMatrixMethod(MatrixUtil.removeMarginalColumn(ref, false), MatrixUtil.getColumn(ref, ref[0].length)));
         var fundamental = new ArrayList<double[]>();
-        var freeMembersValuesCombinations = getFreeMembersValuesCombinations(freeVariableIndices);
-        Equation eq = new Equation(new ArrayList<>(), Member.asRealConstant(.0d));
-        for (Double[] fmvCombination : freeMembersValuesCombinations) {
+        var freeTermsValuesCombinations = getFreeTermsValuesCombinations(freeVariableIndices);
+        Equation eq = new Equation(new ArrayList<>(), Term.asRealConstant(.0d));
+        for (Double[] fmvCombination : freeTermsValuesCombinations) {
             for (int i = ref.length - 1; i >= 0; i--) {
                 eq.setEqualsTo(ref[i][ref[i].length - 1]);
                 int pivotIndex = findPivotIndex(ref, i);
@@ -165,32 +165,32 @@ public final class LinearEquationSystemUtil {
                 System.arraycopy(ref[i], pivotIndex, coefficients, 0, coefficients.length);
                 int k = 1;
                 for (; k < coefficients.length; k++) {
-                        var member = eq.getMemberByLetter(Letter.of("x", k + pivotIndex));
-                        if (Objects.isNull(member)) {
-                            var memberBuilder = Member.builder().coefficient(coefficients[k])
+                        var term = eq.getTermByLetter(Letter.of("x", k + pivotIndex));
+                        if (Objects.isNull(term)) {
+                            var termBuilder = Term.builder().coefficient(coefficients[k])
                                     .letter(Letter.of("x", k + pivotIndex));
-                            if (freeVariableIndices[k + pivotIndex]) memberBuilder.value(fmvCombination[k + pivotIndex]);
-                            else memberBuilder.value(eq.getMemberByIndex(k + pivotIndex).getValue());
-                            eq.members().add(memberBuilder.build());
+                            if (freeVariableIndices[k + pivotIndex]) termBuilder.value(fmvCombination[k + pivotIndex]);
+                            else termBuilder.value(eq.getTermByIndex(k + pivotIndex).getValue());
+                            eq.terms().add(termBuilder.build());
                         } else {
-                            member.setCoefficient(coefficients[k]);
+                            term.setCoefficient(coefficients[k]);
                         }
                 }
-                eq.members().addFirst(Member.builder().value(null).coefficient(coefficients[0]).letter(Letter.of("x", pivotIndex)).build());
+                eq.terms().addFirst(Term.builder().value(null).coefficient(coefficients[0]).letter(Letter.of("x", pivotIndex)).build());
                 solveSingleVariableLinearEquation(eq);
             }
-            eq.members().sort((m1, m2) -> (-1) * m1.compareTo(m2));
-            fundamental.add(eq.members().stream().map(Member::getValue).mapToDouble(Double::doubleValue).toArray());
-            eq = new Equation(new ArrayList<>(), Member.asRealConstant(.0d));
+            eq.terms().sort((m1, m2) -> (-1) * m1.compareTo(m2));
+            fundamental.add(eq.terms().stream().map(Term::getValue).mapToDouble(Double::doubleValue).toArray());
+            eq = new Equation(new ArrayList<>(), Term.asRealConstant(.0d));
         }
         for (var basisVector : fundamental) roundValues(12, basisVector);
         return fundamental;
     }
 
     /**
-     * Returns an array of equation members' flags as an array of {@link Boolean}.
+     * Returns an array of equation terms' flags as an array of {@link Boolean}.
      * <p>
-     * Each array element (the flag) corresponds to an equation member by their common index.
+     * Each array element (the flag) corresponds to an equation term by their common index.
      * The flag TRUE means the variable in the linear equation found by the same index is a free variable, so that
      * its value is arbitrary.
      * The flag FALSE means the variable of the linear equation found by the same index is <b>not</b> a free variable, so that
@@ -198,10 +198,10 @@ public final class LinearEquationSystemUtil {
      * </p>
      *
      * @param ref the row echelon form of a matrix
-     * @param basisSize number of free members in each of the linear equations
-     * @return an array of member flags for the equation
+     * @param basisSize number of free terms in each of the linear equations
+     * @return an array of term flags for the equation
      */
-    public static Boolean[] getEquationMemberFlags(double[][] ref, int basisSize) {
+    public static Boolean[] getEquationTermFlags(double[][] ref, int basisSize) {
         int[] addresses = new int[ref[0].length - 1];
         int freeVariablesLeft = basisSize;
         int freeVariableIndex = addresses.length - 1;
@@ -272,37 +272,53 @@ public final class LinearEquationSystemUtil {
     }
 
     /**
+     * Convert a list of left parts of linear equation system from List<List<Term>> type to
+     * a 2D-array.
+     *
+     * @param linearEquationSystem list of sums of terms of an equation, only the left parts.
+     *                             The right part of each of them is considered to be 0
+     * @return augmented matrix
+     */
+    public static double[][] convertLinearEquationSystem(final List<List<Term>> linearEquationSystem) {
+        double[][] augmentedMatrix = new double[linearEquationSystem.size()][linearEquationSystem.getFirst().size() + 1];
+        for (int i = 0; i < linearEquationSystem.getFirst().size(); i++)
+            for (int j = 0; j < linearEquationSystem.size(); j++)
+                augmentedMatrix[i][j] = linearEquationSystem.get(i).get(j).getCoefficient();
+        return augmentedMatrix;
+    }
+
+    /**
      * Given an array of size of an equation, that reflects which element in the equation may
      * have voluntary value (TRUE) and which may not (FALSE) by their index similarity, return all combinations
-     * of values for the voluntary value elements (i.e. free members) for the case where only one free member
+     * of values for the voluntary value elements (i.e. free terms) for the case where only one free term
      * has value 1, while the rest of them have value 0.
      *
-     * @param freeMembersFlagMask logical flags mask for an equation as an array.
-     *                            TRUE if the element has the same index as the free member in the equation,
+     * @param freeTermsFlagMask logical flags mask for an equation as an array.
+     *                            TRUE if the element has the same index as the free term in the equation,
      *                            FALSE otherwise.
-     * @return a list of combinations of free member values for fundamental solution system
+     * @return a list of combinations of free term values for fundamental solution system
      */
-    public static List<Double[]> getFreeMembersValuesCombinations(final Boolean[] freeMembersFlagMask) {
-        final List<Integer> freeMemberIndexAddresses = new ArrayList<>();
+    public static List<Double[]> getFreeTermsValuesCombinations(final Boolean[] freeTermsFlagMask) {
+        final List<Integer> freeTermIndexAddresses = new ArrayList<>();
         final List<Double[]> basisVectors = new ArrayList<>();
-        for(int i = 0; i < freeMembersFlagMask.length; i++) {
-            if (freeMembersFlagMask[i]) {
-                freeMemberIndexAddresses.add(i);
+        for(int i = 0; i < freeTermsFlagMask.length; i++) {
+            if (freeTermsFlagMask[i]) {
+                freeTermIndexAddresses.add(i);
             }
         }
-        final List<int[]> indexPermutations = CyclicShiftPermutationsGenerator.generate(freeMemberIndexAddresses.size())
+        final List<int[]> indexPermutations = CyclicShiftPermutationsGenerator.generate(freeTermIndexAddresses.size())
                 .stream()
-                .limit(freeMemberIndexAddresses.size())
+                .limit(freeTermIndexAddresses.size())
                 .toList();
         for (int[] permutation : indexPermutations) {
-            final Double[] arr = new Double[freeMembersFlagMask.length];
+            final Double[] arr = new Double[freeTermsFlagMask.length];
             final List<Integer> permutationValues = new ArrayList<>();
             permutationValues.add(1);
             for (int n = 1; n < permutation.length; n++)
                 permutationValues.add(0);
             int j = 0;
-            for (int i = 0; i < freeMembersFlagMask.length; i++)
-                if (freeMembersFlagMask[i]) arr[i] = (double) permutationValues.get(permutation[j++]);
+            for (int i = 0; i < freeTermsFlagMask.length; i++)
+                if (freeTermsFlagMask[i]) arr[i] = (double) permutationValues.get(permutation[j++]);
                 else arr[i] = null;
             basisVectors.add(arr);
         }

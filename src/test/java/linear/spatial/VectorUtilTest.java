@@ -53,14 +53,16 @@ public class VectorUtilTest {
         assertFalse(VectorUtil.isBasis(vectors));
     }
 
-//    @Test
-    void givenMatrix_whenEigenvectors_thenGetExpectedVectors() {
+    @Test
+    void givenMatrix_whenEigenvectors_thenGetExpectedVectors() throws MatrixException {
         var matrix = new double[][]{
                 {17, 6},
                 {6, 8}
         };
 
         var eigenvectors = VectorCalc.eigenvectors(matrix);
-        Arrays.stream(eigenvectors).forEach(System.out::println);
+        eigenvectors.forEach(System.out::println);
+
+
     }
 }

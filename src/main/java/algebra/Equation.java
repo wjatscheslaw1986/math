@@ -11,37 +11,37 @@ import java.util.Objects;
 /**
  * An equation.
  *
- * @param members the left side of the equation
+ * @param terms the left side of the equation
  * @param equalsTo the right side of the equation
  *
  * @author Viacheslav Mikhailov
  */
-public record Equation(List<Member> members, Member equalsTo) {
+public record Equation(List<Term> terms, Term equalsTo) {
 
     /**
      * Factory method.
      *
-     * @param members the left side of the equation
+     * @param terms the left side of the equation
      * @param equalsTo the right side of the equation
      * @return the equation
      */
-    public static Equation of(List<Member> members, Member equalsTo) {
-        return new Equation(members, equalsTo);
+    public static Equation of(List<Term> terms, Term equalsTo) {
+        return new Equation(terms, equalsTo);
     }
 
     /**
-     * Return the {@link Member} of the equation by its {@link Letter}.
+     * Return the {@link Term} of the equation by its {@link Letter}.
      * Returns the first found searching from left to right.
      *
-     * @param letter a letter for the member
-     * @return member of the equation
+     * @param letter a letter for the term
+     * @return term of the equation
      */
-    public Member getMemberByLetter(Letter letter) {
+    public Term getTermByLetter(Letter letter) {
         Objects.requireNonNull(letter);
-        Iterator<Member> iterator = members.iterator();
+        Iterator<Term> iterator = terms.iterator();
         while (iterator.hasNext()) {
-            Member member = iterator.next();
-            if (member.getLetter().equals(letter)) return member;
+            Term term = iterator.next();
+            if (term.getLetter().equals(letter)) return term;
         }
         return null;
     }
@@ -56,25 +56,25 @@ public record Equation(List<Member> members, Member equalsTo) {
     }
 
     /**
-     * Return member by its index in the equation, starting from 0,searching from left to right
+     * Return term by its index in the equation, starting from 0,searching from left to right
      *
      * @param index index
-     * @return member of the equation
+     * @return term of the equation
      */
-    public Member getMemberByIndex(int index) {
-        return members.get(index);
+    public Term getTermByIndex(int index) {
+        return terms.get(index);
     }
 
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Equation equation = (Equation) o;
-        return (Arrays.equals(this.members.toArray(),equation.members.toArray())
+        return (Arrays.equals(this.terms.toArray(),equation.terms.toArray())
                 && Objects.equals(equalsTo, equation.equalsTo));
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(members, equalsTo);
+        return Objects.hash(terms, equalsTo);
     }
 }

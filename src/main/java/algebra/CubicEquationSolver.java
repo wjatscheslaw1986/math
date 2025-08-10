@@ -20,17 +20,17 @@ final class CubicEquationSolver {
      */
     static EquationRoots<Complex> solve(final Equation equation) {
 
-        if (equation.members().size() != 4)
-            throw new IllegalArgumentException("Malformed cubic equation. Must have 4 members on the left.");
+        if (equation.terms().size() != 4)
+            throw new IllegalArgumentException("Malformed cubic equation. Must have 4 terms on the left.");
 
-        var a = equation.members().get(0).getCoefficient();
+        var a = equation.terms().get(0).getCoefficient();
 
         if (isEffectivelyZero(a))
             throw new IllegalArgumentException("Malformed cubic equation ('a' cannot be zero).");
 
-        var b = equation.members().get(1).getCoefficient();
-        var c = equation.members().get(2).getCoefficient();
-        var d = equation.members().get(3).getCoefficient();
+        var b = equation.terms().get(1).getCoefficient();
+        var c = equation.terms().get(2).getCoefficient();
+        var d = equation.terms().get(3).getCoefficient();
 
         double root1, root2, root3;
 

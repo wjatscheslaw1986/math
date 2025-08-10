@@ -8,21 +8,21 @@ import series.SeriesPart;
 import java.util.List;
 import java.util.Objects;
 
-import static algebra.MemberUtil.isConstant;
+import static algebra.TermUtil.isConstant;
 
 /**
- * Either a term of a series, or a member of an equation.
+ * Either a term of a series, or a term of an equation.
  * For example <i>2.5*(x^(1/9))</i>.
  *
  * @author Viacheslav Mikhailov
  */
-public class Member implements Comparable<Member>, SeriesPart {
+public class Term implements Comparable<Term>, SeriesPart {
     private final Letter letter;
-    private final double power;
+    private double power;
     private double coefficient;
     private Double value = null;
 
-    private Member(final double pow, final double coeff, final Letter name, final Double val) {
+    private Term(final double pow, final double coeff, final Letter name, final Double val) {
         this.power = pow;
         this.coefficient = coeff;
         this.letter = Objects.requireNonNull(name);
@@ -31,6 +31,10 @@ public class Member implements Comparable<Member>, SeriesPart {
 
     public double getPower() {
         return power;
+    }
+
+    public double setPower(double power) {
+        return this.power = power;
     }
 
     public double getCoefficient() {
@@ -56,9 +60,9 @@ public class Member implements Comparable<Member>, SeriesPart {
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        Member member = (Member) o;
-        return letter.equals(member.letter) && Double.compare(power, member.power) == 0
-                && Double.compare(coefficient, member.coefficient) == 0;
+        Term term = (Term) o;
+        return letter.equals(term.letter) && Double.compare(power, term.power) == 0
+                && Double.compare(coefficient, term.coefficient) == 0;
     }
 
     @Override
@@ -67,7 +71,7 @@ public class Member implements Comparable<Member>, SeriesPart {
     }
 
     @Override
-    public int compareTo(Member m) {
+    public int compareTo(Term m) {
         int result = -this.letter.compareTo(m.letter);
         if (result == 0) result = Double.compare(this.power, m.power);
         if (result == 0) result = Double.compare(this.coefficient, m.coefficient);
@@ -82,8 +86,8 @@ public class Member implements Comparable<Member>, SeriesPart {
     @Override
     public SeriesPart add(SeriesPart seriesPart) {
         return switch (seriesPart) {
-            case Member m -> MemberUtil.sum(this, m);
-            case Members ms -> Members.of(ms.getSeriesParts().stream().map(this::multiply).toList());
+            case Term m -> TermUtil.sum(this, m);
+            case Terms ms -> Terms.of(ms.getSeriesParts().stream().map(this::multiply).toList());
             default -> throw new IllegalArgumentException("Unsupported series part type " + seriesPart.getClass());
         };
     }
@@ -95,7 +99,7 @@ public class Member implements Comparable<Member>, SeriesPart {
 
     @Override
     public SeriesPart getChild(int index) {
-        throw new UnsupportedOperationException("A Member is a leaf in the graph");
+        throw new UnsupportedOperationException("A Term is a leaf in the graph");
     }
 
     @Override
@@ -106,41 +110,41 @@ public class Member implements Comparable<Member>, SeriesPart {
     @Override
     public SeriesPart multiply(SeriesPart seriesPart) {
         return switch (seriesPart) {
-            case Member m -> MemberUtil.multiply(this, m);
-            case Members ms -> Members.of(ms.getSeriesParts().stream().map(this::multiply).toList());
+            case Term m -> TermUtil.multiply(this, m);
+            case Terms ms -> Terms.of(ms.getSeriesParts().stream().map(this::multiply).toList());
             default -> throw new IllegalArgumentException("Unsupported series part type " + seriesPart.getClass());
         };
     }
 
     /**
-     * Multiplies two Members.
+     * Multiplies two Terms.
      *
-     * @param factor the second Member
-     * @return a new Member representing the product
-     * @throws IllegalArgumentException if both are variable members with different letters
+     * @param factor the second Term
+     * @return a new Term representing the product
+     * @throws IllegalArgumentException if both are variable terms with different letters
      */
-    public Member multiply(Member factor) {
+    public Term multiply(Term factor) {
         if (isConstant(this) && isConstant(factor))
-            return Member.asRealConstant(this.getCoefficient() * factor.getCoefficient());
+            return Term.asRealConstant(this.getCoefficient() * factor.getCoefficient());
         else if (isConstant(this) && !isConstant(factor))
-            return Member.builder()
+            return Term.builder()
                     .letter(factor.getLetter())
                     .power(factor.getPower())
                     .coefficient(this.getCoefficient() * factor.getCoefficient())
                     .build();
         else if (!isConstant(this) && isConstant(factor))
-            return Member.builder()
+            return Term.builder()
                     .letter(this.getLetter())
                     .power(this.getPower())
                     .coefficient(this.getCoefficient() * factor.getCoefficient())
                     .build();
         else if (!isConstant(this) && !isConstant(factor) && this.getLetter().equals(factor.getLetter()))
-            return Member.builder()
+            return Term.builder()
                     .letter(this.getLetter())
                     .power(this.getPower() + factor.getPower())
                     .coefficient(this.getCoefficient() * factor.getCoefficient())
                     .build();
-        else throw new IllegalArgumentException("Cannot multiply members with different letters");
+        else throw new IllegalArgumentException("Cannot multiply terms with different letters");
     }
 
     /**
@@ -191,19 +195,19 @@ public class Member implements Comparable<Member>, SeriesPart {
             return this;
         }
 
-        public Member build() {
-            return new Member(this.power, this.coefficient, this.letter, this.value);
+        public Term build() {
+            return new Term(this.power, this.coefficient, this.letter, this.value);
         }
     }
 
     /**
-     * Return a real constant {@link Member}.
+     * Return a real constant {@link Term}.
      *
      * @param value the real value of the constant
-     * @return a member of a real coefficient
+     * @return a term of a real coefficient
      */
-    public static Member asRealConstant(double value) {
-        return Member.builder()
+    public static Term asRealConstant(double value) {
+        return Term.builder()
                 .value(Double.NaN)
                 .power(.0d)
                 .letter(Letter.of("x", 0))
@@ -212,13 +216,13 @@ public class Member implements Comparable<Member>, SeriesPart {
     }
 
     /**
-     * Return a {@link Member} of 'x' variable with power of 1 with the given coefficient.
+     * Return a {@link Term} of 'x' variable with power of 1 with the given coefficient.
      *
      * @param coefficient the given coefficient
      * @return the variable
      */
-    public static Member asVariableX(double coefficient) {
-        return Member.builder()
+    public static Term asVariableX(double coefficient) {
+        return Term.builder()
                 .value(Double.NaN)
                 .power(1.0d)
                 .letter("x")
@@ -229,17 +233,17 @@ public class Member implements Comparable<Member>, SeriesPart {
     /**
      * Return a deep copy of this instance.
      *
-     * @return the new Member instance
+     * @return the new Term instance
      */
     @Override
-    public Member copy() {
-        return new Member(this.power, this.coefficient, this.letter.copy(), Objects.isNull(this.value) ? null : this.value);
+    public Term copy() {
+        return new Term(this.power, this.coefficient, this.letter.copy(), Objects.isNull(this.value) ? null : this.value);
     }
 
     /**
-     * Returns textual representation of this equation member.
+     * Returns textual representation of this equation term.
      *
-     * @return the textual representation of this member.
+     * @return the textual representation of this term.
      */
     @Override
     public String toString() {

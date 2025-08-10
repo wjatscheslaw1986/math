@@ -4,12 +4,16 @@
 package linear.spatial;
 
 import algebra.*;
+import linear.equation.LinearEquationSystemUtil;
+import linear.equation.Solution;
+import linear.matrix.exception.MatrixException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static algebra.EquationUtil.distinct;
+import static linear.equation.LinearEquationSystemUtil.convertLinearEquationSystem;
 
 /**
  * A utility class for calculations of vectors.
@@ -23,37 +27,38 @@ public final class VectorCalc {
     }
 
     /**
+     * Find eigenvectors for the given linear space transformation matrix.
      *
-     * @param transformationMatrix
-     * @return
+     * @param transformationMatrix the given transformation matrix
+     * @return list of eigenvectors
      */
-    public static Vector[] eigenvectors(final double[][] transformationMatrix) {
+    public static List<Vector> eigenvectors(final double[][] transformationMatrix) throws MatrixException {
         EquationRoots<Complex> roots = EquationUtil.solve(EquationUtil.toCharacteristicPolynomial(transformationMatrix));
-        List<Vector> vectors = new ArrayList<>();
-        int i = 1;
+        List<Vector> eigenvectors = new ArrayList<>();
         for (var root : roots.roots()) {
-            List<Member> linearEquationMembers = new ArrayList<>();
-            for (int j = 1; j <= transformationMatrix[i-1].length; j++) {
-                linearEquationMembers.add(Member.builder()
-                                .power(1.0d)
-                                .coefficient(transformationMatrix[i-1][j-1])
-                                .letter(Letter.of("x", j))
-                                .value(Double.NaN)
+            List<List<Term>> linearEquationSystem = new ArrayList<>();
+            for (int j = 0; j < transformationMatrix.length; j++) {
+                List<Term> linearEquationTerms = new ArrayList<>();
+                for (int k = 0; k < transformationMatrix[j].length; k++) {
+                    linearEquationTerms.add(Term.builder()
+                            .power(1.0d)
+                            .coefficient(transformationMatrix[j][k])
+                            .letter(Letter.of("x", k + 1))
+                            .value(Double.NaN)
+                            .build());
+                }
+                linearEquationTerms.add(Term.builder()
+                        .power(1.0d)
+                        .coefficient(-root.real())
+                        .letter(Letter.of("x", j + 1))
+                        .value(Double.NaN)
                         .build());
+                linearEquationSystem.add(distinct(linearEquationTerms));
             }
-            linearEquationMembers.add(Member.builder()
-                    .power(1.0d)
-                    .coefficient(-root.real())
-                    .letter(Letter.of("x", i))
-                    .value(Double.NaN)
-                    .build());
-            EquationRoots<Complex> coords = EquationUtil.solve(Equation.of(distinct(linearEquationMembers), Member.asRealConstant(.0d)));
-            vectors.add(Vector.of(coords.roots().stream().mapToDouble(Complex::real).toArray()));
-            // TODO all matrix rows per root
-            ++i;
+            Solution coords = LinearEquationSystemUtil.resolveUsingJordanGaussMethod(convertLinearEquationSystem(linearEquationSystem));
+            coords.basis().forEach(basisVector -> eigenvectors.add(Vector.of(basisVector)));
         }
-        return vectors.toArray(new Vector[0]);
-
+        return eigenvectors;
     }
 
     /**

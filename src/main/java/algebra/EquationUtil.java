@@ -10,7 +10,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static algebra.MemberUtil.doubleArrayToMembersArrayForCharacteristicPolynomial;
+import static algebra.TermUtil.doubleArrayToTermsArrayForCharacteristicPolynomial;
 import static approximation.RoundingUtil.roundToNDecimals;
 import static linear.matrix.Validation.isSquareMatrix;
 
@@ -22,62 +22,27 @@ import static linear.matrix.Validation.isSquareMatrix;
 public class EquationUtil {
 
     /**
-     * Multiply two equation members of same variable.
-     *
-     * @param x1 first member
-     * @param x2 second member
-     * @return the sum
-     */
-    public static Member multiply(Member x1, Member x2) {
-        if (x2.getCoefficient() == 0 || x1.getCoefficient() == 0)
-            return Member.builder().coefficient(.0d).power(.0d).build();
-        return Member.builder()
-                .coefficient(x1.getCoefficient() * x2.getCoefficient())
-                .power(x1.getPower() + x2.getPower())
-                .build();
-    }
-
-    /**
-     * Sum two equation members of same variable.
-     *
-     * @param x1 first member
-     * @param x2 second member
-     * @return the sum
-     */
-    public static Member sum(Member x1, Member x2) {
-        if (x1.getPower() != x2.getPower())
-            throw new IllegalArgumentException("An attempt to sum two variable members of different powers.");
-        if (!x1.getLetter().symbol().equals(x2.getLetter().symbol()))
-            throw new IllegalArgumentException("An attempt to sum two unknowns.");
-        return Member.builder()
-                .coefficient(x1.getCoefficient() + x2.getCoefficient())
-                .power(x1.getPower())
-                .letter(x1.getLetter())
-                .build();
-    }
-
-    /**
-     * Modifies the input list of members of a single variable equation,
-     * by grouping its members by power of their variable using summation,
+     * Modifies the input list of terms of a single variable equation,
+     * by grouping its terms by power of their variable using summation,
      * then sorts the result, then returns.
      *
-     * @param input a list of members of a single variable equation with only 0 in its right part
-     * @return a list of members of a single variable equation, gathered distinct by power, ordered
+     * @param input a list of terms of a single variable equation with only 0 in its right part
+     * @return a list of terms of a single variable equation, gathered distinct by power, ordered
      */
-    public static List<Member> distinct(final List<Member> input) {
+    public static List<Term> distinct(final List<Term> input) {
         return input.stream()
                 .collect(Collectors.groupingBy(
-                        (Member m) -> {
+                        (Term m) -> {
                             if (m.getPower() != .0d)
                                 return m.getLetter().toString() + m.getPower();
                             else return String.valueOf(m.getPower());
                         }, Collectors.toList())).values().stream()
-                .map(listOfMembers -> {
-                    var iterator = listOfMembers.iterator();
-                    Member result = iterator.next();
+                .map(listOfTerms -> {
+                    var iterator = listOfTerms.iterator();
+                    Term result = iterator.next();
                     while (iterator.hasNext()) {
                         var next = iterator.next();
-                        result = Member.builder()
+                        result = Term.builder()
                                 .power(result.getPower())
                                 .coefficient(result.getCoefficient() + next.getCoefficient())
                                 .letter(result.getLetter())
@@ -85,41 +50,41 @@ public class EquationUtil {
                     }
                     return result;
                 })
-//                .filter(member -> member.getCoefficient() != 0)
+//                .filter(term -> term.getCoefficient() != 0)
                 .sorted(Comparator.reverseOrder()).toList();
     }
 
     /**
-     * Are the given members grouped from left to right descending by their power?
+     * Are the given terms grouped from left to right descending by their power?
      *
-     * @param members left part of the equation
-     * @return true if members of the given equation are grouped by their power. False otherwise.
+     * @param terms left part of the equation
+     * @return true if terms of the given equation are grouped by their power. False otherwise.
      */
-    public static boolean isDistinct(final List<Member> members) {
-        return isDistinct(Equation.of(members, Member.asRealConstant(.0d)));
+    public static boolean isDistinct(final List<Term> terms) {
+        return isDistinct(Equation.of(terms, Term.asRealConstant(.0d)));
     }
 
     /**
-     * Is the given equation has its members grouped from left to right descending by their power?
+     * Is the given equation has its terms grouped from left to right descending by their power?
      *
      * @param equation the given equation
-     * @return true if members of the given equation are grouped by their power. False otherwise.
+     * @return true if terms of the given equation are grouped by their power. False otherwise.
      */
     public static boolean isDistinct(final Equation equation) {
-        if (Objects.requireNonNull(Objects.requireNonNull(equation).members()).isEmpty()) {
+        if (Objects.requireNonNull(Objects.requireNonNull(equation).terms()).isEmpty()) {
             return true;
         }
 
-        Map<String, List<Member>> grouped = equation.members().stream()
+        Map<String, List<Term>> grouped = equation.terms().stream()
                 .collect(Collectors.groupingBy(
-                        (Member m) -> {
+                        (Term m) -> {
                             if (m.getPower() != 0.0d)
                                 return m.getLetter().toString() + m.getPower();
                             else
                                 return String.valueOf(m.getPower());
                         }));
 
-        return grouped.size() == equation.members().size();
+        return grouped.size() == equation.terms().size();
     }
 
     /**
@@ -130,9 +95,9 @@ public class EquationUtil {
      * @return the Equation object
      */
     public static Equation toSingleVariableEquation(final double[] coefficients, final int variableIndex) {
-        List<Member> members = new ArrayList<>();
+        List<Term> terms = new ArrayList<>();
         for (int i = 0; i < coefficients.length - 1; i++) {
-            var builder = Member.builder()
+            var builder = Term.builder()
                     .coefficient(coefficients[i])
                     .power(1.0d);
             if (i != variableIndex) {
@@ -140,9 +105,9 @@ public class EquationUtil {
             } else {
                 builder.value(null);
             }
-            members.add(builder.build());
+            terms.add(builder.build());
         }
-        return Equation.of(members, Member.asRealConstant(coefficients[coefficients.length - 1]));
+        return Equation.of(terms, Term.asRealConstant(coefficients[coefficients.length - 1]));
     }
 
     /**
@@ -177,19 +142,19 @@ public class EquationUtil {
      */
     public static void solveSingleVariableLinearEquation(final Equation equation) {
         var hits = 0;
-        Member variable = null;
-        for (Member eqMember : equation.members())
-            if (Objects.isNull(eqMember.getValue())) {
-                variable = eqMember;
+        Term variable = null;
+        for (Term eqTerm : equation.terms())
+            if (Objects.isNull(eqTerm.getValue())) {
+                variable = eqTerm;
                 hits++;
             }
         if (hits != 1) throw new IllegalArgumentException("Not a single variable equation.");
         double sum = .0d;
 
-        for (Member eqMember : equation.members()) {
-            if (Objects.isNull(eqMember.getValue()))
+        for (Term eqTerm : equation.terms()) {
+            if (Objects.isNull(eqTerm.getValue()))
                 continue;
-            sum = sum + eqMember.getCoefficient() * eqMember.getValue();
+            sum = sum + eqTerm.getCoefficient() * eqTerm.getValue();
         }
         sum = equation.equalsTo().getCoefficient() - sum;
         variable.setValue(roundToNDecimals(sum / variable.getCoefficient(), 12));
@@ -203,12 +168,11 @@ public class EquationUtil {
      */
     public static EquationRoots<Complex> solve(final Equation equation) {
         var equationType = EquationValidator.determinePolynomialEquationType(equation);
-        var groupedByPowerMembersEquation = Equation.of(distinct(equation.members()), equation.equalsTo());
+        var groupedByPowerTermsEquation = Equation.of(distinct(equation.terms()), equation.equalsTo());
         return switch (equationType) {
-            case INVALID -> LinearEquationSolver.solve(groupedByPowerMembersEquation);
-            case LINEAR -> LinearEquationSolver.solve(groupedByPowerMembersEquation);
-            case QUADRATIC -> QuadraticEquationSolver.solve(groupedByPowerMembersEquation);
-            case CUBIC -> CubicEquationSolver.solve(groupedByPowerMembersEquation);
+            case LINEAR -> LinearEquationSolver.solve(groupedByPowerTermsEquation);
+            case QUADRATIC -> QuadraticEquationSolver.solve(groupedByPowerTermsEquation);
+            case CUBIC -> CubicEquationSolver.solve(groupedByPowerTermsEquation);
             // TODO QUARTIC ->
             default -> throw new IllegalArgumentException(String.format("The equation type %s is not supported.", equationType.name()));
         };
@@ -220,9 +184,9 @@ public class EquationUtil {
      * @param equation the given equation
      * @return the cleaned equation
      */
-    public static Equation removeZeroMembers(final Equation equation) {
-        var result = new ArrayList<>(equation.members());
-        result.removeIf(member -> member.getCoefficient() == .0d);
+    public static Equation removeZeroTerms(final Equation equation) {
+        var result = new ArrayList<>(equation.terms());
+        result.removeIf(term -> term.getCoefficient() == .0d);
         return new Equation(result, equation.equalsTo());
     }
 
@@ -237,47 +201,47 @@ public class EquationUtil {
         if (!isSquareMatrix(matrix))
             throw new IllegalArgumentException("A non-square matrix has no determinant.");
         if (matrix.length < 2)
-            return removeZeroMembers(Equation.of(List.of(Member.asRealConstant(matrix[0][0]), Member.asVariableX(-1.0d)), Member.asRealConstant(.0d)));
+            return removeZeroTerms(Equation.of(List.of(Term.asRealConstant(matrix[0][0]), Term.asVariableX(-1.0d)), Term.asRealConstant(.0d)));
         if (matrix.length == 2)
-            return removeZeroMembers(Equation.of(distinct(Stream.concat(
-                    Members.of(List.of(Member.asRealConstant(matrix[0][0]), Member.asVariableX(-1.0d)))
-                            .multiply(Members.of(List.of(Member.asRealConstant(matrix[1][1]), Member.asVariableX(-1.0d)))).asList().stream(),
-                    Stream.of(Member.asRealConstant(-1.0d).multiply(Member.asRealConstant(matrix[0][1]).multiply(
-                            Member.asRealConstant(matrix[1][0]))))).sorted().toList()), Member.asRealConstant(.0d)));
+            return removeZeroTerms(Equation.of(distinct(Stream.concat(
+                    Terms.of(List.of(Term.asRealConstant(matrix[0][0]), Term.asVariableX(-1.0d)))
+                            .multiply(Terms.of(List.of(Term.asRealConstant(matrix[1][1]), Term.asVariableX(-1.0d)))).asList().stream(),
+                    Stream.of(Term.asRealConstant(-1.0d).multiply(Term.asRealConstant(matrix[0][1]).multiply(
+                            Term.asRealConstant(matrix[1][0]))))).sorted().toList()), Term.asRealConstant(.0d)));
         if (matrix.length == 3)
-            return removeZeroMembers(Equation.of(distinct(Stream.of(
-                    Members.of(List.of(Member.asRealConstant(matrix[0][0]), Member.asVariableX(-1.0d)))
-                            .multiply(Members.of(List.of(Member.asRealConstant(matrix[1][1]), Member.asVariableX(-1.0d))))
-                            .multiply(Members.of(List.of(Member.asRealConstant(matrix[2][2]), Member.asVariableX(-1.0d)))).asList(),
-                    Members.of(List.of(Member.asRealConstant(matrix[0][1]).multiply(
-                            Member.asRealConstant(matrix[1][2])).multiply(
-                            Member.asRealConstant(matrix[2][0])))).asList(),
-                    Members.of(List.of(Member.asRealConstant(matrix[1][0]).multiply(
-                            Member.asRealConstant(matrix[2][1])).multiply(
-                            Member.asRealConstant(matrix[0][2])))).asList(),
-                    Members.of(List.of(Member.asRealConstant(-1.0d)
-                            .multiply(Member.asRealConstant(matrix[0][2]).multiply(
-                                    Members.of(List.of(Member.asRealConstant(matrix[1][1]), Member.asVariableX(-1.0d))).multiply(
-                                            Member.asRealConstant(matrix[2][0])))))).asList(),
-                    Members.of(List.of(Member.asRealConstant(-1.0d)
-                            .multiply(Member.asRealConstant(matrix[1][0]).multiply(
-                                    Member.asRealConstant(matrix[0][1])).multiply(
-                                    Members.of(List.of(Member.asRealConstant(matrix[2][2]), Member.asVariableX(-1.0d))))))).asList(),
-                    Members.of(List.of(Member.asRealConstant(-1.0d)
-                            .multiply(Members.of(List.of(Member.asRealConstant(matrix[0][0]), Member.asVariableX(-1.0d))).multiply(
-                                    Member.asRealConstant(matrix[2][1])).multiply(
-                                    Member.asRealConstant(matrix[1][2]))))).asList()
-            ).flatMap(List::stream).sorted().toList()), Member.asRealConstant(.0d)));
-        Members[][] diagonalPolynomnialMatrix = doubleArrayToMembersArrayForCharacteristicPolynomial(matrix);
-        Members sumOfSums = Members.of(new ArrayList<>());
+            return removeZeroTerms(Equation.of(distinct(Stream.of(
+                    Terms.of(List.of(Term.asRealConstant(matrix[0][0]), Term.asVariableX(-1.0d)))
+                            .multiply(Terms.of(List.of(Term.asRealConstant(matrix[1][1]), Term.asVariableX(-1.0d))))
+                            .multiply(Terms.of(List.of(Term.asRealConstant(matrix[2][2]), Term.asVariableX(-1.0d)))).asList(),
+                    Terms.of(List.of(Term.asRealConstant(matrix[0][1]).multiply(
+                            Term.asRealConstant(matrix[1][2])).multiply(
+                            Term.asRealConstant(matrix[2][0])))).asList(),
+                    Terms.of(List.of(Term.asRealConstant(matrix[1][0]).multiply(
+                            Term.asRealConstant(matrix[2][1])).multiply(
+                            Term.asRealConstant(matrix[0][2])))).asList(),
+                    Terms.of(List.of(Term.asRealConstant(-1.0d)
+                            .multiply(Term.asRealConstant(matrix[0][2]).multiply(
+                                    Terms.of(List.of(Term.asRealConstant(matrix[1][1]), Term.asVariableX(-1.0d))).multiply(
+                                            Term.asRealConstant(matrix[2][0])))))).asList(),
+                    Terms.of(List.of(Term.asRealConstant(-1.0d)
+                            .multiply(Term.asRealConstant(matrix[1][0]).multiply(
+                                    Term.asRealConstant(matrix[0][1])).multiply(
+                                    Terms.of(List.of(Term.asRealConstant(matrix[2][2]), Term.asVariableX(-1.0d))))))).asList(),
+                    Terms.of(List.of(Term.asRealConstant(-1.0d)
+                            .multiply(Terms.of(List.of(Term.asRealConstant(matrix[0][0]), Term.asVariableX(-1.0d))).multiply(
+                                    Term.asRealConstant(matrix[2][1])).multiply(
+                                    Term.asRealConstant(matrix[1][2]))))).asList()
+            ).flatMap(List::stream).sorted().toList()), Term.asRealConstant(.0d)));
+        Terms[][] diagonalPolynomnialMatrix = doubleArrayToTermsArrayForCharacteristicPolynomial(matrix);
+        Terms sumOfSums = Terms.of(new ArrayList<>());
         for (int col = 0; col < diagonalPolynomnialMatrix[0].length; col++) {
-                var mmbrz = Members.of(List.of(
+                var mmbrz = Terms.of(List.of(
                         diagonalPolynomnialMatrix[0][col].multiply(
-                        Members.of(toCharacteristicPolynomial(MatrixUtil.excludeColumnAndRow(matrix, 1, col + 1)).members()
+                        Terms.of(toCharacteristicPolynomial(MatrixUtil.excludeColumnAndRow(matrix, 1, col + 1)).terms()
                                 .stream().map(SeriesPart.class::cast).collect(Collectors.toList())))));
-                if (col % 2 != 0) mmbrz = mmbrz.multiply(Member.asRealConstant(-1.0d));
-            sumOfSums = (Members) sumOfSums.add(mmbrz);
+                if (col % 2 != 0) mmbrz = mmbrz.multiply(Term.asRealConstant(-1.0d));
+            sumOfSums = (Terms) sumOfSums.add(mmbrz);
             }
-        return removeZeroMembers(Equation.of(distinct(sumOfSums.asList().stream().sorted().toList()), Member.asRealConstant(.0d)));
+        return removeZeroTerms(Equation.of(distinct(sumOfSums.asList().stream().sorted().toList()), Term.asRealConstant(.0d)));
     }
 }

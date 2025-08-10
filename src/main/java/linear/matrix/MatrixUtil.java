@@ -3,7 +3,7 @@
  */
 package linear.matrix;
 
-import algebra.Member;
+import algebra.Term;
 import approximation.RoundingUtil;
 
 /**
@@ -244,8 +244,8 @@ public final class MatrixUtil {
      * @param columnNumber - number (index + 1) of a column to exclude
      * @return a matrix one row one column less in size.
      */
-    public static Member[][] excludeColumnAndRow(Member[][] matrix, int rowNumber, int columnNumber) {
-        Member[][] submatrix = new Member[matrix.length - 1][matrix[0].length - 1];
+    public static Term[][] excludeColumnAndRow(Term[][] matrix, int rowNumber, int columnNumber) {
+        Term[][] submatrix = new Term[matrix.length - 1][matrix[0].length - 1];
         int submatrixRow = 1, submatrixCol = 1;
         for (int rowNum = 1; rowNum <= matrix.length; rowNum++) {
             if (rowNum == rowNumber)

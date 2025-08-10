@@ -3,8 +3,8 @@
  */
 package linear.matrix;
 
-import algebra.Member;
-import algebra.MemberUtil;
+import algebra.Term;
+import algebra.TermUtil;
 import combinatorics.CombinationsGenerator;
 import linear.matrix.exception.MatrixException;
 import linear.spatial.Vector;
@@ -105,15 +105,15 @@ public final class MatrixCalc {
      * @return a new matrix object which is a result of multiplication
      * @throws MatrixException - if the matrix is malformed
      */
-    public static Member[][] multiply(Member[][] matrixLeft, Member[][] matrixRight) throws MatrixException {
+    public static Term[][] multiply(Term[][] matrixLeft, Term[][] matrixRight) throws MatrixException {
         if (!Validation.canMultiply(matrixLeft, matrixRight))
             throw new MatrixException("In order to multiply matrices, the one on the left should have same row length as the column length of the one on the right");
-        Member[][] result = new Member[matrixLeft.length][matrixRight[0].length];
+        Term[][] result = new Term[matrixLeft.length][matrixRight[0].length];
         for (int rowNumLeft = 0; rowNumLeft < matrixLeft.length; rowNumLeft++) {
             for (int colNumRight = 0; colNumRight < matrixRight[0].length; colNumRight++) {
                 for (int colNumLeft = 0; colNumLeft < matrixLeft[0].length; colNumLeft++) {
                     result[rowNumLeft][colNumRight] = result[rowNumLeft][colNumRight] != null
-                            ? MemberUtil.sum(result[rowNumLeft][colNumRight], matrixLeft[rowNumLeft][colNumLeft].multiply(matrixRight[colNumLeft][colNumRight]))
+                            ? TermUtil.sum(result[rowNumLeft][colNumRight], matrixLeft[rowNumLeft][colNumLeft].multiply(matrixRight[colNumLeft][colNumRight]))
                             : matrixLeft[rowNumLeft][colNumLeft].multiply(matrixRight[colNumLeft][colNumRight]);
                 }
             }
@@ -139,12 +139,12 @@ public final class MatrixCalc {
      * on a given matrix (on the right side of the expression).
      *
      * @param vector - the given vector on the left side of the expression
-     * @param membersMatrix - the given matrix on the right side of the expression
+     * @param termsMatrices - the given matrix on the right side of the expression
      * @return the resulting matrix
      * @throws MatrixException - if the given multiplicand and the given multiplier cannot be multiplied together.
      */
-    public static Member[][] multiply(Vector vector, Member[][] membersMatrix) throws MatrixException {
-        return multiply(new Member[][]{Arrays.stream(vector.coordinates()).mapToObj(Member::asRealConstant).toList().toArray(new Member[0])}, membersMatrix);
+    public static Term[][] multiply(Vector vector, Term[][] termsMatrices) throws MatrixException {
+        return multiply(new Term[][]{Arrays.stream(vector.coordinates()).mapToObj(Term::asRealConstant).toList().toArray(new Term[0])}, termsMatrices);
     }
 
     /**

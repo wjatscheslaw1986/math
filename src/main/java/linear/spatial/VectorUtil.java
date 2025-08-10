@@ -20,7 +20,7 @@ public final class VectorUtil {
     }
 
     /**
-     * Checks if the given vectors make a basis in a linear space.
+     * Checks if the given vectors are linearly independent, i.e. make up a basis in a linear space.
      *
      * @param vectors the given vectors
      * @return true if the given vectors are mutually independent, false otherwise
@@ -64,5 +64,4 @@ public final class VectorUtil {
         vector[i] = vector[j];
         vector[j] = temp;
     }
-
 }

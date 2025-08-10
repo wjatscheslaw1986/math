@@ -10,7 +10,7 @@ import java.util.List;
  *
  * @param solutionsCount enum flag denoting amount of solutions for the linear equation system.
  * @param solution a zero solution which is either a single solution for the case of {@linkplain SolutionsCount.SINGLE},
- *                 or a solution with all variable members are zeroes for the case of {@linkplain SolutionsCount.INFINITE},
+ *                 or a solution with all variable terms are zeroes for the case of {@linkplain SolutionsCount.INFINITE},
  *                 or {@code null} for the case of {@linkplain SolutionsCount.ZERO}
  * @param basis a basis on linear space of solutions for current linear equation system
  *                  or {@code null} for the cases of {@linkplain SolutionsCount.ZERO} and {@linkplain SolutionsCount.SINGLE}

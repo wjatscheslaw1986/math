@@ -5,7 +5,7 @@ module math {
 	exports algebra;
     exports combinatorics;
 	exports approximation;
-	exports probnstat;
+	exports statistics;
 	exports series;
 	exports linear.equation;
 	exports linear.matrix;

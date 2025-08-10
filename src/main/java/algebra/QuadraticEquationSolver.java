@@ -23,16 +23,16 @@ final class QuadraticEquationSolver {
      */
     static EquationRoots<Complex> solve(final Equation equation) {
         Objects.requireNonNull(equation, "Equation cannot be null");
-        if (equation.members().size() != 3)
-            throw new IllegalArgumentException("Malformed quadratic equation. Must have 3 members on the left side of the equation.");
+        if (equation.terms().size() != 3)
+            throw new IllegalArgumentException("Malformed quadratic equation. Must have 3 terms on the left side of the equation.");
 
-        var a = equation.members().get(0).getCoefficient();
+        var a = equation.terms().get(0).getCoefficient();
 
         if (isEffectivelyZero(a))
             throw new IllegalArgumentException("Malformed quadratic equation ('a' cannot be zero).");
 
-        var b = equation.members().get(1).getCoefficient();
-        var c = equation.members().get(2).getCoefficient();
+        var b = equation.terms().get(1).getCoefficient();
+        var c = equation.terms().get(2).getCoefficient();
 
         // Calculate discriminant
         var discriminant = b * b - 4 * a * c;

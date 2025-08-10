@@ -1,7 +1,7 @@
 /**
  * Viacheslav Mikhailov (taleskeeper@yandex.com) © 2025.
  */
-package probnstat;
+package statistics;
 
 import combinatorics.CombinationsGenerator;
 
