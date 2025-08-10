@@ -56,7 +56,7 @@ public class QuarticEquationSolver {
         double r = (-3 * b * b * b * b + 256 * a * a * a * e - 64 * a * a * b * d + 16 * a * b * b * c) / (256 * a * a * a * a);
 
         // Resolvent cubic: m^3 - (p/2)m^2 - rm + (pr/2 - q^2/8) = 0
-        List<Complex> mRoots = EquationUtil.solve(Equation.of(List.of(
+        List<Complex> mRoots = EquationUtil.solvePolynomial(Equation.of(List.of(
                 Term.builder().letter("m").power(3.0d).coefficient(1.0d).build(),
                 Term.builder().letter("m").power(2.0d).coefficient(-p / 2d).build(),
                 Term.builder().letter("m").power(1.0d).coefficient(-r).build(),
@@ -78,12 +78,12 @@ public class QuarticEquationSolver {
         Complex aQuad = Complex.of(1.0, 0.0);
 
         List<Complex> yRoots = new ArrayList<>();
-        yRoots.addAll(EquationUtil.solve(Equation.of(List.of(
+        yRoots.addAll(EquationUtil.solvePolynomial(Equation.of(List.of(
                 Term.builder().letter("x").power(2.0d).coefficient(aQuad.real()).build(),
                 Term.builder().letter("x").power(1.0d).coefficient(sOver2.real()).build(),
                 Term.builder().letter("x").power(.0d).coefficient(ComplexUtil.add(m, qOver2s).real()).build()),
                 Term.asRealConstant(.0d))).roots());
-        yRoots.addAll(EquationUtil.solve(Equation.of(List.of(
+        yRoots.addAll(EquationUtil.solvePolynomial(Equation.of(List.of(
                 Term.builder().letter("x").power(2.0d).coefficient(aQuad.real()).build(),
                 Term.builder().letter("x").power(1.0d).coefficient(ComplexUtil.negate(sOver2).real()).build(),
                 Term.builder().letter("x").power(.0d).coefficient(ComplexUtil.subtract(m, qOver2s).real()).build()),

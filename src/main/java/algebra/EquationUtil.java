@@ -166,7 +166,7 @@ public class EquationUtil {
      * @param equation equation the equation given
      * @return quadratic equation roots
      */
-    public static EquationRoots<Complex> solve(final Equation equation) {
+    public static EquationRoots<Complex> solvePolynomial(final Equation equation) {
         var equationType = EquationValidator.determinePolynomialEquationType(equation);
         var groupedByPowerTermsEquation = Equation.of(distinct(equation.terms()), equation.equalsTo());
         return switch (equationType) {

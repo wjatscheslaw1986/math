@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.random.RandomGenerator;
 import java.util.random.RandomGeneratorFactory;
 
-import static linear.matrix.MatrixUtil.print;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -127,26 +126,6 @@ public final class IntegrationTest {
 
         assertTrue(MatrixCalc.areEqual(a_in_another_basis, MatrixCalc.multiply(MatrixCalc.multiply(b_rev, a), b)));
         assertFalse(MatrixCalc.areEqual(a_in_another_basis, MatrixCalc.multiply(MatrixCalc.multiply(b, a), b_rev)));
-
-    }
-
-    @Test
-    void transformationMatrixInAnotherBasis2() throws MatrixException {
-        // System.out.println(Math.cos(Math.toRadians(135)));
-        // System.out.println(Math.cos(Math.toRadians(45)));
-
-        double[][] O = new double[][]{{1.0d, 0.0d}, {0.0d, 0.0d}};
-        double[][] A = new double[][]{{Math.cos(Math.toRadians(135)), Math.cos(Math.toRadians(45))},
-                {Math.cos(Math.toRadians(45)), Math.cos(Math.toRadians(45))}};
-        double[][] A_rev = MatrixCalc.inverse(A);
-
-        System.out.println(print(A));
-        System.out.println(print(A_rev));
-        System.out.println(print(MatrixCalc.multiply(A, O)));
-        System.out.println(print(MatrixCalc.multiply(MatrixCalc.multiply(A, O), A_rev)));
-        //
-        // System.out.println(DoubleMatrixCalc
-        // .print(DoubleMatrixCalc.multiplyMatrices(DoubleMatrixCalc.multiplyMatrices(A, O), A_rev)));
 
     }
 

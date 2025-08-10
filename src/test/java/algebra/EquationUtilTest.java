@@ -172,19 +172,19 @@ public class EquationUtilTest {
     }
 
     @Test
-    void given_linear_equation_when_solve_then_expected_roots() {
+    void givenLinearEquation_whenSolvePolynomial_thenExpectedRoots() {
         var equation = new Equation(List.of(
                 Term.builder().coefficient(4).letter("x").power(1.0d).build(),
                 Term.builder().coefficient(8).letter("x").power(0.0d).build()
         ), Term.asRealConstant(.0d));
-        var roots = EquationUtil.solve(equation);
+        var roots = EquationUtil.solvePolynomial(equation);
         assertEquals(roots.roots().getFirst(), Complex.of(-2.0d, .0d));
 
         equation = new Equation(List.of(
                 Term.builder().coefficient(-4).letter("x").power(1.0d).build(),
                 Term.builder().coefficient(8).letter("x").power(0.0d).build()
         ), Term.asRealConstant(.0d));
-        roots = EquationUtil.solve(equation);
+        roots = EquationUtil.solvePolynomial(equation);
         assertEquals(roots.roots().getFirst(), Complex.of(2.0d, .0d));
 
         equation = new Equation(List.of(
@@ -194,7 +194,7 @@ public class EquationUtilTest {
                 Term.builder().coefficient(-1).letter("x").power(1.0d).build(),
                 Term.builder().coefficient(-1).letter("x").power(1.0d).build()
         ), Term.asRealConstant(.0d));
-        roots = EquationUtil.solve(equation);
+        roots = EquationUtil.solvePolynomial(equation);
         assertEquals(roots.roots().getFirst(), Complex.of(2.0d, .0d));
     }
 
@@ -202,7 +202,7 @@ public class EquationUtilTest {
      * Примеры взяты из "Справочник по Элементарной Математике" - М.Я.Выгодский - 1965 - стр.184
      */
     @Test
-    void given_quadratic_equation_when_solve_then_expected_roots() {
+    void givenQuadraticEquation_whenSolvePolynomial_thenExpectedRoots() {
         var equation1 = new Equation(List.of(
                 Term.builder().coefficient(3).letter("x").power(2.0d).build(),
                 Term.builder().coefficient(-7).letter("x").power(1.0d).build(),
@@ -213,7 +213,7 @@ public class EquationUtilTest {
                         Complex.of(1.3333333333333333d, Double.NaN),
                         Complex.of(1d, Double.NaN)),
                 1d);
-        var solution1 = EquationUtil.solve(equation1);
+        var solution1 = EquationUtil.solvePolynomial(equation1);
         assertEquals(expectedRoots1, solution1);
 
         var equation2 = new Equation(List.of(
@@ -226,7 +226,7 @@ public class EquationUtilTest {
                         Complex.of(-3.0d, Double.NaN),
                         Complex.of(-4.0d, Double.NaN)),
                 1d);
-        var solution2 = EquationUtil.solve(equation2);
+        var solution2 = EquationUtil.solvePolynomial(equation2);
         assertEquals(expectedRoots2, solution2);
 
         var equation3 = new Equation(List.of(
@@ -239,7 +239,7 @@ public class EquationUtilTest {
                         Complex.of(1.928016250696741d, Double.NaN),
                         Complex.of(-7.261349584030074d, Double.NaN)),
                 (-3.2 * -3.2 - 4 * .60 * (-8.4)));
-        var solution3 = EquationUtil.solve(equation3);
+        var solution3 = EquationUtil.solvePolynomial(equation3);
         assertEquals(expectedRoots3, solution3);
 
         var equation4 = new Equation(List.of(
@@ -252,7 +252,7 @@ public class EquationUtilTest {
                         Complex.of(8d, Double.NaN),
                         Complex.of(-1d * (10d / 3d), Double.NaN)),
                 (-14.0d * -14.0d - 4d * 3d * -80d));
-        var solution4 = EquationUtil.solve(equation4);
+        var solution4 = EquationUtil.solvePolynomial(equation4);
         assertEquals(expectedRoots4, solution4);
 
     }
@@ -261,7 +261,7 @@ public class EquationUtilTest {
      * Примеры взяты из "Справочник по Элементарной Математике" - М.Я.Выгодский - 1965 - стр.184
      */
     @Test
-    void given_cubic_equation_when_solve_then_expected_roots() {
+    void givenCubicEquation_whenSolvePolynomial_thenExpectedRoots() {
         var equation5 = new Equation(List.of(
                 Term.builder().coefficient(1).letter("x").power(3.0d).build(),
                 Term.builder().coefficient(5).letter("x").power(2.0d).build(),
@@ -273,7 +273,7 @@ public class EquationUtilTest {
                 Complex.of(-7d, Double.NaN),
                 Complex.of(.0d, Double.NaN)),
                 -147d);
-        var solution5 = EquationUtil.solve(equation5);
+        var solution5 = EquationUtil.solvePolynomial(equation5);
         assertEquals(expectedRoots5, solution5);
 
         var equation6 = new Equation(List.of(
@@ -287,12 +287,12 @@ public class EquationUtilTest {
                 Complex.of(-2d, Double.NaN),
                 Complex.of(-1.5d, Double.NaN)),
                 -.0005787037d);
-        var solution6 = EquationUtil.solve(equation6);
+        var solution6 = EquationUtil.solvePolynomial(equation6);
         assertEquals(expectedRoots6, solution6);
     }
 
     @Test
-    void given_quartic_equation_when_solve_then_expected_roots() {
+    void givenQuarticEquation_whenSolvePolynomial_thenExpectedRoots() {
         var equation6 = new Equation(List.of(
                 Term.builder().coefficient(1).letter("x").power(4.0d).build(),
                 Term.builder().coefficient(-2).letter("x").power(3.0d).build(),

@@ -1,12 +1,16 @@
 package linear.spatial;
 
+import linear.equation.LinearEquationSystemUtil;
 import linear.matrix.exception.MatrixException;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
+import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static linear.equation.SolutionsCount.INFINITE;
+import static linear.equation.SolutionsCount.SINGLE;
+import static linear.spatial.VectorUtil.toLinearEquationSystem;
+import static linear.spatial.VectorUtil.transformToBasis;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests for {@link VectorUtil} class.
@@ -32,6 +36,9 @@ public class VectorUtilTest {
                 Vector.of(1, 4, 5)
         };
         assertTrue(VectorUtil.isBasis(vectors));
+
+      var solution = LinearEquationSystemUtil.resolveUsingJordanGaussMethod(toLinearEquationSystem(Vector.of(new double[vectors[0].coordinates().length]), vectors));
+      assertEquals(SINGLE, solution.solutionsCount());
     }
 
     /**
@@ -51,6 +58,37 @@ public class VectorUtilTest {
                 Vector.of(5, 9, 7)
         };
         assertFalse(VectorUtil.isBasis(vectors));
+
+        var solution = LinearEquationSystemUtil.resolveUsingJordanGaussMethod(toLinearEquationSystem(Vector.of(new double[vectors[0].coordinates().length]), vectors));
+        assertEquals(INFINITE, solution.solutionsCount());
+    }
+
+    @Test
+    void givenVectorAndBasis_whenToLinearEquationSystem_thenGetExpected2DMatrix() throws MatrixException {
+        Vector[] vectors = new Vector[]{
+                Vector.of(3, -5),
+                Vector.of(5, -8)
+        };
+        var vector = Vector.of(1, -3);
+
+        final double[][] expected = new double[][]{
+                {3.0d, 5.0d, 1.0d},
+                {-5.0d, -8.0d, -3.0d}
+        };
+
+        var result = toLinearEquationSystem(vector, vectors);
+        assertArrayEquals(expected, result);
+    }
+
+    @Test
+    void givenVectorAndAnotherBasis_whenTransformToBasis_thenExpectedVectorExpressedInNewBasis() {
+        Vector[] basis = new Vector[]{
+                Vector.of(3, -5),
+                Vector.of(5, -8)
+        };
+        var vector = Vector.of(1, -3);
+        var expectedVector = Vector.of(7, -4);
+        assertEquals(expectedVector, transformToBasis(vector, basis));
     }
 
     @Test
@@ -60,9 +98,8 @@ public class VectorUtilTest {
                 {6, 8}
         };
 
-        var eigenvectors = VectorCalc.eigenvectors(matrix);
-        eigenvectors.forEach(System.out::println);
-
-
+        List<Vector> eigenvectors = VectorCalc.eigenvectors(matrix);
+        assertEquals(Vector.of(2.0d, 1.0d), eigenvectors.getFirst());
+        assertEquals(Vector.of(-.5d, 1.0d), eigenvectors.getLast());
     }
 }

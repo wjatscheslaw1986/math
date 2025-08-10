@@ -3,7 +3,10 @@
  */
 package linear.spatial;
 
-import algebra.*;
+import algebra.Complex;
+import algebra.EquationUtil;
+import algebra.Letter;
+import algebra.Term;
 import linear.equation.LinearEquationSystemUtil;
 import linear.equation.Solution;
 import linear.matrix.exception.MatrixException;
@@ -27,15 +30,15 @@ public final class VectorCalc {
     }
 
     /**
-     * Find eigenvectors for the given linear space transformation matrix.
+     * Find eigenvectors for the given linear transformation.
      *
-     * @param transformationMatrix the given transformation matrix
+     * @param transformationMatrix the given linear transformation
      * @return list of eigenvectors
      */
     public static List<Vector> eigenvectors(final double[][] transformationMatrix) throws MatrixException {
-        EquationRoots<Complex> roots = EquationUtil.solve(EquationUtil.toCharacteristicPolynomial(transformationMatrix));
+        var eigenvalues = eigenvalues(transformationMatrix);
         List<Vector> eigenvectors = new ArrayList<>();
-        for (var root : roots.roots()) {
+        for (var eigenvalue : eigenvalues) {
             List<List<Term>> linearEquationSystem = new ArrayList<>();
             for (int j = 0; j < transformationMatrix.length; j++) {
                 List<Term> linearEquationTerms = new ArrayList<>();
@@ -49,7 +52,7 @@ public final class VectorCalc {
                 }
                 linearEquationTerms.add(Term.builder()
                         .power(1.0d)
-                        .coefficient(-root.real())
+                        .coefficient(-eigenvalue.real())
                         .letter(Letter.of("x", j + 1))
                         .value(Double.NaN)
                         .build());
@@ -59,6 +62,17 @@ public final class VectorCalc {
             coords.basis().forEach(basisVector -> eigenvectors.add(Vector.of(basisVector)));
         }
         return eigenvectors;
+    }
+
+    /**
+     * The roots of a characteristic polynomial, and only those,
+     * are the eigenvalues of a linear transformation.
+     *
+     * @param matrix the given linear transformation
+     * @return the eigenvalues
+     */
+    public static List<Complex> eigenvalues(final double[][] matrix) {
+        return EquationUtil.solvePolynomial(EquationUtil.toCharacteristicPolynomial(matrix)).roots();
     }
 
     /**

@@ -3,8 +3,12 @@
  */
 package linear.spatial;
 
+import linear.equation.CramerLinearEquationSystem;
 import linear.equation.LinearEquationSystemUtil;
+import linear.matrix.MatrixCalc;
 import linear.matrix.exception.MatrixException;
+
+import java.util.Objects;
 
 import static linear.equation.SolutionsCount.SINGLE;
 
@@ -20,23 +24,60 @@ public final class VectorUtil {
     }
 
     /**
+     * Express the vector in a new basis.
+     *
+     * @param vector the given vector
+     * @param basis the given basis
+     * @return the vector with new coordinates, as they render in the given basis
+     */
+    public static Vector transformToBasis(final Vector vector, final Vector... basis) {
+        if(!isBasis(Objects.requireNonNull(basis)))
+            throw new IllegalArgumentException("Not a basis");
+        var equationSystem = new CramerLinearEquationSystem(LinearEquationSystemUtil::resolveUsingCramerMethod, toLinearEquationSystem(vector, basis));
+        return Vector.of(equationSystem.getResolved());
+    }
+
+    static double[][] toLinearEquationSystem(final Vector vector, final Vector... basis) {
+        if (vector.coordinates().length != basis.length)
+            throw new IllegalArgumentException("Vector length must be of same size as basis.");
+        double[][] equationSystem = new double[vector.coordinates().length][basis.length + 1];
+        for (int i = 0; i < basis.length; i++) {
+            for (int j = 0; j < equationSystem.length; j++) {
+                equationSystem[i][j] = basis[j].coordinates()[i];
+            }
+        }
+        for (int i = 0; i < vector.coordinates().length; i++) {
+            equationSystem[i][basis.length] =  vector.coordinates()[i];
+        }
+        return equationSystem;
+    }
+
+    /**
+     * Convert Vector[] to double[][] datatype.
+     *
+     * @param basis the given {@link Vector} array
+     * @return the double precision matrix
+     */
+    public static double[][] toMatrix(final Vector... basis) {
+        if (basis.length != basis[0].coordinates().length)
+            throw new IllegalArgumentException("Vector length must be of same size as basis.");
+        double[][] matrix = new double[basis[0].coordinates().length][basis.length];
+        for (int i = 0; i < basis.length; i++) {
+            for (int j = 0; j < matrix.length; j++) {
+                matrix[i][j] = basis[j].coordinates()[i];
+            }
+        }
+        return matrix;
+    }
+
+    /**
      * Checks if the given vectors are linearly independent, i.e. make up a basis in a linear space.
      *
      * @param vectors the given vectors
      * @return true if the given vectors are mutually independent, false otherwise
      */
-    public static boolean isBasis(Vector... vectors) throws MatrixException {
-        double[][] vectorsArray = new double[vectors.length][vectors[0].coordinates().length + 1];
-        for (int i = 0; i < vectors[0].coordinates().length; i++) {
-            double[] equation = new double[vectors[0].coordinates().length + 1];
-            for (int j = 0; j < vectors.length; j++) {
-                equation[j] = vectors[j].coordinates()[i];
-                equation[equation.length - 1] = .0d;
-            }
-            vectorsArray[i] = equation;
-        }
-        var solution = LinearEquationSystemUtil.resolveUsingJordanGaussMethod(vectorsArray);
-        return solution.solutionsCount() == SINGLE;
+    public static boolean isBasis(Vector... vectors) {
+        return MatrixCalc.det(toMatrix(vectors)) != .0d;
     }
 
     /**
