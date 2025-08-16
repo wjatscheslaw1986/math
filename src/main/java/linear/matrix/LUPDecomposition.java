@@ -10,19 +10,19 @@ package linear.matrix;
  *
  * @param l the lower (maybe only psychologically lower) triangle matrix
  * @param u the upper triangle matrix
- * @param permutations row permutations history for recovering the matrix equation P*A = L*U
+ * @param p row permutations history to hold the matrix equation P*A = L*U
  */
-public record LUPDecomposition(double[][] l, double[][] u, int[] permutations) {
+public record LUPDecomposition(double[][] l, double[][] u, int[] p) {
 
     /**
      * Factory method.
      *
      * @param l the lower (maybe only psychologically lower) triangle matrix
      * @param u the upper triangle matrix
-     * @param permutations row permutations history for recovering the matrix equation P*A = L*U
+     * @param p row permutations history to hold the matrix equation P*A = L*U
      */
-    public static LUPDecomposition of(double[][] l, double[][] u, int[] permutations) {
-        return new LUPDecomposition(l, u, permutations);
+    public static LUPDecomposition of(double[][] l, double[][] u, int[] p) {
+        return new LUPDecomposition(l, u, p);
     }
 
     /**
@@ -31,9 +31,9 @@ public record LUPDecomposition(double[][] l, double[][] u, int[] permutations) {
      * @return the identity matrix for the equation P*A = L*U to hold.
      */
     public double[][] getPermutatedIdentity() {
-        double[][] result = new double[permutations.length][permutations.length];
-        for (int row = 0; row < permutations.length; row++) {
-            result[row][permutations[row]] = 1.0d;
+        double[][] result = new double[p.length][p.length];
+        for (int row = 0; row < p.length; row++) {
+            result[row][p[row]] = 1.0d;
         }
         return result;
     }

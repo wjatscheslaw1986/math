@@ -189,8 +189,11 @@ public class MatrixCalcTest {
         assertTrue(Validation.isInvertibleByDeterminant(a));
         assertTrue(Validation.isInvertible(a));
         var lu = MatrixUtil.lupDecompose(a);
-        // Матрица имеет обратную тогда и только тогда, когда
         for (int i = 0; i < a.length; i++)
+            // Матрица имеет обратную тогда и только тогда,
+            // когда все диагональные элементы её U-матрицы
+            // из её LU-разложения с перестановками рядов
+            // не нулевые.
             assertTrue(lu.u()[i][i] > Math.abs(EPS));
         assertDoesNotThrow(() -> inverse(a));
         assertTrue(areEqual(inverse(a), a_inv));
