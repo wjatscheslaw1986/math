@@ -79,9 +79,9 @@ public final class Validation {
         if (isEmpty(matrix)) {
             return false;
         }
-        final int cols = matrix[0].length;
+        final int length = matrix[0].length;
         for (int i = 1; i < matrix.length; i++) {
-            if (matrix[i].length != cols)
+            if (matrix[i].length != length)
                 return false;
         }
         return true;
@@ -98,9 +98,9 @@ public final class Validation {
         if (isEmpty(matrix)) {
             return false;
         }
-        final int cols = matrix[0].length;
+        final int length = matrix[0].length;
         for (int i = 1; i < matrix.length; i++) {
-            if (matrix[i].length != cols)
+            if (matrix[i].length != length)
                 return false;
         }
         return true;
@@ -113,7 +113,10 @@ public final class Validation {
      * @return true if matrix is empty, false otherwise
      */
     public static boolean isEmpty(double[][] matrix) {
-        return matrix.length < 1 || matrix[0].length < 1;
+        if (matrix.length < 1) return true;
+        for (int i = 0; i < matrix.length; i++)
+            if (matrix[i].length > 0) return false;
+        return true;
     }
 
     /**
@@ -123,7 +126,10 @@ public final class Validation {
      * @return true if matrix is empty, false otherwise
      */
     public static boolean isEmpty(Term[][] matrix) {
-        return matrix.length < 1 || matrix[0].length < 1;
+        if (matrix.length < 1) return true;
+        for (int i = 0; i < matrix.length; i++)
+            if (matrix[i].length > 0) return false;
+        return true;
     }
 
     /**
@@ -145,20 +151,83 @@ public final class Validation {
      * @return true if the given matrix is degenerate, false otherwise
      */
     public static boolean isDegenerate(final double[][] matrix) {
-        return MatrixCalc.det(matrix) == .0d;
+        return Math.abs(MatrixCalc.det(matrix)) < 1e-10d;
     }
 
     /**
      * Checks if the given matrix is invertible.
      * <p>
-     *     A matrix is invertible only in case it is a square one, not degenerate and has a full rank.
+     *     A matrix is invertible only in case it is a square one, a not degenerate one (i.e. has a full rank).
+     * </p>
+     *
+     * @param matrix the given matrix
+     * @return true if the given matrix is degenerate, false otherwise
+     * @deprecated use LU decomposition based isInvertible() method instead
+     */
+    @Deprecated
+    public static boolean isInvertibleByDeterminant(final double[][] matrix) {
+        return isSquareMatrix(matrix) && Math.abs(MatrixCalc.det(matrix)) > MatrixUtil.EPS;
+    }
+
+    /**
+     * Checks if the given matrix is invertible.
+     * <p>
+     *     A matrix is invertible only in case
+     *     it is not degenerate (i.e. all pivots of the LU decomposition after partial pivoting are non-zero).
      * </p>
      *
      * @param matrix the given matrix
      * @return true if the given matrix is degenerate, false otherwise
      */
     public static boolean isInvertible(final double[][] matrix) {
-        return isSquareMatrix(matrix) && MatrixCalc.det(matrix) != .0d && rank(matrix) == matrix.length;
+        if (!isSquareMatrix(matrix)) {
+            return false;
+        }
+
+        // Make a copy so we don't modify the original
+        double[][] a = new double[matrix.length][matrix.length];
+        for (int i = 0; i < matrix.length; i++) {
+            System.arraycopy(matrix[i], 0, a[i], 0, matrix.length);
+        }
+
+        // Perform LU decomposition with partial pivoting
+        for (int col = 0; col < matrix.length; col++) {
+            // Pivot: find row with max absolute value in column k
+            int pivotRow = col;
+            double max = Math.abs(a[col][col]);
+            for (int i = col + 1; i < matrix.length; i++) {
+                double val = Math.abs(a[i][col]);
+                if (val > max) {
+                    max = val;
+                    pivotRow = i;
+                }
+            }
+
+            // If pivot is tiny, matrix is singular
+            if (max < MatrixUtil.EPS) {
+                return false;
+            }
+
+            // Swap rows if needed
+            if (pivotRow != col) {
+                double[] temp = a[col];
+                a[col] = a[pivotRow];
+                a[pivotRow] = temp;
+            }
+
+            gaussianEliminationForColumn(a, col);
+        }
+
+        return true; // All pivots were > EPSILON, so matrix is invertible
+    }
+
+    static void gaussianEliminationForColumn(double[][] a, int col) {
+        for (int row = col + 1; row < a.length; row++) {
+            a[row][col] /= a[col][col];
+            for (int col_ = col + 1; col_ < a.length; col_++) {
+                a[row][col_] -= a[row][col] * a[col][col_];
+            }
+        }
     }
 
     /**

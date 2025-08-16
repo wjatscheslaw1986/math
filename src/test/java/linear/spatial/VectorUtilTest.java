@@ -89,6 +89,17 @@ public class VectorUtilTest {
         var vector = Vector.of(1, -3);
         var expectedVector = Vector.of(7, -4);
         assertEquals(expectedVector, transformToBasis(vector, basis));
+
+        basis = new Vector[]{
+                Vector.of(1, 3, 2),
+                Vector.of(2, -2, -5),
+                Vector.of(-3, 0, 4)
+        };
+
+        vector = Vector.of(2, 1, 4);
+        expectedVector = Vector.of(-33, -50, -45);
+
+        assertEquals(expectedVector, transformToBasis(vector, basis));
     }
 
     @Test

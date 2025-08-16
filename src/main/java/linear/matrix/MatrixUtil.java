@@ -5,6 +5,7 @@ package linear.matrix;
 
 import algebra.Term;
 import approximation.RoundingUtil;
+import linear.matrix.exception.MatrixException;
 
 /**
  * A utility class for matrices.
@@ -13,10 +14,129 @@ import approximation.RoundingUtil;
  */
 public final class MatrixUtil {
 
-    public final static double EPS = 1e-8;
+    public final static double EPS = 1e-10;
 
     private MatrixUtil() {
         // static context only
+    }
+
+
+    /**
+     * <p>Naive LU decomposition (without pivoting)</p>
+     * Only use it for square, nonsingular matrices, with no zero elements on the diagonal.
+     * <br/>
+     * <h6>It will break if:</h6>
+     * <ul>
+     * <li>The matrix is singular or nearly singular (zero pivot).</li>
+     * <li>The matrix is not square.</li>
+     * </ul>
+     *
+     * @param matrix the given matrix
+     * @return the LU decomposition
+     */
+    public static LUDecomposition luDecompose(double[][] matrix) {
+        double[][] l = createIdentityForSize(matrix.length, matrix.length);
+        double[][] u = new  double[matrix.length][matrix.length];
+        for (int i = 0; i < matrix.length; i++)
+            System.arraycopy(matrix[i], 0, u[i], 0, matrix.length);
+        for (int col = 0; col < matrix.length; col++) {
+            double pivot = u[col][col];
+            for (int row = col + 1; row < matrix.length; row++) {
+                l[row][col] = u[row][col] / pivot;
+                for (int col_ = col; col_ < matrix.length; col_++) {
+                    u[row][col_] -= l[row][col] * u[col][col_];
+                }
+            }
+        }
+        MatrixUtil.eliminateEpsilon(l);
+        MatrixUtil.eliminateEpsilon(u);
+        return new LUDecomposition(l, u);
+    }
+
+    /**
+     * <p>LU decomposition (with pivoting)</p>
+     * For use only on square non-singular matrices.
+     *
+     * @param matrix the given matrix
+     * @return the LU decomposition with pivoting permutations
+     * @throws IllegalArgumentException in case when the given matrix is singular or nearly singular
+     */
+    public static LUPDecomposition lupDecompose(double[][] matrix) {
+        double[][] a = new double[matrix.length][matrix.length];
+        double[][] l = new double[matrix.length][matrix.length];
+        int[] p = new int[matrix.length];
+
+        for (int row = 0; row < matrix.length; row++) {
+            p[row] = row; // initial permutation of the identity matrix
+            System.arraycopy(matrix[row], 0, a[row], 0, matrix.length);
+        }
+        for (int col = 0; col < matrix.length; col++) {
+            l[col][col] = 1.0d;
+            // Find pivot row (max absolute value in column k)
+            int pivotRow = col;
+
+            double max = Math.abs(a[col][col]);
+            for (int row = col + 1; row < matrix.length; row++)
+                if (Math.abs(a[row][col]) > max) {
+                    max = Math.abs(a[row][col]);
+                    pivotRow = row;
+                }
+
+            if (Math.abs(max) < EPS)
+                throw new IllegalArgumentException("Matrix is singular or nearly singular");
+
+            // Swap rows in a
+            if (pivotRow != col) {
+                double[] tmp = a[col];
+                a[col] = a[pivotRow];
+                a[pivotRow] = tmp;
+
+                // Swap in permutation vector
+                int t = p[col];
+                p[col] = p[pivotRow];
+                p[pivotRow] = t;
+
+            }
+
+            Validation.gaussianEliminationForColumn(a, col);
+        }
+
+        // Extract L and U
+        double[][] u = new double[matrix.length][matrix.length];
+        for (int i = 0; i < matrix.length; i++)
+            for (int j = 0; j < matrix.length; j++)
+                if (i > j) {
+                    l[i][j] = a[i][j];
+                } else {
+                    u[i][j] = a[i][j];
+                }
+        MatrixUtil.eliminateEpsilon(l);
+        MatrixUtil.eliminateEpsilon(u);
+        return new LUPDecomposition(l, u, p);
+    }
+
+    /**
+     * Returns a square matrix whose diagonal elements are ones and the rest of its elements are zeroes.
+     *
+     * @param rows amount of rows and columns of the result square identity matrix
+     * @return the square identity matrix
+     */
+    public static double[][] createIdentityForSize(int rows) {
+        return createIdentityForSize(rows, rows);
+    }
+
+    /**
+     * Returns a matrix whose diagonal elements are ones and the rest of its elements are zeroes.
+     *
+     * @param rows amount of rows of the result matrix
+     * @param cols amount of columns of the result matrix
+     * @return the identity matrix
+     */
+    public static double[][] createIdentityForSize(int rows,  int cols) {
+        var result = new double[rows][cols];
+        for (int i = 0; i < rows; i++)
+            result[i][i] = 1;
+        return result;
     }
 
     /**

@@ -3,10 +3,15 @@
  */
 package linear.matrix;
 
+import linear.matrix.exception.MatrixException;
 import org.junit.jupiter.api.Test;
 
+import static approximation.RoundingUtil.roundToNDecimals;
 import static linear.matrix.MatrixCalc.areEqual;
+import static linear.matrix.MatrixCalc.det;
 import static linear.matrix.MatrixUtil.*;
+import static linear.matrix.Validation.isInvertible;
+import static linear.matrix.Validation.isInvertibleByDeterminant;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -186,5 +191,110 @@ public class MatrixUtilTest {
         assertTrue(MatrixCalc.areEqual(expectedResult3, substituteColumn(matrix, column, 2)));
         assertTrue(MatrixCalc.areEqual(expectedResult4, substituteColumn(matrix, column, 3)));
         assertTrue(MatrixCalc.areEqual(expectedResult5, substituteColumn(matrix, column, 4)));
+    }
+
+    @Test
+    void givenMatrix_whenLUDecompose_thenExpectedLU() throws MatrixException {
+        var given = new double[][]{
+                {2, 4, 3, 5},
+                {-4, -7, -5, -8},
+                {6, 8, 2, 9},
+                {4, 9, -2, -14}
+        };
+        var lu = MatrixUtil.luDecompose(given);
+
+        var expectedL = new double[][]{
+                {1.0d, .0d, .0d, .0d},
+                {-2.0d, 1.0d, .0d, .0d},
+                {3.0d, -4.0d, 1.0d, .0d},
+                {2.0d, 1.0d, 3.0d, 1.0d}
+        };
+
+        var expectedU = new double[][]{
+                {2.0d, 4.0d, 3.0d, 5.0d},
+                {.0d, 1.0d, 1.0d, 2.0d},
+                {.0d, .0d, -3.0d, 2.0d},
+                {.0d, .0d, .0d, -32.0d}
+        };
+
+        assertTrue(MatrixCalc.areEqual(expectedL, lu.l()));
+        assertTrue(MatrixCalc.areEqual(expectedU, lu.u()));
+        assertTrue(MatrixCalc.areEqual(given, MatrixCalc.multiply(lu.l(), lu.u())));
+
+        given = new double[][]{
+                {0, 1},
+                {1, 0}
+        };
+
+        lu = MatrixUtil.luDecompose(given);
+        assertTrue(isInvertible(given));
+        assertTrue(isInvertibleByDeterminant(given));
+
+//        System.out.println(MatrixUtil.print(lu.l()));
+//        System.out.println(MatrixUtil.print(lu.u()));
+
+        given = new double[][]{
+                {2, 4, 8},
+                {4, 8, 16},
+                {1, 1, 1}
+        };
+
+        lu = MatrixUtil.luDecompose(given);
+        assertFalse(isInvertible(given));
+        assertFalse(isInvertibleByDeterminant(given));
+
+//        System.out.println(MatrixUtil.print(lu.l()));
+//        System.out.println(MatrixUtil.print(lu.u()));
+
+        given = new double[][]{
+                {2, 4, 3, 5},
+                {-4, -7, -5, -8},
+                {6, 8, 2, 9},
+                {4, 9, -2, -14}
+        };
+        lu = MatrixUtil.luDecompose(given);
+//        System.out.println(MatrixUtil.print(lu.l()));
+//        System.out.println(MatrixUtil.print(lu.u()));
+        assertTrue(MatrixCalc.areEqual(given, MatrixCalc.multiply(lu.l(), lu.u())));
+        assertTrue(MatrixCalc.areEqual(MatrixCalc.multiply(MatrixUtil.createIdentityForSize(4), given), MatrixCalc.multiply(lu.l(), lu.u())));
+    }
+
+    @Test
+    void givenMatrix_whenLUPDecompose_thenExpectedLUP() throws MatrixException {
+        var given = new double[][]{
+                {2, 4, 3, 5},
+                {-4, -7, -5, -8},
+                {6, 8, 2, 9},
+                {4, 9, -2, -14}
+        };
+        var lup = MatrixUtil.lupDecompose(given);
+
+        assertTrue(MatrixCalc.areEqual(
+                MatrixCalc.multiply(lup.getPermutatedIdentity(), given),
+                roundToNDecimals(MatrixCalc.multiply(lup.l(), lup.u()), 10)));
+
+        // Check if holds det(A)=det(P)⋅det(L)⋅det(U)
+        assertEquals(det(given), det(lup.getPermutatedIdentity()) * det(lup.l()) * det(lup.u()), 1e-10);
+
+        given = new double[][]{
+                {0, 1},
+                {1, 0}
+        };
+
+        lup = MatrixUtil.lupDecompose(given);
+        assertEquals(-1.0d, MatrixCalc.det(given));
+        assertTrue(MatrixCalc.areEqual(
+                MatrixCalc.multiply(lup.getPermutatedIdentity(), given),
+                roundToNDecimals(MatrixCalc.multiply(lup.l(), lup.u()), 10)));
+
+        given = new double[][]{
+                {2, 4, 8},
+                {4, 8, 16},
+                {1, 1, 1}
+        };
+
+        double[][] finalGiven = given;
+        assertEquals(.0d, MatrixCalc.det(given));
+        assertThrows(IllegalArgumentException.class, () -> MatrixUtil.lupDecompose(finalGiven));
     }
 }

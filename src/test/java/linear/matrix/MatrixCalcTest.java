@@ -186,13 +186,26 @@ public class MatrixCalcTest {
         final double[][] a_inv = new double[][]{{-.5d, -2.0d}, {1.0d, 3.0d}};
         final double[][] c_inv = new double[][]{{2.0d, -1.0d, -1.0d}, {3.0d, -1.0d, -1.5d}, {-1.5d, 1.0d, 1.0d}};
 
-        Assertions.assertTrue(Validation.isInvertible(a));
-        Assertions.assertDoesNotThrow(() -> inverse(a));
-        Assertions.assertTrue(areEqual(inverse(a), a_inv));
-        Assertions.assertFalse(Validation.isInvertible(b));
-        Assertions.assertThrows(IllegalArgumentException.class, () -> inverse(b));
-        Assertions.assertDoesNotThrow(() -> inverse(c));
-        Assertions.assertTrue(areEqual(inverse(c), c_inv));
+        assertTrue(Validation.isInvertibleByDeterminant(a));
+        assertTrue(Validation.isInvertible(a));
+        var lu = MatrixUtil.lupDecompose(a);
+        // Матрица имеет обратную тогда и только тогда, когда
+        for (int i = 0; i < a.length; i++)
+            assertTrue(lu.u()[i][i] > Math.abs(EPS));
+        assertDoesNotThrow(() -> inverse(a));
+        assertTrue(areEqual(inverse(a), a_inv));
+        assertFalse(Validation.isInvertibleByDeterminant(b));
+        assertFalse(Validation.isInvertible(b));
+        assertThrows(IllegalArgumentException.class, () -> MatrixUtil.lupDecompose(b));
+        assertTrue(lu.u()[1][1] > Math.abs(EPS));
+        assertThrows(IllegalArgumentException.class, () -> inverse(b));
+        assertTrue(Validation.isInvertibleByDeterminant(c));
+        assertTrue(Validation.isInvertible(c));
+        lu = MatrixUtil.lupDecompose(c);
+        for (int i = 0; i < a.length; i++)
+            assertTrue(lu.u()[i][i] > Math.abs(EPS));
+        assertDoesNotThrow(() -> inverse(c));
+        assertTrue(areEqual(inverse(c), c_inv));
     }
 
     /**
@@ -201,13 +214,15 @@ public class MatrixCalcTest {
      * Геометрия" - 2006
      */
     @Test
-    public void givenMatrices_whenIsInvertible_thenTrueAndDoesNotThrow() {
+    public void givenMatrices_whenIsInvertible_thenTrueAndDoesNotThrow() throws MatrixException {
         final double[][] a = new double[][]{{6.0d, 4.0d}, {-2.0d, -1.0d}};
         final double[][] b = new double[][]{{3.0f, 4.0f}, {9.0f, 12.0f}};
         final double[][] c = new double[][]{{2.0d, 0.0d, 2.0d}, {-3.0d, 2.0d, 0.0d}, {6.0d, -2.0d, 4.0d}};
 
+        Assertions.assertTrue(Validation.isInvertibleByDeterminant(a));
         Assertions.assertTrue(Validation.isInvertible(a));
         Assertions.assertDoesNotThrow(() -> inverse(a));
+        Assertions.assertFalse(Validation.isInvertibleByDeterminant(b));
         Assertions.assertFalse(Validation.isInvertible(b));
         Assertions.assertThrows(IllegalArgumentException.class, () -> inverse(b));
         Assertions.assertDoesNotThrow(() -> inverse(c));

@@ -6,11 +6,8 @@ package linear.spatial;
 import linear.equation.CramerLinearEquationSystem;
 import linear.equation.LinearEquationSystemUtil;
 import linear.matrix.MatrixCalc;
-import linear.matrix.exception.MatrixException;
 
 import java.util.Objects;
-
-import static linear.equation.SolutionsCount.SINGLE;
 
 /**
  * A utility class for vectors.
