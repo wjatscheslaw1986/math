@@ -53,12 +53,20 @@ public final class RoundingUtil {
     }
 
     /**
+     * This method traverses the given matrix and changes every -0.0d to 0.0d in the given matrix in place.
+     *
+     * @param matrix the given matrix
+     */
+    public static void cleanDoubleMatrixOfNegativeZeros(final double[][] matrix) {
+        for (double[] doubles : matrix) cleanDoubleArrayOfNegativeZeros(doubles);
+    }
+
+    /**
      * This method traverses the given array and changes every -0.0d to 0.0d in the given array in place.
      *
      * @param array the given array
      */
     public static void cleanDoubleArrayOfNegativeZeros(final Double[] array) {
-        if (Objects.isNull(array)) return;
         for (int i = 0; i < array.length; i++)
             if (!Objects.isNull(array[i]) && array[i] == -0.0d) array[i] = 0.0d;
     }
@@ -69,7 +77,6 @@ public final class RoundingUtil {
      * @param array the given array
      */
     public static void cleanDoubleArrayOfNegativeZeros(final double[] array) {
-        if (Objects.isNull(array)) return;
         for (int i = 0; i < array.length; i++)
             if (array[i] == -0.0d) array[i] = 0.0d;
     }

@@ -3,6 +3,8 @@
  */
 package linear.spatial;
 
+import jdk.incubator.vector.IntVector;
+import jdk.incubator.vector.VectorSpecies;
 import linear.equation.CramerLinearEquationSystem;
 import linear.equation.LinearEquationSystemUtil;
 import linear.matrix.MatrixCalc;

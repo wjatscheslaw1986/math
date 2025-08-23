@@ -2,7 +2,8 @@
  * Viacheslav Mikhailov (taleskeeper@yandex.com) © 2025.
  */
 module math {
-	exports algebra;
+    requires jdk.incubator.vector;
+    exports algebra;
     exports combinatorics;
 	exports approximation;
 	exports statistics;

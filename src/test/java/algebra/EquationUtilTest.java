@@ -333,7 +333,8 @@ public class EquationUtilTest {
         var expected = Equation.of(List.of(
                 Term.builder().coefficient(-1.0d).letter("x").power(3.0d).build(),
                 Term.builder().coefficient(7).letter("x").power(2.0d).build(),
-                Term.builder().coefficient(-10).letter("x").power(1.0d).build()
+                Term.builder().coefficient(-10).letter("x").power(1.0d).build(),
+                Term.builder().coefficient(0).letter("x").power(.0d).build()
         ), Term.asRealConstant(0));
 
         assertEquals(expected, toCharacteristicPolynomial(matrix));

@@ -5,6 +5,7 @@ package linear.matrix;
 
 import algebra.Term;
 import algebra.TermUtil;
+import approximation.RoundingUtil;
 import combinatorics.CombinationsGenerator;
 import linear.matrix.exception.MatrixException;
 import linear.spatial.Vector;
@@ -88,8 +89,8 @@ public final class MatrixCalc {
         for (int rowNumLeft = 0; rowNumLeft < matrixLeft.length; rowNumLeft++) {
             for (int colNumRight = 0; colNumRight < matrixRight[0].length; colNumRight++) {
                 for (int colNumLeft = 0; colNumLeft < matrixLeft[0].length; colNumLeft++) {
-                    result[rowNumLeft][colNumRight] = result[rowNumLeft][colNumRight]
-                            + matrixLeft[rowNumLeft][colNumLeft] * matrixRight[colNumLeft][colNumRight];
+                    result[rowNumLeft][colNumRight] = RoundingUtil.roundToNDecimals(result[rowNumLeft][colNumRight]
+                            + matrixLeft[rowNumLeft][colNumLeft] * matrixRight[colNumLeft][colNumRight], 11);
                 }
             }
         }

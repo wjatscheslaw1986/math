@@ -201,15 +201,15 @@ public class EquationUtil {
         if (!isSquareMatrix(matrix))
             throw new IllegalArgumentException("A non-square matrix has no determinant.");
         if (matrix.length < 2)
-            return removeZeroTerms(Equation.of(List.of(Term.asRealConstant(matrix[0][0]), Term.asVariableX(-1.0d)), Term.asRealConstant(.0d)));
+            return Equation.of(List.of(Term.asRealConstant(matrix[0][0]), Term.asVariableX(-1.0d)), Term.asRealConstant(.0d));
         if (matrix.length == 2)
-            return removeZeroTerms(Equation.of(distinct(Stream.concat(
+            return Equation.of(distinct(Stream.concat(
                     Terms.of(List.of(Term.asRealConstant(matrix[0][0]), Term.asVariableX(-1.0d)))
                             .multiply(Terms.of(List.of(Term.asRealConstant(matrix[1][1]), Term.asVariableX(-1.0d)))).asList().stream(),
                     Stream.of(Term.asRealConstant(-1.0d).multiply(Term.asRealConstant(matrix[0][1]).multiply(
-                            Term.asRealConstant(matrix[1][0]))))).sorted().toList()), Term.asRealConstant(.0d)));
+                            Term.asRealConstant(matrix[1][0]))))).sorted().toList()), Term.asRealConstant(.0d));
         if (matrix.length == 3)
-            return removeZeroTerms(Equation.of(distinct(Stream.of(
+            return Equation.of(distinct(Stream.of(
                     Terms.of(List.of(Term.asRealConstant(matrix[0][0]), Term.asVariableX(-1.0d)))
                             .multiply(Terms.of(List.of(Term.asRealConstant(matrix[1][1]), Term.asVariableX(-1.0d))))
                             .multiply(Terms.of(List.of(Term.asRealConstant(matrix[2][2]), Term.asVariableX(-1.0d)))).asList(),
@@ -231,7 +231,7 @@ public class EquationUtil {
                             .multiply(Terms.of(List.of(Term.asRealConstant(matrix[0][0]), Term.asVariableX(-1.0d))).multiply(
                                     Term.asRealConstant(matrix[2][1])).multiply(
                                     Term.asRealConstant(matrix[1][2]))))).asList()
-            ).flatMap(List::stream).sorted().toList()), Term.asRealConstant(.0d)));
+            ).flatMap(List::stream).sorted().toList()), Term.asRealConstant(.0d));
         Terms[][] diagonalPolynomnialMatrix = doubleArrayToTermsArrayForCharacteristicPolynomial(matrix);
         Terms sumOfSums = Terms.of(new ArrayList<>());
         for (int col = 0; col < diagonalPolynomnialMatrix[0].length; col++) {
@@ -242,6 +242,6 @@ public class EquationUtil {
                 if (col % 2 != 0) mmbrz = mmbrz.multiply(Term.asRealConstant(-1.0d));
             sumOfSums = (Terms) sumOfSums.add(mmbrz);
             }
-        return removeZeroTerms(Equation.of(distinct(sumOfSums.asList().stream().sorted().toList()), Term.asRealConstant(.0d)));
+        return Equation.of(distinct(sumOfSums.asList().stream().sorted().toList()), Term.asRealConstant(.0d));
     }
 }

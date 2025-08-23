@@ -3,6 +3,7 @@
  */
 package linear.matrix;
 
+import approximation.RoundingUtil;
 import linear.MatrixGenerator;
 import linear.matrix.exception.MatrixException;
 import linear.spatial.Vector;
@@ -144,7 +145,9 @@ public class MatrixCalcTest {
         int i = 7;
         do {
             var matrix1 = MatrixGenerator.generateRandomIntMatrix(i, i);
+            RoundingUtil.cleanDoubleMatrixOfNegativeZeros(matrix1);
             var matrix2 = MatrixGenerator.generateRandomIntMatrix(i, i);
+            RoundingUtil.cleanDoubleMatrixOfNegativeZeros(matrix2);
             Assertions.assertEquals(det(matrix1) * det(matrix2), det(multiply(matrix1, matrix2)));
         } while (--i > 0);
     }
