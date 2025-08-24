@@ -338,18 +338,22 @@ public final class MatrixUtil {
      */
     public static double[][] excludeColumnAndRow(double[][] matrix, int rowNumber, int columnNumber) {
         double[][] submatrix = new double[matrix.length - 1][matrix[0].length - 1];
-        int submatrixRow = 1, submatrixCol = 1;
-        for (int rowNum = 1; rowNum <= matrix.length; rowNum++) {
-            if (rowNum == rowNumber)
+        for (int row = 0, submatrixRow = 0; row < matrix.length; ) {
+            if (row + 1 == rowNumber) {
+                row++;
                 continue;
-            for (int colNum = 1; colNum <= matrix[0].length; colNum++) {
-                if (colNum == columnNumber)
-                    continue;
-                submatrix[submatrixRow - 1][submatrixCol - 1] = matrix[rowNum - 1][colNum - 1];
-                submatrixCol++;
             }
-            submatrixCol = 1;
+            for (int col = 0, submatrixCol = 0; col < matrix[0].length;) {
+                if (col + 1 == columnNumber) {
+                    col++;
+                    continue;
+                }
+                submatrix[submatrixRow][submatrixCol] = matrix[row][col];
+                submatrixCol++;
+                col++;
+            }
             submatrixRow++;
+            row++;
         }
         return submatrix;
     }

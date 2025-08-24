@@ -13,14 +13,17 @@ import jdk.incubator.vector.VectorSpecies;
 import linear.equation.LinearEquationSystemUtil;
 import linear.equation.Solution;
 import linear.matrix.MatrixCalc;
+import linear.matrix.MatrixUtil;
 import linear.matrix.exception.MatrixException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static algebra.EquationUtil.distinct;
 import static linear.equation.LinearEquationSystemUtil.convertLinearEquationSystem;
+import static linear.spatial.VectorUtil.toMatrix;
 
 /**
  * A utility class for calculations of vectors.
@@ -91,6 +94,27 @@ public final class VectorCalc {
      */
     public static List<Complex> eigenvalues(final double[][] matrix) {
         return EquationUtil.solvePolynomial(EquationUtil.toCharacteristicPolynomial(matrix)).roots();
+    }
+
+    /**
+     * The method multiplies the given several vectors (the cross product).
+     * The method does not modify the given vectors.
+     *
+     * @param vector1 - the first given vector
+     * @param vectors - the other given vectors
+     * @return a new vector which is perpendicular to the given vectors (by the right hand rule)
+     */
+    public static double[] cross(double[] vector1, double[]... vectors) {
+        if (vector1.length != vectors.length + 2)
+            throw new IllegalArgumentException("Cross product needs a vector per dimension");
+        double[] result = new double[vector1.length];
+        for (int i = 0; i < vector1.length; i++)
+            result[i] = (i % 2 == 0 ? 1.0d : -1.0d) * MatrixCalc.det(
+                    MatrixUtil.excludeColumnAndRow(
+                            toMatrix(false, Stream.concat(
+                                    Stream.of(new double[vector1.length], vector1),
+                                    Arrays.stream(vectors)).map(Vector::of).toArray(Vector[]::new)), 1, i + 1));
+        return result;
     }
 
     /**

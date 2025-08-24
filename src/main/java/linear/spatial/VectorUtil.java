@@ -3,8 +3,6 @@
  */
 package linear.spatial;
 
-import jdk.incubator.vector.IntVector;
-import jdk.incubator.vector.VectorSpecies;
 import linear.equation.CramerLinearEquationSystem;
 import linear.equation.LinearEquationSystemUtil;
 import linear.matrix.MatrixCalc;
@@ -55,15 +53,19 @@ public final class VectorUtil {
      * Convert Vector[] to double[][] datatype.
      *
      * @param basis the given {@link Vector} array
+     * @param vertical if true, then the given vectors are columns in the resulting matrix. If false, then the given vectors are rows.
      * @return the double precision matrix
      */
-    public static double[][] toMatrix(final Vector... basis) {
+    public static double[][] toMatrix(boolean vertical, final Vector... basis) {
         if (basis.length != basis[0].coordinates().length)
             throw new IllegalArgumentException("Vector length must be of same size as basis.");
         double[][] matrix = new double[basis[0].coordinates().length][basis.length];
         for (int i = 0; i < basis.length; i++) {
             for (int j = 0; j < matrix.length; j++) {
-                matrix[i][j] = basis[j].coordinates()[i];
+                if (vertical)
+                    matrix[i][j] = basis[j].coordinates()[i];
+                else
+                    matrix[i][j] = basis[i].coordinates()[j];
             }
         }
         return matrix;
@@ -76,7 +78,7 @@ public final class VectorUtil {
      * @return true if the given vectors are mutually independent, false otherwise
      */
     public static boolean isBasis(Vector... vectors) {
-        return MatrixCalc.det(toMatrix(vectors)) != .0d;
+        return MatrixCalc.det(toMatrix(true, vectors)) != .0d;
     }
 
     /**

@@ -11,7 +11,6 @@ import java.util.List;
 
 import static linear.equation.SolutionsCount.INFINITE;
 import static linear.equation.SolutionsCount.SINGLE;
-import static linear.matrix.Validation.areSimilar;
 import static linear.spatial.VectorUtil.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -189,7 +188,7 @@ public class VectorUtilTest {
         System.out.println(MatrixUtil.print(MatrixCalc.multiply(matrix, MatrixCalc.multiply(matrix, MatrixCalc.multiply(matrix, MatrixCalc.multiply(matrix, MatrixCalc.multiply(matrix, matrix)))))));
 
         var mult2 = MatrixCalc.multiply(
-                VectorUtil.toMatrix(eigenvectors.getFirst(), eigenvectors.getLast()),
+                VectorUtil.toMatrix(true, eigenvectors.getFirst(), eigenvectors.getLast()),
                 matrix);
 
         System.out.println(MatrixUtil.print(mult2));

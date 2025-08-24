@@ -314,7 +314,8 @@ public class EquationUtilTest {
 
         var expected = Equation.of(List.of(
                 Term.builder().coefficient(1.0d).letter("x").power(2.0d).build(),
-                Term.builder().coefficient(-1.0d).letter("x").power(1.0d).build()
+                Term.builder().coefficient(-1.0d).letter("x").power(1.0d).build(),
+                Term.builder().coefficient(.0d).letter("x").power(.0d).build()
         ), Term.asRealConstant(.0d));
 
         var result = toCharacteristicPolynomial(matrix);

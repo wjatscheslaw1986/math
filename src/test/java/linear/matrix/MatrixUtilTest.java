@@ -297,4 +297,60 @@ public class MatrixUtilTest {
         assertEquals(.0d, MatrixCalc.det(given));
         assertThrows(IllegalArgumentException.class, () -> MatrixUtil.lupDecompose(finalGiven));
     }
+
+    @Test
+    void givenMatrix_whenExcludeColumnAndRow_thenExpectedMatrix() {
+        var given = new double[][]{
+                {2, 4, 8},
+                {4, 8, 16},
+                {1, 1, 1}
+        };
+
+        var expectedExcluded_1_1 = new double[][]{
+                {8, 16},
+                {1, 1}
+        };
+        var expectedExcluded_1_2 = new double[][]{
+                {4, 16},
+                {1, 1}
+        };
+        var expectedExcluded_1_3 = new double[][]{
+                {4, 8},
+                {1, 1}
+        };
+        var expectedExcluded_2_1 = new double[][]{
+                {4, 8},
+                {1, 1}
+        };
+        var expectedExcluded_2_2 = new double[][]{
+                {2, 8},
+                {1, 1}
+        };
+        var expectedExcluded_2_3 = new double[][]{
+                {2, 4},
+                {1, 1}
+        };
+        var expectedExcluded_3_1 = new double[][]{
+                {4, 8},
+                {8, 16}
+        };
+        var expectedExcluded_3_2 = new double[][]{
+                {2, 8},
+                {4, 16}
+        };
+        var expectedExcluded_3_3 = new double[][]{
+                {2, 4},
+                {4, 8}
+        };
+
+        assertTrue(areEqual(expectedExcluded_1_1, excludeColumnAndRow(given, 1, 1)));
+        assertTrue(areEqual(expectedExcluded_1_2, excludeColumnAndRow(given, 1, 2)));
+        assertTrue(areEqual(expectedExcluded_1_3, excludeColumnAndRow(given, 1, 3)));
+        assertTrue(areEqual(expectedExcluded_2_1, excludeColumnAndRow(given, 2, 1)));
+        assertTrue(areEqual(expectedExcluded_2_2, excludeColumnAndRow(given, 2, 2)));
+        assertTrue(areEqual(expectedExcluded_2_3, excludeColumnAndRow(given, 2, 3)));
+        assertTrue(areEqual(expectedExcluded_3_1, excludeColumnAndRow(given, 3, 1)));
+        assertTrue(areEqual(expectedExcluded_3_2, excludeColumnAndRow(given, 3, 2)));
+        assertTrue(areEqual(expectedExcluded_3_3, excludeColumnAndRow(given, 3, 3)));
+    }
 }

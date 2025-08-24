@@ -4,6 +4,8 @@ import linear.matrix.MatrixCalc;
 import linear.matrix.exception.MatrixException;
 import org.junit.jupiter.api.Test;
 
+import static linear.spatial.VectorCalc.dot;
+import static linear.spatial.VectorCalc.length;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -20,7 +22,7 @@ public class VectorCalcTest {
 
         double expectedLength = 3;
 
-        assertEquals(expectedLength, VectorCalc.length(endPointCoordinates));
+        assertEquals(expectedLength, length(endPointCoordinates));
         assertEquals(expectedLength, VectorCalc.lengthUsingVectorAPI(endPointCoordinates));
         assertEquals(expectedLength, VectorCalc.lengthUsingVectorAPINoMasking(endPointCoordinates));
     }
@@ -32,7 +34,7 @@ public class VectorCalcTest {
 
         double expectedLength = 3;
 
-        assertEquals(expectedLength, VectorCalc.length(startPointCoordinates, endPointCoordinates));
+        assertEquals(expectedLength, length(startPointCoordinates, endPointCoordinates));
         assertEquals(expectedLength, VectorCalc.lengthUsingVectorAPI(startPointCoordinates, endPointCoordinates));
         assertEquals(expectedLength, VectorCalc.lengthUsingVectorAPINoMasking(startPointCoordinates, endPointCoordinates));
     }
@@ -55,6 +57,24 @@ public class VectorCalcTest {
         assertArrayEquals(expectedVector, VectorCalc.multiply(vector, realNumber));
         assertArrayEquals(expectedVector, VectorCalc.multiplyUsingVectorAPINoMasking(vector, realNumber));
         assertArrayEquals(expectedVector, VectorCalc.multiplyUsingVectorAPI(vector, realNumber));
+    }
+
+    @Test
+    void givenTwoVectors_whenCrossProduct_thenExpectedVector() {
+        var givenVector1 = Vector.of(1, -2, 3);
+        var givenVector2 = Vector.of(3, 1, -4);
+        var expectedVector = Vector.of(5, 13, 7);
+        assertArrayEquals(expectedVector.coordinates(), VectorCalc.cross(givenVector1.coordinates(), givenVector2.coordinates()));
+        // The length of the cross product vector must be numerically equal to the square of the plane
+        // enclosed by the multipliers.
+        // The area of the plane enclosed by the multiplier vectors `a` and `b` is calculated as |a| * |b| * sin(a^b).
+        // The reduction formula: sin(a^b) = (+/-Math.sqrt(1 - cos(a^b)*cos(a^b)))
+        // cos(a^b) = dot product of vectors `a` and `b` divided by the product of their cartesian lengths.
+        var length1ByLength2 = length(givenVector1.coordinates())
+                * length(givenVector2.coordinates());
+        var cos = dot(givenVector1.coordinates(), givenVector2.coordinates()) / length1ByLength2;
+        var sin = Math.sqrt(1 - Math.pow(cos, 2));
+        assertEquals(length(expectedVector.coordinates()),length1ByLength2 * sin);
     }
 
     /**
@@ -114,7 +134,7 @@ public class VectorCalcTest {
         var givenVector1 = Vector.of(3, -4, 1);
         var givenVector2 = Vector.of(2, 0, 4);
         double expectedRealNumber = 10;
-        assertEquals(expectedRealNumber, VectorCalc.dot(givenVector1.coordinates(), givenVector2.coordinates()));
+        assertEquals(expectedRealNumber, dot(givenVector1.coordinates(), givenVector2.coordinates()));
         assertEquals(expectedRealNumber, VectorCalc.dotUsingVectorAPINoMasking(givenVector1.coordinates(), givenVector2.coordinates()));
         assertEquals(expectedRealNumber, VectorCalc.dotUsingVectorAPI(givenVector1.coordinates(), givenVector2.coordinates()));
     }
