@@ -56,9 +56,9 @@ public final class VectorCalc {
      * @param transformationMatrix the given linear transformation
      * @return list of eigenvectors
      */
-    public static List<Vector> eigenvectors(final double[][] transformationMatrix) throws MatrixException {
+    public static List<Eigenvector> eigenvectors(final double[][] transformationMatrix) throws MatrixException {
         var eigenvalues = eigenvalues(transformationMatrix);
-        List<Vector> eigenvectors = new ArrayList<>();
+        List<Eigenvector> eigenvectors = new ArrayList<>();
         for (var eigenvalue : eigenvalues) {
             List<List<Term>> linearEquationSystem = new ArrayList<>();
             for (int j = 0; j < transformationMatrix.length; j++) {
@@ -80,7 +80,7 @@ public final class VectorCalc {
                 linearEquationSystem.add(distinct(linearEquationTerms));
             }
             Solution coords = LinearEquationSystemUtil.resolveUsingJordanGaussMethod(convertLinearEquationSystem(linearEquationSystem));
-            coords.basis().forEach(basisVector -> eigenvectors.add(Vector.of(basisVector)));
+            coords.basis().forEach(basisVector -> eigenvectors.add(Eigenvector.of(eigenvalue.real(), Vector.of(basisVector))));
         }
         return eigenvectors;
     }
@@ -245,20 +245,20 @@ public final class VectorCalc {
     }
 
     /**
-     * This method calculates the length of the given vector.
+     * This method calculates a norm of the given vector.
      *
      * @param vector the given vector coordinates
-     * @return the length of the given vector
+     * @return the norm of the given vector
      */
     public static double length(double[] vector) {
         return Math.sqrt(Arrays.stream(vector).map(d -> d*d).sum());
     }
 
     /**
-     * This method calculates the length of the given vector.
+     * This method calculates a norm of the given vector.
      *
      * @param vector the given vector coordinates
-     * @return the length of the given vector
+     * @return the norm of the given vector
      */
     public static double lengthUsingVectorAPINoMasking(double[] vector) {
         double sumOfSquares = .0d;
@@ -276,10 +276,10 @@ public final class VectorCalc {
     }
 
     /**
-     * This method calculates the length of the given vector.
+     * This method calculates a norm of the given vector.
      *
      * @param vector the given vector coordinates
-     * @return the length of the given vector
+     * @return the norm of the given vector
      */
     public static double lengthUsingVectorAPI(double[] vector) {
         double sumOfSquares = .0d;
@@ -334,8 +334,8 @@ public final class VectorCalc {
      *
      * @param startPoint vector start point coordinates
      * @param endPoint vector end point coordinates
-     * @return an array of <i>cos</i> for each angle between the corresponding axis and the
-     * given vector, in radians
+     * @return an array of <i>cos</i> for each angle between the corresponding basis vector and the
+     * given vector
      */
     public static double[] angles(double[] startPoint, double[] endPoint) {
         if (startPoint.length != endPoint.length)
@@ -346,6 +346,17 @@ public final class VectorCalc {
         for (int i = 0; i < startPoint.length; i++)
             angles[i] = vectorFromZeroCoordinates[i] / length;
         return angles;
+    }
+
+    /**
+     * Calculates and returns a <i>cos</i> of the angle between the two given vectors.
+     *
+     * @param vector1 the first vector
+     * @param vector2 the second vector
+     * @return the <i>cos</i> value of the angle between the two vectors
+     */
+    public static double angle(double[] vector1, double[] vector2) {
+        return dot(vector1, vector2) / (length(vector1) * length(vector2));
     }
 
     /**

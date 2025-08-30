@@ -7,6 +7,7 @@ import linear.equation.CramerLinearEquationSystem;
 import linear.equation.LinearEquationSystemUtil;
 import linear.matrix.MatrixCalc;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -50,7 +51,7 @@ public final class VectorUtil {
     }
 
     /**
-     * Convert Vector[] to double[][] datatype.
+     * Converts Vector[] to double[][] datatype.
      *
      * @param basis the given {@link Vector} array
      * @param vertical if true, then the given vectors are columns in the resulting matrix. If false, then the given vectors are rows.
@@ -68,6 +69,31 @@ public final class VectorUtil {
                     matrix[i][j] = basis[i].coordinates()[j];
             }
         }
+        return matrix;
+    }
+
+    /**
+     * Converts Eigenvector[] to double[][] datatype.
+     *
+     * @param basis the given {@link Eigenvector} array
+     * @param vertical if true, then the given vectors are columns in the resulting matrix. If false, then the given vectors are rows.
+     * @return the double precision matrix
+     */
+    public static double[][] toMatrix(boolean vertical, final Eigenvector... basis) {
+        return toMatrix(vertical, Arrays.stream(basis).map(Eigenvector::eigenvector).toArray(Vector[]::new));
+    }
+
+    /**
+     * Returns a diagonal matrix given the diagonal as a double[].
+     * Converts double[] to double[][] datatype.
+     *
+     * @param diagonal the given vector; to be used as the diagonal of the result matrix
+     * @return the diagonal matrix
+     */
+    public static double[][] toDiagonalMatrix(final double[] diagonal) {
+        double[][] matrix = new double[diagonal.length][diagonal.length];
+        for (int i = 0; i < diagonal.length; i++)
+            matrix[i][i] = diagonal[i];
         return matrix;
     }
 

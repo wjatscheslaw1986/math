@@ -40,12 +40,19 @@ public class VectorCalcTest {
     }
 
     @Test
-    void givenStartEndPoints_whenAngles_thenExpectedCosValuesInRadians() {
+    void givenStartEndPoints_whenAngles_thenExpectedCosValues() {
         double[] startPointCoordinates = new double[]{3, -2, 5};
         double[] endPointCoordinates = new double[]{1, 0, 6};
-        double[] expectedAnglesInRadians = new double[]{-2d/3d, 2d/3d, 1d/3d};
+        double[] expectedCosValues = new double[]{-2d/3d, 2d/3d, 1d/3d};
+        assertArrayEquals(expectedCosValues, VectorCalc.angles(startPointCoordinates, endPointCoordinates));
+    }
 
-        assertArrayEquals(expectedAnglesInRadians, VectorCalc.angles(startPointCoordinates, endPointCoordinates));
+    @Test
+    void givenTwoVectors_whenAngle_thenExpectedCosValue() {
+        var vector1 = new double[]{1, 0, 1, 0};
+        var vector2 = new double[]{1, 1, 1, 1};
+        double expectedCosOfTheAngleBetweenVectors = 1.0d / Math.sqrt(2);
+        assertEquals(expectedCosOfTheAngleBetweenVectors,  VectorCalc.angle(vector1, vector2));
     }
 
     @Test

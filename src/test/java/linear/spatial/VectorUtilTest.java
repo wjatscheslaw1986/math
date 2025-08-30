@@ -1,5 +1,6 @@
 package linear.spatial;
 
+import algebra.Complex;
 import approximation.RoundingUtil;
 import linear.equation.LinearEquationSystemUtil;
 import linear.matrix.MatrixCalc;
@@ -112,7 +113,7 @@ public class VectorUtilTest {
         var eigenvalues = VectorCalc.eigenvalues(matrix);
         assertEquals(1.0d, eigenvalues.get(0).real());
         assertEquals(-2.0d, eigenvalues.get(1).real());
-        List<Vector> eigenvectors = VectorCalc.eigenvectors(matrix);
+        List<Eigenvector> eigenvectors = VectorCalc.eigenvectors(matrix);
 
         matrix = new double[][]{
                 {0, -4, -4},
@@ -132,9 +133,9 @@ public class VectorUtilTest {
                 {6, 8}
         };
 
-        List<Vector> eigenvectors = VectorCalc.eigenvectors(matrix);
-        assertEquals(Vector.of(2.0d, 1.0d), eigenvectors.getFirst());
-        assertEquals(Vector.of(-.5d, 1.0d), eigenvectors.getLast());
+        List<Eigenvector> eigenvectors = VectorCalc.eigenvectors(matrix);
+        assertEquals(Vector.of(2.0d, 1.0d), eigenvectors.getFirst().eigenvector());
+        assertEquals(Vector.of(-.5d, 1.0d), eigenvectors.getLast().eigenvector());
 
         matrix = new double[][] {
                 {1, -7, -1},
@@ -149,30 +150,32 @@ public class VectorUtilTest {
 
         eigenvectors = VectorCalc.eigenvectors(matrix);
 
-        var eigenbasis = new double[][] {
-                {-0.333333333333, -0.333333333333, 1.0},
-                {-0.4, -0.2, 1.0},
-                {-1.0d, .0d, 1.0d},
-        };
-
-//        eigenbasis = VectorUtil.toMatrix(eigenvectors.toArray(new Vector[0]));
-
-        eigenbasis = new double[][] {
-                {1.0d, 2.0d, 1.0},
-                {2.0d, 1.0d, 1.0},
-                {1.0d, 3.0d, 1.0d},
-        };
-
-        var similarMatrix = new double[][] {
+        var expectedTransformationMatrixInEigenvectorBasis = new double[][] {
+                {2, 0, 0},
+                {0, -3, 0},
                 {0, 0, 0},
-                {0, 2, 0},
-                {0, 0, -3},
 
         };
+        var transformationMatrixInEigenvectorBasis = VectorUtil.toDiagonalMatrix(eigenvalues.stream().mapToDouble(Complex::real).toArray());
+        assertTrue(MatrixCalc.areEqual(expectedTransformationMatrixInEigenvectorBasis, transformationMatrixInEigenvectorBasis));
 
-        assertTrue(MatrixCalc.areEqual(similarMatrix,  MatrixCalc.multiply(eigenbasis, MatrixCalc.multiply(matrix, MatrixCalc.inverse(eigenbasis)))));
+        var expectedTransitionToEigenvectorBasisMatrix = new double[][] {
+                {-1.0d, RoundingUtil.roundToNDecimals(-(1.0d/3.0d), 12), -(2.0d/5.0d)},
+                {0.0d, RoundingUtil.roundToNDecimals(-(1.0d/3.0d), 12), -(1.0d/5.0d)},
+                {1.0d, 1.0d, 1.0d},
+        };
+        var transitionToEigenvectorBasisMatrix = VectorUtil.toMatrix(true, eigenvectors.toArray(new Eigenvector[0]));
+        assertTrue(MatrixCalc.areEqual(expectedTransitionToEigenvectorBasisMatrix, transitionToEigenvectorBasisMatrix));
 
-//        assertTrue(areSimilar(matrix, similarMatrix, ));
+        // Check that the equation S_inverse*A_a*S = A_b holds
+
+        var invertedSByAByS = MatrixCalc.multiply(
+                MatrixCalc.multiply(
+                        MatrixCalc.inverse(transitionToEigenvectorBasisMatrix),
+                        matrix),
+                transitionToEigenvectorBasisMatrix);
+        MatrixUtil.eliminateEpsilon(invertedSByAByS);
+        assertTrue(MatrixCalc.areEqual(transformationMatrixInEigenvectorBasis,invertedSByAByS));
 
         matrix = new double[][]{
                 {0, 1},
@@ -182,13 +185,13 @@ public class VectorUtilTest {
         var mult = MatrixCalc.multiply(matrix, MatrixCalc.multiply(matrix, MatrixCalc.multiply(matrix, MatrixCalc.multiply(matrix, MatrixCalc.multiply(matrix, matrix)))));
 
         eigenvectors = VectorCalc.eigenvectors(mult);
-        assertEquals(Vector.of(-RoundingUtil.roundToNDecimals((1.0d - Math.sqrt(5d)) / 2d, 11), 1.0d), eigenvectors.getFirst());
-        assertEquals(Vector.of(-RoundingUtil.roundToNDecimals((1.0d + Math.sqrt(5d)) / 2d, 11), 1.0d), eigenvectors.getLast());
+        assertEquals(Vector.of(-RoundingUtil.roundToNDecimals((1.0d - Math.sqrt(5d)) / 2d, 11), 1.0d), eigenvectors.getFirst().eigenvector());
+        assertEquals(Vector.of(-RoundingUtil.roundToNDecimals((1.0d + Math.sqrt(5d)) / 2d, 11), 1.0d), eigenvectors.getLast().eigenvector());
 
         System.out.println(MatrixUtil.print(MatrixCalc.multiply(matrix, MatrixCalc.multiply(matrix, MatrixCalc.multiply(matrix, MatrixCalc.multiply(matrix, MatrixCalc.multiply(matrix, matrix)))))));
 
         var mult2 = MatrixCalc.multiply(
-                VectorUtil.toMatrix(true, eigenvectors.getFirst(), eigenvectors.getLast()),
+                VectorUtil.toMatrix(true, eigenvectors.getFirst().eigenvector(), eigenvectors.getLast().eigenvector()),
                 matrix);
 
         System.out.println(MatrixUtil.print(mult2));
