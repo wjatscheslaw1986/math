@@ -8,7 +8,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests for {@linkplain CombinationsGenerator } class.
+ * Tests for {@link CombinationsGenerator} class.
  *
  * @author Viacheslav Mikhailov
  */

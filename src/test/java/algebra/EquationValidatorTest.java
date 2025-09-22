@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 /**
- * Tests for {@linkplain algebra.EquationValidator} class.
+ * Tests for {@link algebra.EquationValidator} class.
  *
  * @author Viacheslav Mikhailov
  */

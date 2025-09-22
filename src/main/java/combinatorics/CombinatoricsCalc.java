@@ -85,7 +85,7 @@ public final class CombinatoricsCalc {
     }
 
     /**
-     * I have no idea why they still didn't add it to {@linkplain java.lang.Math}
+     * I have no idea why they still didn't add it to {@link java.lang.Math}
      *
      * @return a factorial of a number.
      */

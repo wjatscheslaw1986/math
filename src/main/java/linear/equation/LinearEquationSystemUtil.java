@@ -35,7 +35,7 @@ public final class LinearEquationSystemUtil {
 
     /**
      * Resolve linear equation system using Cramer method.
-     * <p>Only applicable to Cramer matrices. Use {@link linear.matrix.Validation}.isCramer() method
+     * <p>Only applicable to Cramer matrices. Use {@link linear.matrix.Validation#isCramer} method
      * beforehand to make sure you aren't getting wrong results.</p>
      *
      * @param coefficients matrix made of left part of the equations
@@ -53,7 +53,7 @@ public final class LinearEquationSystemUtil {
 
     /**
      * Resolve given linear equations system using reverse matrix method.
-     * <p>Only applicable to Cramer matrices. Use {@link linear.matrix.Validation}.isCramer() method
+     * <p>Only applicable to Cramer matrices. Use {@link linear.matrix.Validation#isCramer} method
      * beforehand to be sure you aren't getting wrong results.</p>
      *
      * @param coefficients a square matrix of coefficients of the left parts of each equation
@@ -70,7 +70,7 @@ public final class LinearEquationSystemUtil {
      * Resolve given linear equations system using Jordan-Gauss method.
      * <p>
      *     <b>IMPORTANT:</b> this method modifies the argument as it performs
-     *     its job. Use {@link MatrixUtil.copy()} on the argument you pass to this method if
+     *     its job. Use {@link MatrixUtil#copy} on the argument you pass to this method if
      *     you need it for further calculations.
      * </p>
      *

@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Tests for {@linkplain CyclicShiftPermutationsGenerator} class.
+ * Tests for {@link CyclicShiftPermutationsGenerator} class.
  *
  * @author Viacheslav Mikhailov
  */

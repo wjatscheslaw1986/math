@@ -6,6 +6,8 @@ package statistics;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.Random;
+import java.util.stream.IntStream;
 
 import static combinatorics.CombinatoricsCalc.binomialCoefficient;
 import static combinatorics.CombinatoricsCalc.countPermutations;
@@ -13,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static statistics.ProbabilityCalc.atLeastOneHappensProbability;
 
 /**
- * Tests for {@linkplain statistics.ProbabilityCalc} class.
+ * Tests for {@link statistics.ProbabilityCalc} class.
  *
  * @author Viacheslav Mikhailov
  */

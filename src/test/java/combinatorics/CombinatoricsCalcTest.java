@@ -10,7 +10,7 @@ import static combinatorics.CombinatoricsCalc.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * Tests for {@linkplain combinatorics.CombinatoricsCalc} class.
+ * Tests for {@link combinatorics.CombinatoricsCalc} class.
  *
  * @author Viacheslav Mikhailov
  */

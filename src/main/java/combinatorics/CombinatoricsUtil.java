@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.function.Consumer;
 
 /**
- * A utility class for {@linkplain combinatorics} package.
+ * A utility class for {@link combinatorics} package.
  *
  * @author Viacheslav Mikhailov
  */
@@ -17,7 +17,7 @@ public final class CombinatoricsUtil {
     }
 
     /**
-     * A function to print an integer array to {@linkplain OutputStream}.
+     * A function to print an integer array to {@link OutputStream}.
      *
      * @param o the output stream
      * @return the printing function
@@ -34,7 +34,7 @@ public final class CombinatoricsUtil {
     }
 
     /**
-     * A function to print an object array to {@linkplain OutputStream}.
+     * A function to print an object array to {@link OutputStream}.
      *
      * @param o the output stream
      * @param <T> object type

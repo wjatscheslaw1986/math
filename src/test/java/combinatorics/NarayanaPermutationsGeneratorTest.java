@@ -12,7 +12,7 @@ import static combinatorics.NarayanaPermutationsGenerator.reverseOrderAfterIndex
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Tests for {@linkplain NarayanaPermutationsGenerator} class.
+ * Tests for {@link NarayanaPermutationsGenerator} class.
  *
  * @author Viacheslav Mikhailov
  */

@@ -234,7 +234,7 @@ public final class MatrixCalc {
     /**
      * This method calculates a determinant of the given triangular matrix.
      * It is up to you to check if the matrix is valid
-     * using {@linkplain linear.matrix.Validation} class.
+     * using {@link Validation} class.
      *
      * @param matrix given
      * @return the determinant of the matrix
@@ -324,8 +324,8 @@ public final class MatrixCalc {
 
     /**
      * Calculate rank of a given matrix.
-     * Source: {@link https://cp-algorithms.com/linear_algebra/rank-matrix.html}
      *
+     * @see <a href="https://cp-algorithms.com/linear_algebra/rank-matrix.html">Source</a>
      * @param originalMatrix the given matrix for finding its rank
      * @return rank
      */

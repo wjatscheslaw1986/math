@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
- * Tests for {@linkplain TermUtil} class.
+ * Tests for {@link TermUtil} class.
  *
  * @author Viacheslav Mikhailov
  */

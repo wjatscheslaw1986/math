@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests for {@linkplain JohnsonTrotterPermutationsGenerator} class.
+ * Tests for {@link JohnsonTrotterPermutationsGenerator} class.
  *
  * @author Viacheslav Mikhailov
  */

@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 /**
- * Tests for {@linkplain approximation.RoundingUtil} class.
+ * Tests for {@link RoundingUtil} class.
  *
  * @author Viacheslav Mikhailov
  */

@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Tests for {@linkplain EhrlichPermutationsGenerator} class.
+ * Tests for {@link EhrlichPermutationsGenerator} class.
  *
  * @author Viacheslav Mikhailov
  */

@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 /**
- * Tests for {@linkplain Term} class.
+ * Tests for {@link Term} class.
  *
  * @author Viacheslav Mikhailov
  */

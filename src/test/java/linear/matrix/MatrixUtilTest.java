@@ -15,7 +15,7 @@ import static linear.matrix.Validation.isInvertibleByDeterminant;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Tests for {@linkplain linear.matrix.MatrixUtil} class.
+ * Tests for {@link linear.matrix.MatrixUtil} class.
  *
  * @author Viacheslav Mikhailov
  */

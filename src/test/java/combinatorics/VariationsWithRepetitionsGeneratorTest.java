@@ -10,7 +10,7 @@ import static combinatorics.CombinatoricsCalc.countVariationsWithRepetitions;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * Tests for {@linkplain VariationsWithRepetitionsGenerator} class.
+ * Tests for {@link VariationsWithRepetitionsGenerator} class.
  *
  * @author Viacheslav Mikhailov
  */

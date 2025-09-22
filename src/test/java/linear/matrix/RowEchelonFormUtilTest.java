@@ -6,7 +6,7 @@ import static linear.matrix.RowEchelonFormUtil.isRowEchelonForm;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * Tests for {@linkplain linear.matrix.RowEchelonFormUtil} class.
+ * Tests for {@link linear.matrix.RowEchelonFormUtil} class.
  *
  * @author Viacheslav Mikhailov
  */

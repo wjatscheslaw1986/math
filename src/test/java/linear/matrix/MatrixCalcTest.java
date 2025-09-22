@@ -19,7 +19,7 @@ import static linear.matrix.Validation.isEqualDimensions;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Tests for {@linkplain linear.matrix.MatrixCalc} class.
+ * Tests for {@link linear.matrix.MatrixCalc} class.
  *
  * @author Viacheslav Mikhailov
  */

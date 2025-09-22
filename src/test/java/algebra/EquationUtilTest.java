@@ -12,7 +12,7 @@ import static algebra.EquationUtil.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Tests for {@linkplain algebra.EquationUtil} class.
+ * Tests for {@link algebra.EquationUtil} class.
  *
  * @author Viacheslav Mikhailov
  */

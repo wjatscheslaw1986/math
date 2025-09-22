@@ -19,7 +19,7 @@ import static linear.equation.SolutionsCount.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Tests for {@linkplain linear.equation.LinearEquationSystemUtil } class.
+ * Tests for {@link LinearEquationSystemUtil} class.
  *
  * @author Viacheslav Mikhailov
  */

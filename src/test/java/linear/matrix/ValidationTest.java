@@ -10,7 +10,7 @@ import static linear.matrix.Validation.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Tests for {@linkplain linear.matrix.Validation} class.
+ * Tests for {@link linear.matrix.Validation} class.
  *
  * @author Viacheslav Mikhailov
  */
