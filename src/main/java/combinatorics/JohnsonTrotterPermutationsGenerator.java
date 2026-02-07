@@ -30,7 +30,7 @@ public class JohnsonTrotterPermutationsGenerator {
      * @param n length of an array of indices
      */
     public static void print(int n, OutputStream o) {
-        generate(n, getPrintIntArrayFunction(o));
+        generate(n, getPrintIntArrayFunction(o, Arrays::toString));
     }
 
     /**

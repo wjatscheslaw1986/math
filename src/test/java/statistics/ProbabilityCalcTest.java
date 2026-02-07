@@ -6,8 +6,6 @@ package statistics;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
-import java.util.Random;
-import java.util.stream.IntStream;
 
 import static combinatorics.CombinatoricsCalc.binomialCoefficient;
 import static combinatorics.CombinatoricsCalc.countPermutations;
@@ -120,4 +118,5 @@ public class ProbabilityCalcTest {
                 oneDiceSideProbability
         }).sum());
     }
+
 }

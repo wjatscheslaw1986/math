@@ -30,7 +30,7 @@ public final class CyclicShiftPermutationsGenerator {
      * @param out  an implementation of the OutputStream
      */
     public static void print(final OutputStream out, final int size) {
-        generate(size, getPrintIntArrayFunction(out));
+        generate(size, getPrintIntArrayFunction(out, Arrays::toString));
     }
 
     /**

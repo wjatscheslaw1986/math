@@ -5,6 +5,7 @@ package combinatorics;
 
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -31,7 +32,8 @@ public final class CombinationsGenerator {
      * @param out an implementation of the OutputStream
      */
     public static void print(final int n, final int k, final OutputStream out) {
-        process(n, k, getPrintIntArrayFunction(out));
+        process(n, k, getPrintIntArrayFunction(out, Arrays::toString
+                ));
     }
 
     /**

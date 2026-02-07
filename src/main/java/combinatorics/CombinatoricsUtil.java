@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * A utility class for {@link combinatorics} package.
@@ -22,11 +23,11 @@ public final class CombinatoricsUtil {
      * @param o the output stream
      * @return the printing function
      */
-    public static Consumer<int[]> getPrintIntArrayFunction(final OutputStream o) {
+    public static Consumer<int[]> getPrintIntArrayFunction(final OutputStream o, final Function<int[], String> format) {
         return (final int[] currentCombination) -> {
             try {
-                o.write(Arrays.toString(currentCombination).getBytes());
-                o.write(System.lineSeparator().getBytes());
+                o.write(format.apply(currentCombination).getBytes());
+                o.write(("," + System.lineSeparator()).getBytes());
             } catch (IOException e) {
                 System.err.print(e.getLocalizedMessage());
             }
