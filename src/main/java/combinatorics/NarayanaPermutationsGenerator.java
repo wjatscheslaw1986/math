@@ -16,6 +16,9 @@ public class NarayanaPermutationsGenerator extends PermutationGenerator {
     private int currentIndex;
 
     public NarayanaPermutationsGenerator(int size) {
+        if (size < 0) {
+            throw new ArrayIndexOutOfBoundsException("Number of elements must be non-negative.");
+        }
         lastPermutation = new int[size];
         for (int i = 0; i < size; i++) {
             lastPermutation[i] = i;
@@ -27,6 +30,12 @@ public class NarayanaPermutationsGenerator extends PermutationGenerator {
 
     @Override
     public int[] next() {
+        if (currentIndex == -1) {
+            super.setHasNext(false);
+            currentIndex = 0;
+            return lastPermutation;
+        }
+
         if (!hasNext())
             throw new NoSuchElementException(NO_NEXT_PERMUTATION.formatted(this.getClass()));
         var result = Arrays.copyOf(lastPermutation, lastPermutation.length);
@@ -35,8 +44,6 @@ public class NarayanaPermutationsGenerator extends PermutationGenerator {
         swap(lastPermutation, currentIndex, swapIndex);
         reverseOrderAfterIndex(lastPermutation, currentIndex);
         currentIndex = findMaxIndexOfElementSmallerThanItsRightNeighbour(lastPermutation);
-        if (currentIndex == -1)
-            super.setHasNext(false);
         return result;
     }
 }

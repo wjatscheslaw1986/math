@@ -13,6 +13,9 @@ public class VariationsWithRepetitionsGenerator extends PermutationGenerator {
     private final int setPower;
 
     public VariationsWithRepetitionsGenerator(int powerOfASet, int lengthOfEachVariation) {
+        if (powerOfASet < 0 ||  lengthOfEachVariation < 0) {
+            throw new ArrayIndexOutOfBoundsException("Number of elements must be non-negative.");
+        }
         if (lengthOfEachVariation > powerOfASet) {
             throw new IllegalArgumentException("lengthOfEachVariation > powerOfASet");
         }

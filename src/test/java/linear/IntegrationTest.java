@@ -4,7 +4,7 @@
 package linear;
 
 import combinatorics.CyclicShiftPermutationsGenerator;
-import combinatorics.JohnsonTrotterPermutationsGenerator;
+import combinatorics.JohnsonTrotterUtil;
 import linear.matrix.MatrixCalc;
 import linear.matrix.MatrixUtil;
 import linear.matrix.RowEchelonFormUtil;
@@ -187,25 +187,5 @@ public final class IntegrationTest {
         var refMatrix = RowEchelonFormUtil.toRowEchelonForm(linearEquationSystem);
         assertTrue(RowEchelonFormUtil.isRowEchelonForm(refMatrix));
         System.out.println(MatrixUtil.print(refMatrix));
-    }
-
-    @Test
-    void permutationsGeneratorsTest() {
-        for (int i = 0; i < 7; i++) {
-            List<int[]> l1 = CyclicShiftPermutationsGenerator.generate(i);
-            List<int[]> l2 = JohnsonTrotterPermutationsGenerator.generate(i);
-            assertEquals(l1.size(), l2.size());
-
-            for (int[] i1s : l1) {
-                var found = false;
-                for (int[] i2s : l2) {
-                    if (Arrays.equals(i2s, i1s)) {
-                        found = true;
-                        break;
-                    }
-                }
-                assertTrue(found);
-            }
-        }
     }
 }

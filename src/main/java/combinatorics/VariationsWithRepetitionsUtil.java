@@ -47,7 +47,8 @@ public final class VariationsWithRepetitionsUtil {
      */
     public static List<int[]> generate(int n, int k) {
         final var list = new ArrayList<int[]>();
-        generate(n, k, list::add);
+        var gen = new VariationsWithRepetitionsGenerator(n, k);
+        while (gen.hasNext()) list.add(gen.next());
         return list;
     }
 

@@ -10,14 +10,12 @@ classes
 /testout/
 /out-core/
 /out-test/
-
+/target/
+/out/
+/doc/
 
 .classpath
 .project
 .settings
 
-/target/
-/out/
-/out-test/
 
-/doc/

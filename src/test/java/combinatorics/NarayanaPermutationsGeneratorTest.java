@@ -8,14 +8,14 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-public class JohnsonTrotterPermutationsGeneratorTest {
+public class NarayanaPermutationsGeneratorTest {
 
     @Test
     void shouldGenerateSamePermutationsAsGiven() {
-        JohnsonTrotterPermutationsGenerator gen = new JohnsonTrotterPermutationsGenerator(5);
+        NarayanaPermutationsGenerator gen = new NarayanaPermutationsGenerator(5);
         int i = 0;
         while (gen.hasNext()) {
-            assertArrayEquals(gen.next(), JohnsonTrotterUtilTest.permutationsGiven[i++]);
+            assertArrayEquals(NarayanaUtilTest.permutationsGiven[i++], gen.next());
         }
     }
 }

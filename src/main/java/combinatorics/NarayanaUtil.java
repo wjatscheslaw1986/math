@@ -32,9 +32,12 @@ public class NarayanaUtil {
      * @return all the permutations for the given size
      */
     public static List<int[]> generate(final int size) {
-        var list = new ArrayList<int[]>();
-        new NarayanaFirstNPermutations(size).forEach(list::add);
-        return list;
+        var gen = new NarayanaPermutationsGenerator(size);
+        List<int[]> permutations = new ArrayList<>();
+        while (gen.hasNext()) {
+            permutations.add(gen.next());
+        }
+        return permutations;
     }
 
     /**
@@ -92,17 +95,13 @@ public class NarayanaUtil {
 
         private final Iterator<int[]> iterator;
 
-        public NarayanaFirstNPermutations(int sequenceLength, int limit) {
+        public NarayanaFirstNPermutations(int sequenceLength, int n) {
             var gen = new NarayanaPermutationsGenerator(sequenceLength);
             List<int[]> permutations = new ArrayList<>();
-            while (gen.hasNext() && limit-- > 0) {
+            while (gen.hasNext() && n-- > 0) {
                 permutations.add(gen.next());
             }
             iterator = permutations.iterator();
-        }
-
-        public NarayanaFirstNPermutations(int sequenceLength) {
-            this(sequenceLength, sequenceLength);
         }
 
         @Override
