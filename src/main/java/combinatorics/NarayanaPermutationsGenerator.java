@@ -10,7 +10,7 @@ import java.util.NoSuchElementException;
 import static combinatorics.NarayanaUtil.*;
 import static linear.spatial.VectorUtil.swap;
 
-public class NarayanaPermutationsGenerator extends PermutationGenerator {
+public class NarayanaPermutationsGenerator extends CombinationGenerator {
 
     private final int[] lastPermutation;
     private int currentIndex;
@@ -30,14 +30,13 @@ public class NarayanaPermutationsGenerator extends PermutationGenerator {
 
     @Override
     public int[] next() {
-        if (currentIndex == -1) {
+        if (super.hasNext() && currentIndex == -1) {
             super.setHasNext(false);
-            currentIndex = 0;
             return lastPermutation;
         }
 
         if (!hasNext())
-            throw new NoSuchElementException(NO_NEXT_PERMUTATION.formatted(this.getClass()));
+            throw new NoSuchElementException(NO_NEXT_COMBINATION.formatted(this.getClass()));
         var result = Arrays.copyOf(lastPermutation, lastPermutation.length);
         final int element = lastPermutation[currentIndex];
         int swapIndex = findMaxIndexOfElementBiggerThanGivenValue(lastPermutation, element);

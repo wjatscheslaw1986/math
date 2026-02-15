@@ -5,9 +5,9 @@ package combinatorics;
 
 import java.util.Iterator;
 
-public abstract class PermutationGenerator implements Iterator<int[]> {
+public abstract class CombinationGenerator implements Iterator<int[]> {
 
-    static final String NO_NEXT_PERMUTATION = "No more permutations available [%s]";
+    static final String NO_NEXT_COMBINATION = "No more combinations available [%s]";
 
     private boolean hasNext = false;
 

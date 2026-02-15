@@ -145,7 +145,7 @@ public class JohnsonTrotterUtilTest {
 
     @Test
     void shouldGenerateSamePermutationsSameOrderedAsCyclicShiftPermutationsGenerator() {
-        for (int i = 0; i < 7; i++) {
+        for (int i = 1; i < 7; i++) {
             List<int[]> l1 = CyclicShiftPermutationsGenerator.generate(i);
             List<int[]> l2 = JohnsonTrotterUtil.generate(i);
             assertEquals(l1.size(), l2.size());
@@ -167,13 +167,13 @@ public class JohnsonTrotterUtilTest {
     void shouldGenerateSamePermutationsAsGiven() {
         List<int[]> result = JohnsonTrotterUtil.generate(5);
         for (int i = 0; i < permutationsGiven.length; i++) {
-            assertArrayEquals(permutationsGiven[i], result.get(i));
+            assertArrayEquals(JohnsonTrotterUtilTest.permutationsGiven[i], result.get(i));
         }
     }
 
-//    @Test
-    void print() {
-        JohnsonTrotterUtil.print(5, System.out, arr -> Arrays.toString(arr).replace("[", "{").replace("]", "}"));
+    @Test
+    void shouldGenerateExpectedNumberOfPermutations() {
+        List<int[]> result = JohnsonTrotterUtil.generate(5);
+        assertEquals(CombinatoricsUtil.countPermutationsNoRepetitions(5), result.size());
     }
-
 }

@@ -3,77 +3,54 @@
  */
 package combinatorics;
 
-import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Function;
-
-import static combinatorics.CombinatoricsUtil.getPrintIntArrayFunction;
 
 /**
  * A utility class for generating all possible permutations of indices for an array of a
- * given length.
+ * given length (i.e. cardinality), without repetitions.
  *
  * @author Viacheslav Mikhailov
  */
-public class JohnsonTrotterUtil {
+public final class JohnsonTrotterUtil {
 
     private JohnsonTrotterUtil() {
         // static context only
     }
 
     /**
-     * Generate permutations of indices for <b>n</b> first indices of an array
-     * and print these permutations to System::out.
+     * Generate permutations of indices, for a set of <b>n</b> first array indices,
+     * starting at 0, returning them as a list of permutations.
+     * <p>
+     *     No repetitions of indices are allowed.
+     * </p>
      *
-     * @param n length of an array of indices
-     */
-    public static void print(int n, OutputStream o, Function<int[], String> formatter) {
-        generate(n, getPrintIntArrayFunction(o, formatter));
-    }
-
-    /**
-     * Generate permutations of indices for <b>n</b> first indices of an array,
-     * then collect and return these in a list.
-     *
-     * @param n length of an array of indices
+     * @param n length of an array of sequential indices, starting at 0 (also, cardinality)
      * @return list of all possible permutations of <b>n</b> indices
      */
     public static List<int[]> generate(int n) {
         final var list = new ArrayList<int[]>();
-        generate(n, list::add);
+        final var gen = new JohnsonTrotterPermutationsGenerator(n);
+        while (gen.hasNext()) {
+            list.add(gen.next());
+        }
         return list;
     }
 
     /**
-     * Generate permutations of indices for <b>n</b> first indices of an array
-     * and apply the given function to each permutation.
+     * Generate first <i>n</i> permutations for a given cardinality of a sequence of indices starting at 0, at once.
      *
-     * @param n length of an array of indices
-     * @param func function to apply to each permutation
+     * @param cardinality count of distinct elements in the set of indices
+     * @param n the number of the first permutations to generate.
+     * @return all the permutations for the given size
      */
-    public static void generate(final int n, final Consumer<int[]> func) {
-        if (n < 0) {
-            throw new ArrayIndexOutOfBoundsException("Number of elements must be non-negative.");
+    public static List<int[]> generateFirstN(final int cardinality, final int n) {
+        final var list = new ArrayList<int[]>();
+        for (int[] p : new JohnsonTrotterFirstNPermutations(cardinality, n)) {
+            list.add(p);
         }
-        final int[] permutation = new int[n];
-        final int[] direction = new int[n];
-        for (int i = 0; i < n; i++) {
-            permutation[i] = i;
-            direction[i] = -1;
-        }
-        func.accept(Arrays.copyOf(permutation, permutation.length));
-        int mobileElementIndex = maxMobileElementIndex(permutation, direction);
-        while (mobileElementIndex != -1) {
-            int mobileElement = permutation[mobileElementIndex];
-            int nextIndex = mobileElementIndex + direction[mobileElementIndex];
-            swap(permutation, direction, mobileElementIndex, nextIndex);
-            changeDirection(permutation, direction, mobileElement);
-            func.accept(Arrays.copyOf(permutation, permutation.length));
-            mobileElementIndex = maxMobileElementIndex(permutation, direction);
-        }
+        return list;
     }
 
     static int maxMobileElementIndex(int[] permutation, int[] direction) {
@@ -111,5 +88,34 @@ public class JohnsonTrotterUtil {
         int temp2 = direction[i];
         direction[i] = direction[j];
         direction[j] = temp2;
+    }
+
+    /**
+     * An iterator encapsulation for a list of the first <i>n</i> permutations generated
+     * by Johnson Trotter permutations generator {@link JohnsonTrotterPermutationsGenerator}.
+     */
+    private static class JohnsonTrotterFirstNPermutations implements Iterable<int[]> {
+
+        private final Iterator<int[]> iterator;
+
+        /**
+         * Constructor.
+         *
+         * @param sequenceLength cardinality
+         * @param n first <i>n</i> elements limit
+         */
+        private JohnsonTrotterFirstNPermutations(final int sequenceLength, int n) {
+            final var gen = new JohnsonTrotterPermutationsGenerator(sequenceLength);
+            final var permutations = new ArrayList<int[]>();
+            while (gen.hasNext() && n-- > 0) {
+                permutations.add(gen.next());
+            }
+            iterator = permutations.iterator();
+        }
+
+        @Override
+        public Iterator<int[]> iterator() {
+            return this.iterator;
+        }
     }
 }

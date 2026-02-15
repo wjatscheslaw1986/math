@@ -7,6 +7,7 @@ package combinatorics;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class NarayanaPermutationsGeneratorTest {
 
@@ -17,5 +18,13 @@ public class NarayanaPermutationsGeneratorTest {
         while (gen.hasNext()) {
             assertArrayEquals(NarayanaUtilTest.permutationsGiven[i++], gen.next());
         }
+    }
+
+    @Test
+    void shouldGenerateFirst5PermutationsFromTheGivenArrayOfPermutations() {
+        int i = 0;
+        for (int[] permutation : NarayanaUtil.generateFirstN(5, 5))
+            assertArrayEquals(NarayanaUtilTest.permutationsGiven[i++], permutation);
+        assertEquals(5, i);
     }
 }

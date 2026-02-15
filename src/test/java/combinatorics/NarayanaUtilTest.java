@@ -6,13 +6,11 @@ package combinatorics;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static combinatorics.NarayanaUtil.reverseOrderAfterIndex;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests for {@link NarayanaUtil} class.
@@ -155,6 +153,16 @@ public class NarayanaUtilTest {
         int i = 0;
         for (int[] permutation : permutationsGiven)
             assertArrayEquals(permutation, permutationList.get(i++));
+    }
+
+    @Test
+    void shouldGenerateSameFirstNPermutationsAsGiven() {
+        int n = 10;
+        List<int[]> permutationList = NarayanaUtil.generateFirstN(5, n);
+        int i = 0;
+        for (int[] permutation : permutationList)
+            assertArrayEquals(permutation, permutationsGiven[i++]);
+        assertEquals(10, i);
     }
 
     @Test

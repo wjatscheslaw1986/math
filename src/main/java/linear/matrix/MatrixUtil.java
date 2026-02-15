@@ -476,13 +476,5 @@ public final class MatrixUtil {
         return result;
     }
 
-    private static double getPrintedColumnWidths(double[] matrix) {
-        double result = 0.0d;
-        for (int i = 0; i < matrix.length; i++) {
-            int stringLength = String.valueOf(matrix[i]).length();
-            if (stringLength > result)
-                result = stringLength;
-        }
-        return result;
-    }
+
 }

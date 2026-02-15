@@ -7,30 +7,30 @@ package combinatorics;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 
-public class VariationsWithRepetitionsGenerator extends PermutationGenerator {
+public class VariationsWithRepetitionsGenerator extends CombinationGenerator {
 
     private final int[] lastPermutation;
     private final int setPower;
 
-    public VariationsWithRepetitionsGenerator(int powerOfASet, int lengthOfEachVariation) {
-        if (powerOfASet < 0 ||  lengthOfEachVariation < 0) {
+    public VariationsWithRepetitionsGenerator(int cardinality, int lengthOfEachVariation) {
+        if (cardinality < 0 ||  lengthOfEachVariation < 0) {
             throw new ArrayIndexOutOfBoundsException("Number of elements must be non-negative.");
         }
-        if (lengthOfEachVariation > powerOfASet) {
-            throw new IllegalArgumentException("lengthOfEachVariation > powerOfASet");
+        if (lengthOfEachVariation > cardinality) {
+            throw new IllegalArgumentException("lengthOfEachVariation > cardinality");
         }
         if (lengthOfEachVariation <= 0) {
             throw new IllegalArgumentException("lengthOfEachVariation <= 0");
         }
         setHasNext(true);
         this.lastPermutation = new int[lengthOfEachVariation];
-        this.setPower = powerOfASet;
+        this.setPower = cardinality;
     }
 
     @Override
     public int[] next() {
         if (!hasNext())
-            throw new NoSuchElementException(NO_NEXT_PERMUTATION.formatted(getClass()));
+            throw new NoSuchElementException(NO_NEXT_COMBINATION.formatted(getClass()));
         var result = Arrays.copyOf(lastPermutation, lastPermutation.length);
         try {
             int i = lastPermutation.length - 1;

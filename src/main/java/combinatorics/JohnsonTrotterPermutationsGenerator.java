@@ -7,12 +7,9 @@ package combinatorics;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 
-import static combinatorics.JohnsonTrotterUtil.changeDirection;
 import static combinatorics.JohnsonTrotterUtil.maxMobileElementIndex;
-import static combinatorics.NarayanaUtil.*;
-import static linear.spatial.VectorUtil.swap;
 
-public class JohnsonTrotterPermutationsGenerator extends PermutationGenerator {
+public class JohnsonTrotterPermutationsGenerator extends CombinationGenerator {
 
     private final int[] permutation;
     private final int[] direction;
@@ -28,23 +25,27 @@ public class JohnsonTrotterPermutationsGenerator extends PermutationGenerator {
             permutation[i] = i;
             direction[i] = -1;
         }
+        mobileElementIndex = maxMobileElementIndex(permutation, direction);
         if (n > 0)
             super.setHasNext(true);
     }
 
     @Override
     public int[] next() {
-        if (!hasNext())
-            throw new NoSuchElementException(NO_NEXT_PERMUTATION.formatted(this.getClass()));
+        if (!super.hasNext())
+            throw new NoSuchElementException(NO_NEXT_COMBINATION.formatted(this.getClass()));
         var result = Arrays.copyOf(permutation, permutation.length);
-        mobileElementIndex = maxMobileElementIndex(permutation, direction);
+
+        if (mobileElementIndex == -1) {
+            super.setHasNext(false);
+            return result;
+        }
+
         int mobileElement = permutation[mobileElementIndex];
         int nextIndex = mobileElementIndex + direction[mobileElementIndex];
         JohnsonTrotterUtil.swap(permutation, direction, mobileElementIndex, nextIndex);
-        changeDirection(permutation, direction, mobileElement);
+        JohnsonTrotterUtil.changeDirection(permutation, direction, mobileElement);
         mobileElementIndex = maxMobileElementIndex(permutation, direction);
-        if (mobileElementIndex == -1)
-            super.setHasNext(false);
         return result;
     }
 }

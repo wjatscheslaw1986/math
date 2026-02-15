@@ -3,23 +3,19 @@
  */
 package combinatorics;
 
-import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.function.Function;
 
-import static combinatorics.CombinatoricsUtil.getPrintIntArrayFunction;
 import static linear.spatial.VectorUtil.swap;
 
 /**
- * A utility class for generating a series of all possible permutations of indices
- * for an array of a given length, in lexicographical order.
+ * A utility class for generating series of all possible permutations of indices
+ * for an array of indices of a given length (which is also a cardinality), in lexicographical order.
  *
  * @author Viacheslav Mikhailov
  */
-public class NarayanaUtil {
+public final class NarayanaUtil {
 
     private NarayanaUtil() {
         // static context only
@@ -41,20 +37,17 @@ public class NarayanaUtil {
     }
 
     /**
-     * Print permutations for a size of array to the given OutputStream.
+     * Generate first <i>n</i> permutations for a given size of a sequence of indices starting at 0, at once.
      *
-     * @param size a size of an array of indices, starting with 0;
-     * @param out  an implementation of the OutputStream
+     * @param size the size given
+     * @param n the number of the first permutations to generate.
+     * @return all the permutations for the given size
      */
-    public static void print(final OutputStream out, final int size) {
-        print(out, size, Arrays::toString);
-    }
-
-    public static void print(final OutputStream out, final int size, final Function<int[], String> format) {
-        var gen = new NarayanaPermutationsGenerator(size);
-        while (gen.hasNext()) {
-            getPrintIntArrayFunction(out, format).accept(gen.next());
-        }
+    public static List<int[]> generateFirstN(final int size, final int n) {
+        List<int[]> permutations = new ArrayList<>();
+        for (int[] p : new NarayanaFirstNPermutations(size, n))
+            permutations.add(p);
+        return permutations;
     }
 
     /**
@@ -89,15 +82,22 @@ public class NarayanaUtil {
     }
 
     /**
-     * TODO doc
+     * An iterator incapsulation for a list of the first <i>n</i> permutations generated
+     * by Narayana permutations generator {@link NarayanaPermutationsGenerator}.
      */
-    public static class NarayanaFirstNPermutations implements Iterable<int[]> {
+    private static class NarayanaFirstNPermutations implements Iterable<int[]> {
 
         private final Iterator<int[]> iterator;
 
-        public NarayanaFirstNPermutations(int sequenceLength, int n) {
-            var gen = new NarayanaPermutationsGenerator(sequenceLength);
-            List<int[]> permutations = new ArrayList<>();
+        /**
+         * Constructor.
+         *
+         * @param sequenceLength cardinality
+         * @param n first <i>n</i> elements limit
+         */
+        private NarayanaFirstNPermutations(final int sequenceLength, int n) {
+            final var gen = new NarayanaPermutationsGenerator(sequenceLength);
+            final var permutations = new ArrayList<int[]>();
             while (gen.hasNext() && n-- > 0) {
                 permutations.add(gen.next());
             }
