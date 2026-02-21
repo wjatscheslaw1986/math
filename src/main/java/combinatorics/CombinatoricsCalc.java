@@ -3,6 +3,8 @@
  */
 package combinatorics;
 
+import java.util.Arrays;
+
 /**
  * An API for calculating stereotypical tasks in combinatorics.
  *
@@ -26,28 +28,17 @@ public final class CombinatoricsCalc {
      * @param k size of a single choice, i.e. a subset of <b>n</b>
      * @return number of variations
      */
-    public static long countVariations(final int n, final int k) {
+    public static long countVariationsNoRepetitions(final int n, final int k) {
         if (n < k)
             throw new ArithmeticException("You cannot choose from a set the amout of elements which is greater than there are in the set");
         return Math.divideExact(factorial(n), factorial(n - k));
     }
 
     /**
-     * Number of variations with repetitions.
-     * I.e. number of ways to click <b>k</b> times any key on a keyboard of <b>n</b> keys.
-     *
-     * @param n size of a given set of all elements
-     * @param k size of a subset of <b>n</b>
-     * @return number of variations with repetitions
-     */
-    public static long countVariationsWithRepetitions(final int n, final int k) {
-        return (long) Math.pow(n, k);
-    }
-
-    /**
-     * Combinations without repetitions.
+     * Count combinations without repetitions.
+     * </br>
      * I.e. a number of ways to choose <b>k</b> elements out of a set of <b>n</b> elements,
-     * disregard of the order, repetitions are not included.
+     * disregard of ordering, repetitions are not counted.
      * <p>
      * n!/(m!*(n-m)!)
      * </p>
@@ -59,29 +50,54 @@ public final class CombinatoricsCalc {
     public static long binomialCoefficient(final int n, final int k) {
         if (n < k)
             throw new ArithmeticException("You cannot choose from a set the amount of elements which is greater than there are in the set");
-        return Math.divideExact(countVariations(n, k), countPermutations(k));
+        return Math.divideExact(countVariationsNoRepetitions(n, k), countPermutationsNoRepetitions(k));
     }
 
     /**
-     * Calculates a size of a set of all possible permutations of indices, from 0 (inclusive)
-     * to arrayLength (exclusive).
+     * Count number of all possible permutations with repetitions of array indices,
+     * for a cardinality given.
      * <p>
-     * n!
+     *     Each index is repeated the prescribed number of times, individually.
+     * </p>
+     * <p>
+     *     The given cardinality is the argument array length.
      * </p>
      *
-     * @param arrayLength a size of the given set of array indices
-     * @return Number of all possible permutations for the given number of elements.
+     * @param repetitions an array that maps index on the prescribed number of repetitions.
+     * @return the number of all possible permutations with individually prescribed repetitions, per element
      */
-    public static long countPermutations(final int arrayLength) {
-        return factorial(arrayLength);
+    public static int countPermutationsWithRepetitions(final int[] repetitions) {
+        // TODO maybe add a validation to avoid INT overflow
+        int nominator = Arrays.stream(repetitions).sum();
+        int denominator = (int) Arrays.stream(repetitions)
+                .mapToLong(CombinatoricsCalc::factorial)
+                .reduce(0L, (a, b) -> a*b);
+        return nominator / denominator;
     }
 
     /**
-     * n! / n1!*n2!*...*nk!
-     * TODO
+     * Count number of all possible permutations of array indices,
+     * no repetitions of elements allowed, for a given cardinality.
+     *
+     * @param cardinality the number of distinct sequential indices, starting with 0
+     * @return the number of all possible permutations, without repetitions
      */
-    public static long countPermutationsWithRepetitions(final int arrayLength) {
-        throw new IllegalStateException("TODO");
+    public static int countPermutationsNoRepetitions(final int cardinality) {
+        return (int) CombinatoricsCalc.factorial(cardinality);
+    }
+
+    /**
+     * Returns a number of all possible arrangements of selections of indices, distinct by their order.
+     * <p>
+     *     It is a number of ways to click <b>k</b> times any key on a keyboard of <b>n</b> keys.
+     * </p>
+     *
+     * @param n cardinality
+     * @param k size of a selection
+     * @return a count of all possible variations of indices, distinctly ordered.
+     */
+    public static int countVariationsWithRepetitions(int n, int k) {
+        return (int) Math.pow(n, k);
     }
 
     /**
@@ -100,4 +116,6 @@ public final class CombinatoricsCalc {
         }
         return result;
     }
+
+
 }

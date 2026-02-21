@@ -9,15 +9,15 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.List;
 
-import static combinatorics.NarayanaUtil.reverseOrderAfterIndex;
+import static combinatorics.Narayana.reverseOrderAfterIndex;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Tests for {@link NarayanaUtil} class.
+ * Tests for {@link Narayana} class.
  *
  * @author Viacheslav Mikhailov
  */
-public class NarayanaUtilTest {
+public class NarayanaTest {
 
     static int[][] permutationsGiven = new int[][]{
             {0, 1, 2, 3, 4},
@@ -144,12 +144,12 @@ public class NarayanaUtilTest {
 
     @BeforeAll
     static void before() {
-        System.out.printf("Running tests in %s%s", NarayanaUtilTest.class, System.lineSeparator());
+        System.out.printf("Running tests in %s%s", NarayanaTest.class, System.lineSeparator());
     }
 
     @Test
     void shouldGenerateSamePermutationsAsGiven() {
-        List<int[]> permutationList = NarayanaUtil.generate(5);
+        List<int[]> permutationList = Narayana.generate(5);
         int i = 0;
         for (int[] permutation : permutationsGiven)
             assertArrayEquals(permutation, permutationList.get(i++));
@@ -158,7 +158,7 @@ public class NarayanaUtilTest {
     @Test
     void shouldGenerateSameFirstNPermutationsAsGiven() {
         int n = 10;
-        List<int[]> permutationList = NarayanaUtil.generateFirstN(5, n);
+        List<int[]> permutationList = Narayana.generate(5, n);
         int i = 0;
         for (int[] permutation : permutationList)
             assertArrayEquals(permutation, permutationsGiven[i++]);
@@ -185,5 +185,17 @@ public class NarayanaUtilTest {
             reverseOrderAfterIndex(copy, arr.length - 3 - i);
             assertArrayEquals(copy, shifts[i]);
         }
+    }
+
+    @Test
+    void shouldGenerateExpectedNumberOfPermutations() {
+        List<int[]> result = Narayana.generate(8);
+        assertEquals(Narayana.count(8), result.size());
+    }
+    @Test
+    void shouldReturnSameCountOfElementsForBothMethods() {
+        assertEquals(
+                Narayana.count(8),
+                CombinatoricsCalc.countPermutationsNoRepetitions(8));
     }
 }

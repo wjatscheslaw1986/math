@@ -9,11 +9,11 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Tests for {@link JohnsonTrotterUtil} class.
+ * Tests for {@link JohnsonTrotter} class.
  *
  * @author Viacheslav Mikhailov
  */
-public class JohnsonTrotterUtilTest {
+public class JohnsonTrotterTest {
 
     static int[][] permutationsGiven = new int[][]{
             {0, 1, 2, 3, 4},
@@ -140,14 +140,14 @@ public class JohnsonTrotterUtilTest {
 
     @BeforeAll
     static void before() {
-        System.out.printf("Running tests in %s%s", JohnsonTrotterUtilTest.class, System.lineSeparator());
+        System.out.printf("Running tests in %s%s", JohnsonTrotterTest.class, System.lineSeparator());
     }
 
     @Test
-    void shouldGenerateSamePermutationsSameOrderedAsCyclicShiftPermutationsGenerator() {
+    void shouldGenerateSamePermutationsAsCyclicShiftAlgorithm() {
         for (int i = 1; i < 7; i++) {
-            List<int[]> l1 = CyclicShiftPermutationsGenerator.generate(i);
-            List<int[]> l2 = JohnsonTrotterUtil.generate(i);
+            List<int[]> l1 = CyclicShift.generate(i);
+            List<int[]> l2 = JohnsonTrotter.generate(i);
             assertEquals(l1.size(), l2.size());
 
             for (int[] i1s : l1) {
@@ -165,15 +165,22 @@ public class JohnsonTrotterUtilTest {
 
     @Test
     void shouldGenerateSamePermutationsAsGiven() {
-        List<int[]> result = JohnsonTrotterUtil.generate(5);
+        List<int[]> result = JohnsonTrotter.generate(5);
         for (int i = 0; i < permutationsGiven.length; i++) {
-            assertArrayEquals(JohnsonTrotterUtilTest.permutationsGiven[i], result.get(i));
+            assertArrayEquals(JohnsonTrotterTest.permutationsGiven[i], result.get(i));
         }
     }
 
     @Test
     void shouldGenerateExpectedNumberOfPermutations() {
-        List<int[]> result = JohnsonTrotterUtil.generate(5);
-        assertEquals(CombinatoricsUtil.countPermutationsNoRepetitions(5), result.size());
+        List<int[]> result = JohnsonTrotter.generate(5);
+        assertEquals(JohnsonTrotter.count(5), result.size());
+    }
+
+    @Test
+    void shouldReturnSameCountOfElementsForBothMethods() {
+        assertEquals(
+                JohnsonTrotter.count(7),
+                CombinatoricsCalc.countPermutationsNoRepetitions(7));
     }
 }

@@ -10,22 +10,22 @@ import java.util.List;
 import static linear.spatial.VectorUtil.swap;
 
 /**
- * A utility class for generating series of all possible permutations of indices
+ * A utility class for generating series of all possible permutations without of indices
  * for an array of indices of a given length (which is also a cardinality), in lexicographical order.
  *
  * @author Viacheslav Mikhailov
  */
-public final class NarayanaUtil {
+public final class Narayana {
 
-    private NarayanaUtil() {
+    private Narayana() {
         // static context only
     }
 
     /**
-     * Generate all the permutations for a given size of a sequence of indices starting at 0, at once.
+     * Generate all the possible permutations for the given size of a sequence of indices, starting at 0, all at once.
      *
      * @param size the size given
-     * @return all the permutations for the given size
+     * @return all the permutations for the given size of a sequence of indices
      */
     public static List<int[]> generate(final int size) {
         var gen = new NarayanaPermutationsGenerator(size);
@@ -43,7 +43,7 @@ public final class NarayanaUtil {
      * @param n the number of the first permutations to generate.
      * @return all the permutations for the given size
      */
-    public static List<int[]> generateFirstN(final int size, final int n) {
+    public static List<int[]> generate(final int size, final int n) {
         List<int[]> permutations = new ArrayList<>();
         for (int[] p : new NarayanaFirstNPermutations(size, n))
             permutations.add(p);
@@ -79,6 +79,20 @@ public final class NarayanaUtil {
             if (array[i] < array[i + 1])
                 return i;
         return -1;
+    }
+
+    /**
+     * Count generated permutations.
+     * <p>
+     *     It is a number of ways to click <b>n</b> distinct keys, each exactly 1 time.
+     *     I.e. only the order makes distinct permutations.
+     * </p>
+     *
+     * @param n cardinality
+     * @return number of permutations without repetitions
+     */
+    public static int count(int n) {
+        return CombinatoricsCalc.countPermutationsNoRepetitions(n);
     }
 
     /**

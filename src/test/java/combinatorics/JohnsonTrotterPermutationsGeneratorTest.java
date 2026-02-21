@@ -16,16 +16,16 @@ public class JohnsonTrotterPermutationsGeneratorTest {
         JohnsonTrotterPermutationsGenerator gen = new JohnsonTrotterPermutationsGenerator(5);
         int i = 0;
         while (gen.hasNext()) {
-            assertArrayEquals(gen.next(), JohnsonTrotterUtilTest.permutationsGiven[i++]);
+            assertArrayEquals(gen.next(), JohnsonTrotterTest.permutationsGiven[i++]);
         }
-        assertEquals(120, CombinatoricsUtil.countPermutationsNoRepetitions(5));
+        assertEquals(120, CombinatoricsCalc.countPermutationsNoRepetitions(5));
     }
 
     @Test
     void shouldGenerateFirst7PermutationsFromTheGivenCardinalityOfIndicesArray() {
         int i = 0;
-        for (int[] permutation : JohnsonTrotterUtil.generateFirstN(5, 7))
-            assertArrayEquals(JohnsonTrotterUtilTest.permutationsGiven[i++], permutation);
+        for (int[] permutation : JohnsonTrotter.generate(5, 7))
+            assertArrayEquals(JohnsonTrotterTest.permutationsGiven[i++], permutation);
         assertEquals(7, i);
     }
 }

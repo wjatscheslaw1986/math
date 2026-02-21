@@ -7,7 +7,7 @@ package combinatorics;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 
-public class VariationsWithRepetitionsGenerator extends CombinationGenerator {
+public class VariationsWithRepetitionsGenerator extends IndexSequenceGenerator {
 
     private final int[] lastPermutation;
     private final int setPower;
@@ -30,7 +30,7 @@ public class VariationsWithRepetitionsGenerator extends CombinationGenerator {
     @Override
     public int[] next() {
         if (!hasNext())
-            throw new NoSuchElementException(NO_NEXT_COMBINATION.formatted(getClass()));
+            throw new NoSuchElementException(NO_NEXT_SEQUENCE.formatted(getClass()));
         var result = Arrays.copyOf(lastPermutation, lastPermutation.length);
         try {
             int i = lastPermutation.length - 1;

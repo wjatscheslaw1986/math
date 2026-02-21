@@ -5,9 +5,14 @@ package combinatorics;
 
 import java.util.Iterator;
 
-public abstract class CombinationGenerator implements Iterator<int[]> {
+/**
+ * A generator of INT arrays that are meant to be index sequences.
+ *
+ * @author Viacheslav Mikhailov
+ */
+public abstract class IndexSequenceGenerator implements Iterator<int[]> {
 
-    static final String NO_NEXT_COMBINATION = "No more combinations available [%s]";
+    static final String NO_NEXT_SEQUENCE = "No more index sequences available [%s]";
 
     private boolean hasNext = false;
 

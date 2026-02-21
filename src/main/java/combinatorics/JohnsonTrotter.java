@@ -13,9 +13,9 @@ import java.util.List;
  *
  * @author Viacheslav Mikhailov
  */
-public final class JohnsonTrotterUtil {
+public final class JohnsonTrotter {
 
-    private JohnsonTrotterUtil() {
+    private JohnsonTrotter() {
         // static context only
     }
 
@@ -45,7 +45,7 @@ public final class JohnsonTrotterUtil {
      * @param n the number of the first permutations to generate.
      * @return all the permutations for the given size
      */
-    public static List<int[]> generateFirstN(final int cardinality, final int n) {
+    public static List<int[]> generate(final int cardinality, final int n) {
         final var list = new ArrayList<int[]>();
         for (int[] p : new JohnsonTrotterFirstNPermutations(cardinality, n)) {
             list.add(p);
@@ -88,6 +88,20 @@ public final class JohnsonTrotterUtil {
         int temp2 = direction[i];
         direction[i] = direction[j];
         direction[j] = temp2;
+    }
+
+    /**
+     * Count generated permutations.
+     * <p>
+     *     It is a number of ways to click <b>n</b> distinct keys, each exactly 1 time.
+     *     I.e. only the order makes distinct permutations.
+     * </p>
+     *
+     * @param n cardinality
+     * @return number of permutations without repetitions
+     */
+    public static int count(int n) {
+        return CombinatoricsCalc.countPermutationsNoRepetitions(n);
     }
 
     /**

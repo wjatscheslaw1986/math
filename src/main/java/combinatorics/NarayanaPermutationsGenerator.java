@@ -7,10 +7,11 @@ package combinatorics;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 
-import static combinatorics.NarayanaUtil.*;
+import static combinatorics.CombinatoricsUtil.generateArrayOfIndicesOfSize;
+import static combinatorics.Narayana.*;
 import static linear.spatial.VectorUtil.swap;
 
-public class NarayanaPermutationsGenerator extends CombinationGenerator {
+public class NarayanaPermutationsGenerator extends IndexSequenceGenerator {
 
     private final int[] lastPermutation;
     private int currentIndex;
@@ -19,10 +20,7 @@ public class NarayanaPermutationsGenerator extends CombinationGenerator {
         if (size < 0) {
             throw new ArrayIndexOutOfBoundsException("Number of elements must be non-negative.");
         }
-        lastPermutation = new int[size];
-        for (int i = 0; i < size; i++) {
-            lastPermutation[i] = i;
-        }
+        lastPermutation = generateArrayOfIndicesOfSize(size);
         currentIndex = findMaxIndexOfElementSmallerThanItsRightNeighbour(lastPermutation);
         if (size > 0)
             super.setHasNext(true);
@@ -36,7 +34,7 @@ public class NarayanaPermutationsGenerator extends CombinationGenerator {
         }
 
         if (!hasNext())
-            throw new NoSuchElementException(NO_NEXT_COMBINATION.formatted(this.getClass()));
+            throw new NoSuchElementException(NO_NEXT_SEQUENCE.formatted(this.getClass()));
         var result = Arrays.copyOf(lastPermutation, lastPermutation.length);
         final int element = lastPermutation[currentIndex];
         int swapIndex = findMaxIndexOfElementBiggerThanGivenValue(lastPermutation, element);

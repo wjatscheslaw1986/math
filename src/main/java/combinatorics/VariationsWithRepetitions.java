@@ -12,9 +12,9 @@ import java.util.List;
  *
  * @author Viacheslav Mikhailov
  */
-public final class VariationsWithRepetitionsUtil {
+public final class VariationsWithRepetitions {
 
-    private VariationsWithRepetitionsUtil() {
+    private VariationsWithRepetitions() {
         // static context only
     }
 
@@ -25,11 +25,11 @@ public final class VariationsWithRepetitionsUtil {
      * as a separate (i.e. distinct) variation.
      * The elements are represented by their indices in an array that may contain them.
      *
-     * @param n power of the given set
+     * @param n cardinality
      * @param k size of each variation
      * @return list of variations with repetitions for K elements of N
      */
-    public static List<int[]> generate(int n, int k) {
+    public static List<int[]> generate(final int n, final int k) {
         final var list = new ArrayList<int[]>();
         var gen = new VariationsWithRepetitionsGenerator(n, k);
         while (gen.hasNext()) list.add(gen.next());
@@ -37,13 +37,16 @@ public final class VariationsWithRepetitionsUtil {
     }
 
     /**
-     * Returns a number of all possible arrangements of selections of indices, distinct by their order.
+     * Count generated variations.
+     * <p>
+     *     It is a number of ways to type <b>k</b> times any letter of an alphabet of <b>n</b> letters.
+     * </p>
      *
      * @param n cardinality
-     * @param k size of a selection
-     * @return a count of all possible variations of indices, distinctly ordered.
+     * @param k size of a variation
+     * @return number of all possible variations
      */
-    public static int countVariationsWithRepetitions(int n, int k) {
-        return (int) Math.pow(n, k);
+    public static int count(final int n, final int k) {
+        return CombinatoricsCalc.countVariationsWithRepetitions(n, k);
     }
 }

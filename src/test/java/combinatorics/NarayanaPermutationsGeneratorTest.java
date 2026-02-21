@@ -16,15 +16,15 @@ public class NarayanaPermutationsGeneratorTest {
         NarayanaPermutationsGenerator gen = new NarayanaPermutationsGenerator(5);
         int i = 0;
         while (gen.hasNext()) {
-            assertArrayEquals(NarayanaUtilTest.permutationsGiven[i++], gen.next());
+            assertArrayEquals(NarayanaTest.permutationsGiven[i++], gen.next());
         }
     }
 
     @Test
     void shouldGenerateFirst5PermutationsFromTheGivenArrayOfPermutations() {
         int i = 0;
-        for (int[] permutation : NarayanaUtil.generateFirstN(5, 5))
-            assertArrayEquals(NarayanaUtilTest.permutationsGiven[i++], permutation);
+        for (int[] permutation : Narayana.generate(5, 5))
+            assertArrayEquals(NarayanaTest.permutationsGiven[i++], permutation);
         assertEquals(5, i);
     }
 }

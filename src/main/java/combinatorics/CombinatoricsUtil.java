@@ -18,40 +18,6 @@ public final class CombinatoricsUtil {
     }
 
     /**
-     * Count number of all possible permutations with repetitions of array indices,
-     * for a cardinality given.
-     * <p>
-     *     Each index is repeated the prescribed number of times, individually.
-     * </p>
-     * <p>
-     *     The given cardinality is the argument array length.
-     * </p>
-     *
-     * @param repetitions an array that maps index on the prescribed number of repetitions.
-     * @return the number of all possible permutations with individually prescribed repetitions, per element
-     */
-    public static int countPermutationsWithRepetitions(final int[] repetitions) {
-        // TODO maybe add a validation to avoid INT overflow
-        int nominator = Arrays.stream(repetitions).sum();
-        int denominator = (int) Arrays.stream(repetitions)
-                .mapToLong(CombinatoricsCalc::factorial)
-                .reduce(0L, (a, b) -> a*b);
-        return nominator / denominator;
-    }
-
-    /**
-     * Count number of all possible permutations of array indices,
-     * no repetitions of elements allowed, for a given cardinality.
-     *
-     * @param cardinality the number of distinct sequential indices, starting with 0
-     * @return the number of all possible permutations, without repetitions
-     */
-    public static int countPermutationsNoRepetitions(final int cardinality) {
-        return (int) CombinatoricsCalc.factorial(cardinality);
-    }
-
-
-    /**
      * Print generated combinations to an OutputStream implementation.
      * <p>
      *     The formatting is the default <i>Arrays::toString</i>.
@@ -60,11 +26,11 @@ public final class CombinatoricsUtil {
      * @param generator combinations generator;
      * @param out  an implementation of OutputStream
      */
-    public static void print(final CombinationGenerator generator, final OutputStream out) {
+    public static void print(final IndexSequenceGenerator generator, final OutputStream out) {
         printf(generator, out, Arrays::toString);
     }
 
-    public static void printJavaCode(final CombinationGenerator generator, final OutputStream out) {
+    public static void printJavaCode(final IndexSequenceGenerator generator, final OutputStream out) {
         printf(generator, out, arr -> Arrays.toString(arr).replace("[", "{").replace("]", "}"));
     }
 
@@ -78,7 +44,7 @@ public final class CombinatoricsUtil {
      * @param out    the implementation of OutputStream
      * @param format the formatter
      */
-    public static void printf(final CombinationGenerator generator, final OutputStream out, final Function<int[], String> format) {
+    public static void printf(final IndexSequenceGenerator generator, final OutputStream out, final Function<int[], String> format) {
         while (generator.hasNext()) {
             getPrintIntArrayFunction(out, format).accept(generator.next());
         }
@@ -131,5 +97,13 @@ public final class CombinatoricsUtil {
         final int[] subArray = new int[index];
         System.arraycopy(array, 0, subArray, 0, index);
         return subArray;
+    }
+
+    public static int[] generateArrayOfIndicesOfSize(final int size) {
+        final int[] array = new int[size];
+        for (int i = 0; i < size; i++) {
+            array[i] = i;
+        }
+        return array;
     }
 }

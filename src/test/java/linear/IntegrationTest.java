@@ -3,8 +3,6 @@
  */
 package linear;
 
-import combinatorics.CyclicShiftPermutationsGenerator;
-import combinatorics.JohnsonTrotterUtil;
 import linear.matrix.MatrixCalc;
 import linear.matrix.MatrixUtil;
 import linear.matrix.RowEchelonFormUtil;
@@ -12,8 +10,6 @@ import linear.matrix.exception.MatrixException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.random.RandomGenerator;
 import java.util.random.RandomGeneratorFactory;
 

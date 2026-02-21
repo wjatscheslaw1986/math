@@ -6,7 +6,7 @@ package linear.equation;
 import algebra.Equation;
 import algebra.Letter;
 import algebra.Term;
-import combinatorics.CyclicShiftPermutationsGenerator;
+import combinatorics.JohnsonTrotter;
 import linear.matrix.MatrixCalc;
 import linear.matrix.MatrixUtil;
 import linear.matrix.RowEchelonFormUtil;
@@ -306,10 +306,7 @@ public final class LinearEquationSystemUtil {
                 freeTermIndexAddresses.add(i);
             }
         }
-        final List<int[]> indexPermutations = CyclicShiftPermutationsGenerator.generate(freeTermIndexAddresses.size())
-                .stream()
-                .limit(freeTermIndexAddresses.size())
-                .toList();
+        final List<int[]> indexPermutations = JohnsonTrotter.generate(freeTermIndexAddresses.size(), freeTermIndexAddresses.size());
         for (int[] permutation : indexPermutations) {
             final Double[] arr = new Double[freeTermsFlagMask.length];
             final List<Integer> permutationValues = new ArrayList<>();

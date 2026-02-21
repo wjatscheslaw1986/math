@@ -6,17 +6,20 @@ package combinatorics;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 import static combinatorics.CombinatoricsCalc.countVariationsWithRepetitions;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * Tests for {@link VariationsWithRepetitionsUtil} class.
+ * Tests for {@link VariationsWithRepetitions} class.
  *
  * @author Viacheslav Mikhailov
  */
-public class VariationsWithRepetitionsUtilTest {
+public class VariationsWithRepetitionsTest {
 
     private static int[][] variationsGiven = {
             {0, 0, 0},
@@ -148,20 +151,41 @@ public class VariationsWithRepetitionsUtilTest {
 
     @BeforeAll
     static void before() {
-        System.out.printf("Running tests in %s%s", VariationsWithRepetitionsUtilTest.class, System.lineSeparator());
+        System.out.printf("Running tests in %s%s", VariationsWithRepetitionsTest.class, System.lineSeparator());
+    }
+
+    @Test
+    void shouldGenerateSameVariationsAsGiven() {
+        List<int[]> variationList = VariationsWithRepetitions.generate(5, 3);
+        int i = 0;
+        for (int[] permutation : variationsGiven)
+            assertArrayEquals(permutation, variationList.get(i++));
+        assertEquals(variationsGiven.length, variationList.size());
     }
 
     @Test
     void generateVariationsWithRepetitionsTest() {
         int n = 5, k = 3;
-        var repetitions = VariationsWithRepetitionsUtil.generate(n, k);
+        var repetitions = VariationsWithRepetitions.generate(n, k);
         assertEquals(countVariationsWithRepetitions(n, k), repetitions.size());
         assertEquals(125, repetitions.size());
-//        CombinationGeneratorUtil.printJavaCode(new VariationsWithRepetitionsGenerator(5, 3), System.out);
+
     }
 
     @Test
     void shouldReturn125WhenCountVariationsWithRepetitionsWhen3Of5Elements() {
-        assertEquals(125, VariationsWithRepetitionsUtil.countVariationsWithRepetitions(5, 3));
+        assertEquals(125, VariationsWithRepetitions.count(5, 3));
+    }
+
+    @Test
+    void shouldReturnSameCountOfElementsForBothMethods() {
+        assertEquals(
+                VariationsWithRepetitions.count(16, 5),
+                CombinatoricsCalc.countVariationsWithRepetitions(16, 5));
+    }
+
+//    @Test
+    void print() {
+        CombinatoricsUtil.printJavaCode(new VariationsWithRepetitionsGenerator(5, 3), System.out);
     }
 }

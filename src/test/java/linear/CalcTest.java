@@ -19,10 +19,10 @@ public class CalcTest {
 
     @Test
     void getNumberOfVariations() {
-        assertEquals(6, CombinatoricsCalc.countVariations(6, 1));
-        assertEquals(60, CombinatoricsCalc.countVariations(5, 3));
-        assertEquals(120, CombinatoricsCalc.countVariations(5, 4));
-        assertEquals(720, CombinatoricsCalc.countVariations(6, 5));
+        assertEquals(6, CombinatoricsCalc.countVariationsNoRepetitions(6, 1));
+        assertEquals(60, CombinatoricsCalc.countVariationsNoRepetitions(5, 3));
+        assertEquals(120, CombinatoricsCalc.countVariationsNoRepetitions(5, 4));
+        assertEquals(720, CombinatoricsCalc.countVariationsNoRepetitions(6, 5));
     }
 
     @Test
