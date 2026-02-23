@@ -18,7 +18,7 @@ public class JohnsonTrotterPermutationsGeneratorTest {
         while (gen.hasNext()) {
             assertArrayEquals(gen.next(), JohnsonTrotterTest.permutationsGiven[i++]);
         }
-        assertEquals(120, CombinatoricsCalc.countPermutationsNoRepetitions(5));
+        assertEquals(120, CombinatoricsCalc.countPermutationsNoRepetition(5));
     }
 
     @Test

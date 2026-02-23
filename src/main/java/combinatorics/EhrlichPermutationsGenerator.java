@@ -9,7 +9,7 @@ import linear.spatial.VectorUtil;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 
-import static combinatorics.CombinatoricsUtil.generateArrayOfIndicesOfSize;
+import static combinatorics.CombinatoricsUtil.getArrayOfIndicesForSize;
 
 public class EhrlichPermutationsGenerator extends IndexSequenceGenerator {
 
@@ -21,11 +21,8 @@ public class EhrlichPermutationsGenerator extends IndexSequenceGenerator {
         if (size < 0) {
             throw new ArrayIndexOutOfBoundsException("Number of elements must be non-negative.");
         }
-        lastPermutation = new int[size];
-        for (int i = 0; i < size; i++) {
-            lastPermutation[i] = i;
-        }
-        bTable = generateArrayOfIndicesOfSize(lastPermutation.length);
+        lastPermutation = getArrayOfIndicesForSize(size);
+        bTable = getArrayOfIndicesForSize(size);
         cTable = new int[lastPermutation.length + 1];
 
         if (size > 0)

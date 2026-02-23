@@ -6,11 +6,9 @@ package combinatorics;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
-import static combinatorics.CombinatoricsCalc.countVariationsWithRepetitions;
+import static combinatorics.CombinatoricsCalc.countVariationsWithRepetition;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -167,7 +165,7 @@ public class VariationsWithRepetitionsTest {
     void generateVariationsWithRepetitionsTest() {
         int n = 5, k = 3;
         var repetitions = VariationsWithRepetitions.generate(n, k);
-        assertEquals(countVariationsWithRepetitions(n, k), repetitions.size());
+        assertEquals(countVariationsWithRepetition(n, k), repetitions.size());
         assertEquals(125, repetitions.size());
 
     }
@@ -181,7 +179,7 @@ public class VariationsWithRepetitionsTest {
     void shouldReturnSameCountOfElementsForBothMethods() {
         assertEquals(
                 VariationsWithRepetitions.count(16, 5),
-                CombinatoricsCalc.countVariationsWithRepetitions(16, 5));
+                CombinatoricsCalc.countVariationsWithRepetition(16, 5));
     }
 
 //    @Test

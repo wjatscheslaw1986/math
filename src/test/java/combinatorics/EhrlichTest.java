@@ -156,7 +156,7 @@ public class EhrlichTest {
                 .stream().map(arr -> Arrays.stream(arr).toArray())
                 .toList();
         List<int[]> result = Ehrlich.generate(initialPermutation.length);
-        Assertions.assertEquals(CombinatoricsCalc.countPermutationsNoRepetitions(initialPermutation.length),
+        Assertions.assertEquals(CombinatoricsCalc.countPermutationsNoRepetition(initialPermutation.length),
                 result.size());
         Assertions.assertEquals(controlArray.size(),result.size());
         for (int[] permutation : result)
@@ -194,13 +194,13 @@ public class EhrlichTest {
     @Test
     void shouldGenerateExpectedNumberOfPermutations() {
         List<int[]> result = Ehrlich.generate(5);
-        assertEquals(CombinatoricsCalc.countPermutationsNoRepetitions(5), result.size());
+        assertEquals(CombinatoricsCalc.countPermutationsNoRepetition(5), result.size());
     }
 
     @Test
     void shouldReturnSameCountOfElementsForBothMethods() {
         assertEquals(
                 Ehrlich.count(7),
-                CombinatoricsCalc.countPermutationsNoRepetitions(7));
+                CombinatoricsCalc.countPermutationsNoRepetition(7));
     }
 }

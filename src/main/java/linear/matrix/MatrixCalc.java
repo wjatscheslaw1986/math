@@ -6,7 +6,7 @@ package linear.matrix;
 import algebra.Term;
 import algebra.TermUtil;
 import approximation.RoundingUtil;
-import combinatorics.CombinationNoRepetitions;
+import combinatorics.CombinationsNoRepetition;
 import linear.matrix.exception.MatrixException;
 import linear.spatial.Vector;
 import linear.spatial.VectorCalc;
@@ -381,8 +381,8 @@ public final class MatrixCalc {
         final Deque<double[][]> minorsToCheckStack = new ArrayDeque<double[][]>();
 
         while (currentMinorSize <= squareSideSize) {
-            final var listOfRowIndicesCombinations = CombinationNoRepetitions.generate(rows, currentMinorSize);
-            final var listOfColumnIndicesCombinations = CombinationNoRepetitions.generate(cols, currentMinorSize);
+            final var listOfRowIndicesCombinations = CombinationsNoRepetition.generate(rows, currentMinorSize);
+            final var listOfColumnIndicesCombinations = CombinationsNoRepetition.generate(cols, currentMinorSize);
             for (var rowArray : listOfRowIndicesCombinations)
                 for (var colArray : listOfColumnIndicesCombinations) {
                     final double[][] minor = new double[currentMinorSize][currentMinorSize];

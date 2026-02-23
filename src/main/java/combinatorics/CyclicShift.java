@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import static combinatorics.CombinatoricsUtil.generateArrayOfIndicesOfSize;
+import static combinatorics.CombinatoricsUtil.getArrayOfIndicesForSize;
 import static combinatorics.CombinatoricsUtil.getPrintIntArrayFunction;
 
 /**
@@ -67,7 +67,7 @@ public final class CyclicShift {
         if (size < 0) {
             throw new ArrayIndexOutOfBoundsException("Number of elements must be non-negative.");
         }
-        final int[] array = generateArrayOfIndicesOfSize(size);
+        final int[] array = getArrayOfIndicesForSize(size);
         final int lastIndex = array.length - 1;
         int k = lastIndex;
         func.accept(Arrays.copyOf(array, array.length));
@@ -89,7 +89,7 @@ public final class CyclicShift {
     }
 
     public static int count(int n) {
-        return CombinatoricsCalc.countPermutationsNoRepetitions(n);
+        return CombinatoricsCalc.countPermutationsNoRepetition(n);
     }
 
 }

@@ -7,7 +7,7 @@ package combinatorics;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 
-import static combinatorics.CombinatoricsUtil.generateArrayOfIndicesOfSize;
+import static combinatorics.CombinatoricsUtil.getArrayOfIndicesForSize;
 import static combinatorics.JohnsonTrotter.maxMobileElementIndex;
 
 public class JohnsonTrotterPermutationsGenerator extends IndexSequenceGenerator {
@@ -20,7 +20,7 @@ public class JohnsonTrotterPermutationsGenerator extends IndexSequenceGenerator 
         if (n < 0) {
             throw new ArrayIndexOutOfBoundsException("Number of elements must be non-negative.");
         }
-        lastPermutation = generateArrayOfIndicesOfSize(n);
+        lastPermutation = getArrayOfIndicesForSize(n);
         direction = new int[n];
         for (int i = 0; i < n; i++) {
             direction[i] = -1;

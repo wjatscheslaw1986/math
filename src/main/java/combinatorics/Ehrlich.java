@@ -3,16 +3,8 @@
  */
 package combinatorics;
 
-import linear.spatial.VectorUtil;
-
-import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.function.Consumer;
-
-import static combinatorics.CombinatoricsUtil.generateArrayOfIndicesOfSize;
-import static combinatorics.CombinatoricsUtil.getPrintArrayFunction;
 
 /**
  * A utility class for generating all possible permutations without repetitions
@@ -59,6 +51,6 @@ public final class Ehrlich {
     }
 
     public static int count(int n) {
-        return CombinatoricsCalc.countPermutationsNoRepetitions(n);
+        return CombinatoricsCalc.countPermutationsNoRepetition(n);
     }
 }

@@ -154,7 +154,7 @@ public class CyclicShiftTest {
     void generate() {
         for (int arraySize = 0; arraySize < 7; arraySize++) {
             var result = CyclicShift.generate(arraySize);
-            Assertions.assertEquals(CombinatoricsCalc.countPermutationsNoRepetitions(arraySize),
+            Assertions.assertEquals(CombinatoricsCalc.countPermutationsNoRepetition(arraySize),
                                     result.size());
             for (var permutation : result)
                 Assertions.assertEquals(arraySize, permutation.length);
@@ -212,7 +212,7 @@ public class CyclicShiftTest {
     void shouldReturnSameCountOfElementsForBothMethods() {
         assertEquals(
                 CyclicShift.count(7),
-                CombinatoricsCalc.countPermutationsNoRepetitions(7));
+                CombinatoricsCalc.countPermutationsNoRepetition(7));
     }
     //@Test
     private void print() {

@@ -23,15 +23,15 @@ public class CombinatoricsCalcTest {
     }
 
     @Test
-    void countVariationsNoRepetitionsWithRepetitionsTest() {
-        assertEquals(125, CombinatoricsCalc.countVariationsWithRepetitions(5, 3));
+    void countVariationsNoRepetitionsWithRepetitionTest() {
+        assertEquals(125, CombinatoricsCalc.countVariationsWithRepetition(5, 3));
     }
 
     @Test
     void countPermutationsTest() {
-        assertEquals(120, countPermutationsNoRepetitions(5));
+        assertEquals(120, countPermutationsNoRepetition(5));
         for (int i = 1; i < 10; i++)
-            assertEquals(factorial(i), countPermutationsNoRepetitions(i));
+            assertEquals(factorial(i), countPermutationsNoRepetition(i));
     }
 
     @Test
@@ -44,6 +44,21 @@ public class CombinatoricsCalcTest {
     @Test
     void shouldReturnExpectedCombinationsNoRepetitions() {
         assertEquals(10, countCombinationsNoRepetitions(5, 3));
+    }
+
+    @Test
+    void shouldReturnExpectedMultinomialCoefficient() {
+        assertEquals(countPermutationsNoRepetition(3), multinomialCoefficient(new int[]{1, 1, 1}));
+        assertEquals(280, multinomialCoefficient(new int[]{3, 4, 1}));
+    }
+
+    @Test
+    void shouldReturnExpectedCombinationsWithRepetitionsCount() {
+        assertEquals(35, countCombinationsWithRepetition(5, 3));
+        assertEquals(1, countCombinationsWithRepetition(1, 1));
+        assertEquals(2, countCombinationsWithRepetition(2, 1));
+        assertEquals(20, countCombinationsWithRepetition(20, 1));
+        assertEquals(3, countCombinationsWithRepetition(2, 2));
     }
 
     /**

@@ -101,7 +101,7 @@ public final class JohnsonTrotter {
      * @return number of permutations without repetitions
      */
     public static int count(int n) {
-        return CombinatoricsCalc.countPermutationsNoRepetitions(n);
+        return CombinatoricsCalc.countPermutationsNoRepetition(n);
     }
 
     /**

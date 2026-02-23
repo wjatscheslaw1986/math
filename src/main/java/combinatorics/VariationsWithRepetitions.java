@@ -47,6 +47,6 @@ public final class VariationsWithRepetitions {
      * @return number of all possible variations
      */
     public static int count(final int n, final int k) {
-        return CombinatoricsCalc.countVariationsWithRepetitions(n, k);
+        return CombinatoricsCalc.countVariationsWithRepetition(n, k);
     }
 }

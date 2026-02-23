@@ -196,6 +196,6 @@ public class NarayanaTest {
     void shouldReturnSameCountOfElementsForBothMethods() {
         assertEquals(
                 Narayana.count(8),
-                CombinatoricsCalc.countPermutationsNoRepetitions(8));
+                CombinatoricsCalc.countPermutationsNoRepetition(8));
     }
 }

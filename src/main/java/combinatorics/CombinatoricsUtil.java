@@ -85,21 +85,7 @@ public final class CombinatoricsUtil {
         };
     }
 
-    /**
-     * Cuts off all the elements from the given array starting with the
-     * given <i>index</i>, inclusive.
-     *
-     * @param array given
-     * @param index the index since which we throw away elements from the given array
-     * @return the shortened array
-     */
-    public static int[] cutFrom(final int[] array, final int index) {
-        final int[] subArray = new int[index];
-        System.arraycopy(array, 0, subArray, 0, index);
-        return subArray;
-    }
-
-    public static int[] generateArrayOfIndicesOfSize(final int size) {
+    public static int[] getArrayOfIndicesForSize(final int size) {
         final int[] array = new int[size];
         for (int i = 0; i < size; i++) {
             array[i] = i;

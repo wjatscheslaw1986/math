@@ -181,6 +181,6 @@ public class JohnsonTrotterTest {
     void shouldReturnSameCountOfElementsForBothMethods() {
         assertEquals(
                 JohnsonTrotter.count(7),
-                CombinatoricsCalc.countPermutationsNoRepetitions(7));
+                CombinatoricsCalc.countPermutationsNoRepetition(7));
     }
 }

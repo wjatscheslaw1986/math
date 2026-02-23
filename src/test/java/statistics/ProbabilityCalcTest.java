@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 
 import static combinatorics.CombinatoricsCalc.binomialCoefficient;
-import static combinatorics.CombinatoricsCalc.countPermutationsNoRepetitions;
+import static combinatorics.CombinatoricsCalc.countPermutationsNoRepetition;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static statistics.ProbabilityCalc.atLeastOneHappensProbability;
 
@@ -60,10 +60,10 @@ public class ProbabilityCalcTest {
         }));
 
         // Только на двух монетах появится герб
-        assertEquals(.5d, (double) binomialCoefficient(3, 2) / countPermutationsNoRepetitions(3));
+        assertEquals(.5d, (double) binomialCoefficient(3, 2) / countPermutationsNoRepetition(3));
 
         // Только на одной монете появится герб
-        assertEquals(.5d, (double) binomialCoefficient(3, 1) / countPermutationsNoRepetitions(3));
+        assertEquals(.5d, (double) binomialCoefficient(3, 1) / countPermutationsNoRepetition(3));
 
         // Ни на одной монете не появится герб
         assertEquals(.125d, Math.pow(oneCoinSideProbability, 3));
@@ -91,13 +91,13 @@ public class ProbabilityCalcTest {
         }));
 
         // Только на одной монете появится герб
-        assertEquals(.1666d, (double) binomialCoefficient(4, 1) / countPermutationsNoRepetitions(4), .0001d);
+        assertEquals(.1666d, (double) binomialCoefficient(4, 1) / countPermutationsNoRepetition(4), .0001d);
 
         // Только на двух монетах появится герб
-        assertEquals(.25d, (double) binomialCoefficient(4, 2) / countPermutationsNoRepetitions(4));
+        assertEquals(.25d, (double) binomialCoefficient(4, 2) / countPermutationsNoRepetition(4));
 
         // Только на трёх монетах появится герб
-        assertEquals(.1666d, (double) binomialCoefficient(4, 3) / countPermutationsNoRepetitions(4), .0001d);
+        assertEquals(.1666d, (double) binomialCoefficient(4, 3) / countPermutationsNoRepetition(4), .0001d);
     }
 
     /**

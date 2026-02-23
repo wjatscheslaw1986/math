@@ -7,7 +7,7 @@ package combinatorics;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 
-import static combinatorics.CombinatoricsUtil.generateArrayOfIndicesOfSize;
+import static combinatorics.CombinatoricsUtil.getArrayOfIndicesForSize;
 import static combinatorics.Narayana.*;
 import static linear.spatial.VectorUtil.swap;
 
@@ -20,7 +20,7 @@ public class NarayanaPermutationsGenerator extends IndexSequenceGenerator {
         if (size < 0) {
             throw new ArrayIndexOutOfBoundsException("Number of elements must be non-negative.");
         }
-        lastPermutation = generateArrayOfIndicesOfSize(size);
+        lastPermutation = getArrayOfIndicesForSize(size);
         currentIndex = findMaxIndexOfElementSmallerThanItsRightNeighbour(lastPermutation);
         if (size > 0)
             super.setHasNext(true);

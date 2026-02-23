@@ -3,7 +3,7 @@
  */
 package statistics;
 
-import combinatorics.CombinationNoRepetitions;
+import combinatorics.CombinationsNoRepetition;
 
 import java.util.Arrays;
 
@@ -45,7 +45,7 @@ public final class ProbabilityCalc {
         double probability = .0d;
         boolean subtract = false;
         for (int i = 1; i <= eventsProbabilities.length; i++) {
-            var combinations = CombinationNoRepetitions.generate(eventsProbabilities.length, i);
+            var combinations = CombinationsNoRepetition.generate(eventsProbabilities.length, i);
             var adder = combinations.stream()
                     .map(Arrays::stream)
                     .map(intStream -> intStream.mapToDouble(index -> eventsProbabilities[index]))

@@ -5,9 +5,12 @@ package combinatorics;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import static combinatorics.CombinatoricsUtil.printJavaCode;
 
 /**
- * Tests for {@link CombinationNoRepetitions} class.
+ * Tests for {@link CombinationsNoRepetition} class.
  *
  * @author Viacheslav Mikhailov
  */
@@ -18,15 +21,19 @@ public class CombinationsGeneratorTest {
         System.out.printf("Running tests in %s%s", CombinationsGeneratorTest.class, System.lineSeparator());
     }
 
-//    @Test
-    void generate() {
+    @Test
+    void shouldGenerateBinomialCoefficientNumberOfCombinationsWithoutRepetition() {
         final int n = 13;
         for (int k = 1; k <= n; k++) {
-            var result = CombinationNoRepetitions.generate(n, k);
+            var result = CombinationsNoRepetition.generate(n, k);
             Assertions.assertEquals(CombinatoricsCalc.binomialCoefficient(n, k), result.size());
-            for (var choice : result)
-                Assertions.assertEquals(k, choice.length);
-//            CombinationsGenerator.print(n, k, System.out);
+            for (var selection : result)
+                Assertions.assertEquals(k, selection.length);
         }
+    }
+
+    @Test
+    void print() {
+        printJavaCode(new CombinationsNoRepetitionGenerator(5, 3),  System.out);
     }
 }
