@@ -85,10 +85,50 @@ public final class CombinatoricsUtil {
         };
     }
 
+    /**
+     * Creates and returns an array of zero-based indices for the specified size.
+     * <p>
+     * The returned array contains sequential values starting from {@code 0}
+     * up to {@code size - 1}.
+     * </p>
+     *
+     * <pre>
+     * Example:
+     * size = 4  →  [0, 1, 2, 3]
+     * </pre>
+     *
+     * @param size the length of the array to generate (must be non-negative)
+     * @return an integer array containing values from {@code 0} to {@code size - 1}
+     * @throws NegativeArraySizeException if {@code size} is negative
+     */
     public static int[] getArrayOfIndicesForSize(final int size) {
         final int[] array = new int[size];
         for (int i = 0; i < size; i++) {
             array[i] = i;
+        }
+        return array;
+    }
+
+    /**
+     * Creates and returns an array of one-based ordinal numbers for the specified size.
+     * <p>
+     * The returned array contains sequential values starting from {@code 1}
+     * up to {@code size}.
+     * </p>
+     *
+     * <pre>
+     * Example:
+     * size = 4  →  [1, 2, 3, 4]
+     * </pre>
+     *
+     * @param size the length of the array to generate (must be non-negative)
+     * @return an integer array containing values from {@code 1} to {@code size}
+     * @throws NegativeArraySizeException if {@code size} is negative
+     */
+    public static int[] getArrayOfOrdinalsForSize(final int size) {
+        final int[] array = new int[size];
+        for (int i = 1; i <= size; i++) {
+            array[i - 1] = i;
         }
         return array;
     }

@@ -33,8 +33,8 @@ public class Term implements Comparable<Term>, SeriesPart {
         return power;
     }
 
-    public double setPower(double power) {
-        return this.power = power;
+    public void setPower(double power) {
+        this.power = power;
     }
 
     public double getCoefficient() {

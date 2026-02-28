@@ -30,8 +30,7 @@ public record Complex(Double real, Double imaginary) {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof Complex)) return false;
-        Complex c = (Complex) o;
-        return Double.compare(real, c.real) == 0 && Double.compare(imaginary, c.imaginary) == 0;
+        if (!(o instanceof Complex(Double real_, Double imaginary_))) return false;
+        return Double.compare(real, real_) == 0 && Double.compare(imaginary, imaginary_) == 0;
     }
 }

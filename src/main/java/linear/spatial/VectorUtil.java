@@ -121,7 +121,7 @@ public final class VectorUtil {
     }
 
     /**
-     * Mutually swap two elements of an integer array found by their indices.
+     * Mutually swap two elements of the given array, by the indices given.
      *
      * @param vector given
      * @param i index
