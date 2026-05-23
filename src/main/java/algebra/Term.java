@@ -237,7 +237,7 @@ public class Term implements Comparable<Term>, SeriesPart {
      */
     @Override
     public Term copy() {
-        return new Term(this.power, this.coefficient, this.letter.copy(), Objects.isNull(this.value) ? null : this.value);
+        return new Term(this.power, this.coefficient, this.letter.copy(), this.value);
     }
 
     /**

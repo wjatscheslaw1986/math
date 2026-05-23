@@ -13,7 +13,7 @@ import static approximation.RoundingUtil.isEffectivelyZero;
  *
  * @author Viacheslav Mikhailov
  */
-final class LinearEquationSolver {
+public final class LinearEquationSolver {
 
     /**
      * Solves the given linear equation.
@@ -21,7 +21,7 @@ final class LinearEquationSolver {
      * @param equation the equation given
      * @return linear equation roots
      */
-    static EquationRoots<Complex> solve(final Equation equation) {
+    public static EquationRoots<Complex> solve(final Equation equation) {
         Objects.requireNonNull(equation, "Equation cannot be null");
         if (equation.terms().size() != 2)
             throw new IllegalArgumentException("Malformed linear equation. Must have 2 terms on the left side of the equation.");

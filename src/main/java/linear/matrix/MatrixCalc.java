@@ -207,9 +207,11 @@ public final class MatrixCalc {
             throw new IllegalArgumentException("A non-square matrix has no determinant.");
         double result;
         if (matrix.length < 2)
-            return matrix[0][0];
-        if (matrix.length == 2)
-            return matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0];
+            return matrix[0][0] == -.0d ? .0d : matrix[0][0];
+        if (matrix.length == 2) {
+            result = matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0];
+            return result == -.0d ? .0d : result;
+        }
         if (matrix.length == 3)
             return detSarrus(matrix);
         result = 0;
