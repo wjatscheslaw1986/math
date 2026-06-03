@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 /**
- * A series or a part of a series of terms of {@link Term} type.
+ * A series or a part of a series of terms {@link Term}.
  */
 public class Terms implements SeriesPart {
 

@@ -6,6 +6,8 @@ package algebra;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -116,6 +118,4 @@ public class TermUtilTest {
         var b2 = Term.builder().letter("x").power(22.0).coefficient(22.0d).build();
         assertThrows(IllegalArgumentException.class, () -> TermUtil.divide(a2, b2));
     }
-
-
 }

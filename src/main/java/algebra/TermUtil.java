@@ -155,8 +155,6 @@ public final class TermUtil {
         return result;
     }
 
-
-
     /**
      *
      *
@@ -173,6 +171,4 @@ public final class TermUtil {
         }
         return termsArray;
     }
-
-
 }
