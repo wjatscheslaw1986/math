@@ -4,7 +4,7 @@
 
 package optimization;
 
-import algebra.Equation;
+import algebra.Term;
 import functional.FunctionUtil;
 
 import java.util.Collections;
@@ -13,51 +13,55 @@ import java.util.Objects;
 import java.util.function.DoubleUnaryOperator;
 
 public class ExtremumByGoldenRatioAlgorithm {
-    private static final double GOLDEN_RATIO = 0.618d;
-    private final Equation equation;
+    private static final double GOLDEN_RATIO = (Math.sqrt(5.0) - 1.0) / 2.0;
+    private final List<Term> terms;
     private int counter;
-    private final List<DoubleUnaryOperator> equationTermTransformers;
+    private final List<DoubleUnaryOperator> termTransformers;
 
-    private ExtremumByGoldenRatioAlgorithm(final Equation equation) {
-        this.equation = Objects.requireNonNull(equation);
-        this.equationTermTransformers = Collections.nCopies(equation.terms().size(), DoubleUnaryOperator.identity());
+    private ExtremumByGoldenRatioAlgorithm(final List<Term> terms) {
+        this.counter = 0;
+        this.terms = Objects.requireNonNull(terms);
+        final DoubleUnaryOperator transformer = DoubleUnaryOperator.identity();
+        this.termTransformers = Collections.nCopies(terms.size(), transformer);
     }
 
-    private ExtremumByGoldenRatioAlgorithm(final Equation equation, final List<DoubleUnaryOperator> transformers) {
-        this.equation = Objects.requireNonNull(equation);
-        this.equationTermTransformers = transformers;
+    private ExtremumByGoldenRatioAlgorithm(final List<Term> terms, final List<DoubleUnaryOperator> transformers) {
+        if (terms.size() != transformers.size()) {
+            throw new IllegalArgumentException("Number of terms and transformers don't match");
+        }
+        this.terms = Objects.requireNonNull(terms);
+        this.termTransformers = transformers;
     }
 
-    public static ExtremumByGoldenRatioAlgorithm of(final Equation equation) {
-        return new ExtremumByGoldenRatioAlgorithm(equation);
+    public static ExtremumByGoldenRatioAlgorithm of(final List<Term> terms) {
+        return new ExtremumByGoldenRatioAlgorithm(terms);
     }
 
-    public static ExtremumByGoldenRatioAlgorithm of(final Equation equation, final List<DoubleUnaryOperator> transformers) {
-        return new ExtremumByGoldenRatioAlgorithm(equation, transformers);
+    public static ExtremumByGoldenRatioAlgorithm of(final List<Term> terms, final List<DoubleUnaryOperator> transformers) {
+        return new ExtremumByGoldenRatioAlgorithm(terms, transformers);
     }
 
     public int getStepsCount() {
         return counter;
     }
 
-    public double getExtremumX(final double fromX, final double toX, final double epsilon, final double delta) {
-        AlgorithmStep currentStep = new Step1(fromX, toX, epsilon, delta);
+    public double getExtremum(final double fromX, final double toX, final double epsilon) {
+        AlgorithmStep currentStep = new Step1(fromX, toX, epsilon);
         while (currentStep.getClass() != Finish.class) {
             currentStep = currentStep.next();
         }
-        return currentStep.optimumX();
+        return currentStep.optimum();
     }
 
     private abstract sealed class AlgorithmStep permits Finish, Step1, Step2 {
+        private final double epsilon;
         private double fromX;
         private double toX;
-        private final double epsilon;
-        private double delta;
         private double bigDelta;
         private double x1 = .0d, x2 = .0d, f1 = .0d, f2 = .0d;
 
-        private AlgorithmStep(double fromX, double toX, double epsilon, double delta) {
-            if (fromX < 0 || toX < 0 || epsilon < 0 || delta < 0)
+        private AlgorithmStep(double fromX, double toX, double epsilon) {
+            if (fromX < 0 || toX < 0 || epsilon < 0)
                 throw new IllegalArgumentException("All arguments must be non-negative");
             if (fromX >= toX)
                 throw new IllegalArgumentException("fromX must be strictly less than toX");
@@ -66,12 +70,11 @@ public class ExtremumByGoldenRatioAlgorithm {
             this.fromX = fromX;
             this.toX = toX;
             this.epsilon = epsilon;
-            this.delta = delta;
         }
 
         abstract AlgorithmStep next();
 
-        private double optimumX() {
+        private double optimum() {
             if (this.getClass() == Finish.class)
                 return (this.fromX + this.toX) / 2;
             else throw new IllegalStateException("Wrong algorithm step for calling this method.");
@@ -79,29 +82,27 @@ public class ExtremumByGoldenRatioAlgorithm {
     }
 
     private final class Step1 extends AlgorithmStep {
-        public Step1(double fromX, double toX, double epsilon, double delta) {
-            super(fromX, toX, epsilon, delta);
+        public Step1(double fromX, double toX, double epsilon) {
+            super(fromX, toX, epsilon);
         }
 
         @Override
         AlgorithmStep next() {
             counter++;
             super.bigDelta = super.toX - super.fromX;
-            super.delta = GOLDEN_RATIO * super.bigDelta;
             if (super.bigDelta <= 2.0d * super.epsilon)
-                return new Finish(super.fromX, super.toX, super.epsilon, super.delta);
-            super.delta = GOLDEN_RATIO * super.bigDelta;
-            var x1 = super.toX - super.delta;
-            var x2 = super.fromX + super.delta;
-            var f1 = FunctionUtil.calculateSingleVariableFunctionValueAtGivenX(equation.terms(), equationTermTransformers, x1);
-            var f2 = FunctionUtil.calculateSingleVariableFunctionValueAtGivenX(equation.terms(), equationTermTransformers, x2);
-            return new Step2(super.fromX, super.toX, super.epsilon, super.delta, x1, x2, f1, f2);
+                return new Finish(super.fromX, super.toX, super.epsilon);
+            var x1 = super.toX - GOLDEN_RATIO * super.bigDelta;
+            var x2 = super.fromX + GOLDEN_RATIO * super.bigDelta;
+            var f1 = FunctionUtil.calculateSingleVariableFunctionValueAtGivenX(terms, termTransformers, x1);
+            var f2 = FunctionUtil.calculateSingleVariableFunctionValueAtGivenX(terms, termTransformers, x2);
+            return new Step2(super.fromX, super.toX, super.epsilon, x1, x2, f1, f2);
         }
     }
 
     private final class Step2 extends AlgorithmStep {
-        public Step2(double fromX, double toX, double epsilon, double delta, double x1, double x2,  double f1,  double f2) {
-            super(fromX, toX, epsilon, delta);
+        public Step2(double fromX, double toX, double epsilon, double x1, double x2,  double f1,  double f2) {
+            super(fromX, toX, epsilon);
             super.x1 = x1;
             super.x2 = x2;
             super.f1 = f1;
@@ -115,30 +116,32 @@ public class ExtremumByGoldenRatioAlgorithm {
                 super.fromX = super.x1;
                 super.bigDelta = super.toX - super.fromX;
                 if (super.bigDelta <= 2.0d * super.epsilon)
-                    return new Finish(super.fromX, super.toX, super.epsilon, super.delta);
+                    return new Finish(super.fromX, super.toX, super.epsilon);
                 else {
                     super.x1 = super.x2;
                     super.f1 = super.f2;
                     super.x2 = super.fromX + GOLDEN_RATIO * super.bigDelta;
+                    super.f2 = FunctionUtil.calculateSingleVariableFunctionValueAtGivenX(terms, termTransformers, super.x2);
                 }
-            } else if (super.f1 < super.f2) {
+            } else {
                 super.toX = super.x2;
                 super.bigDelta = super.toX - super.fromX;
                 if (super.bigDelta <= 2.0d * super.epsilon)
-                    return new Finish(super.fromX, super.toX, super.epsilon, super.delta);
+                    return new Finish(super.fromX, super.toX, super.epsilon);
                 else {
                     super.x2 = super.x1;
                     super.f2 = super.f1;
                     super.x1 = super.toX - GOLDEN_RATIO * super.bigDelta;
+                    super.f1 = FunctionUtil.calculateSingleVariableFunctionValueAtGivenX(terms, termTransformers, super.x1);
                 }
             }
-            return new Step2(super.fromX, super.toX, super.epsilon, super.delta, super.x1, super.x2, super.f1, super.f2);
+            return new Step2(super.fromX, super.toX, super.epsilon, super.x1, super.x2, super.f1, super.f2);
         }
     }
 
     private final class Finish extends AlgorithmStep {
-        public Finish(double fromX, double toX, double epsilon, double delta) {
-            super(fromX, toX, epsilon, delta);
+        public Finish(double fromX, double toX, double epsilon) {
+            super(fromX, toX, epsilon);
         }
 
         @Override

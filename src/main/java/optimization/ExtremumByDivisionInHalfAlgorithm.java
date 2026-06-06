@@ -4,7 +4,7 @@
 
 package optimization;
 
-import algebra.Equation;
+import algebra.Term;
 import functional.FunctionUtil;
 
 import java.util.Collections;
@@ -14,26 +14,30 @@ import java.util.function.DoubleUnaryOperator;
 
 public class ExtremumByDivisionInHalfAlgorithm {
 
-    private final Equation equation;
+    private final List<Term> terms;
     private int counter;
     private final List<DoubleUnaryOperator> equationTermTransformers;
 
-    private ExtremumByDivisionInHalfAlgorithm(final Equation equation) {
-        this.equation = Objects.requireNonNull(equation);
-        this.equationTermTransformers = Collections.nCopies(equation.terms().size(), DoubleUnaryOperator.identity());
+    private ExtremumByDivisionInHalfAlgorithm(final List<Term> terms) {
+        this.terms = Objects.requireNonNull(terms);
+        final DoubleUnaryOperator transformer = DoubleUnaryOperator.identity();
+        this.equationTermTransformers = Collections.nCopies(terms.size(), transformer);
     }
 
-    private ExtremumByDivisionInHalfAlgorithm(final Equation equation, final List<DoubleUnaryOperator> transformers) {
-        this.equation = Objects.requireNonNull(equation);
+    private ExtremumByDivisionInHalfAlgorithm(final List<Term> terms, final List<DoubleUnaryOperator> transformers) {
+        this.terms = Objects.requireNonNull(terms);
+        if (terms.size() != transformers.size()) {
+            throw new IllegalArgumentException("Number of terms and transformers don't match");
+        }
         this.equationTermTransformers = transformers;
     }
 
-    public static ExtremumByDivisionInHalfAlgorithm of(final Equation equation) {
-        return new ExtremumByDivisionInHalfAlgorithm(equation);
+    public static ExtremumByDivisionInHalfAlgorithm of(final List<Term> terms) {
+        return new ExtremumByDivisionInHalfAlgorithm(terms);
     }
 
-    public static ExtremumByDivisionInHalfAlgorithm of(final Equation equation, final List<DoubleUnaryOperator> transformers) {
-        return new ExtremumByDivisionInHalfAlgorithm(equation, transformers);
+    public static ExtremumByDivisionInHalfAlgorithm of(final List<Term> terms, final List<DoubleUnaryOperator> transformers) {
+        return new ExtremumByDivisionInHalfAlgorithm(terms, transformers);
     }
 
     public int getStepsCount() {
@@ -93,8 +97,8 @@ public class ExtremumByDivisionInHalfAlgorithm {
             double center = (super.fromX + super.toX) / 2.0;
             var x1 = center - (super.delta / 2.0);
             var x2 = center + (super.delta / 2.0);
-            var f1 = FunctionUtil.calculateSingleVariableFunctionValueAtGivenX(equation.terms(), equationTermTransformers, x1);
-            var f2 = FunctionUtil.calculateSingleVariableFunctionValueAtGivenX(equation.terms(), equationTermTransformers, x2);
+            var f1 = FunctionUtil.calculateSingleVariableFunctionValueAtGivenX(terms, equationTermTransformers, x1);
+            var f2 = FunctionUtil.calculateSingleVariableFunctionValueAtGivenX(terms, equationTermTransformers, x2);
             if (f1 >= f2)
                 super.fromX = x1;
             if (f1 < f2)
