@@ -46,8 +46,14 @@ public class ExtremumByGoldenRatioAlgorithm {
     }
 
     public double getExtremum(final double fromX, final double toX, final double epsilon) {
+        if (fromX < 0 || toX < 0 || epsilon < 0)
+            throw new IllegalArgumentException("All arguments must be non-negative");
+        if (fromX >= toX)
+            throw new IllegalArgumentException("fromX must be strictly less than toX");
+        if (epsilon >= (toX - fromX))
+            throw new IllegalArgumentException("Epsilon must be less than the range from %f to %f".formatted(fromX, toX));
         AlgorithmStep currentStep = new Step1(fromX, toX, epsilon);
-        while (currentStep.getClass() != Finish.class) {
+        while (!currentStep.isFinished()) {
             currentStep = currentStep.next();
         }
         return currentStep.optimum();
@@ -58,15 +64,7 @@ public class ExtremumByGoldenRatioAlgorithm {
         private double fromX;
         private double toX;
         private double bigDelta;
-        private double x1 = .0d, x2 = .0d, f1 = .0d, f2 = .0d;
-
         private AlgorithmStep(double fromX, double toX, double epsilon) {
-            if (fromX < 0 || toX < 0 || epsilon < 0)
-                throw new IllegalArgumentException("All arguments must be non-negative");
-            if (fromX >= toX)
-                throw new IllegalArgumentException("fromX must be strictly less than toX");
-            if (epsilon >= (toX - fromX))
-                throw new IllegalArgumentException("Epsilon must be less than the range from %f to %f".formatted(fromX, toX));
             this.fromX = fromX;
             this.toX = toX;
             this.epsilon = epsilon;
@@ -74,15 +72,17 @@ public class ExtremumByGoldenRatioAlgorithm {
 
         abstract AlgorithmStep next();
 
+        abstract boolean isFinished();
+
         private double optimum() {
-            if (this.getClass() == Finish.class)
+            if (this.isFinished())
                 return (this.fromX + this.toX) / 2;
             else throw new IllegalStateException("Wrong algorithm step for calling this method.");
         }
     }
 
     private final class Step1 extends AlgorithmStep {
-        public Step1(double fromX, double toX, double epsilon) {
+        public Step1(final double fromX, final double toX, final double epsilon) {
             super(fromX, toX, epsilon);
         }
 
@@ -98,55 +98,72 @@ public class ExtremumByGoldenRatioAlgorithm {
             var f2 = FunctionUtil.calculateSingleVariableFunctionValueAtGivenX(terms, termTransformers, x2);
             return new Step2(super.fromX, super.toX, super.epsilon, x1, x2, f1, f2);
         }
+
+        @Override
+        boolean isFinished() {
+            return false;
+        }
     }
 
     private final class Step2 extends AlgorithmStep {
-        public Step2(double fromX, double toX, double epsilon, double x1, double x2,  double f1,  double f2) {
+        private double x1 = .0d, x2 = .0d, f1 = .0d, f2 = .0d;
+
+        private Step2(double fromX, double toX, double epsilon, double x1, double x2,  double f1,  double f2) {
             super(fromX, toX, epsilon);
-            super.x1 = x1;
-            super.x2 = x2;
-            super.f1 = f1;
-            super.f2 = f2;
+            this.x1 = x1;
+            this.x2 = x2;
+            this.f1 = f1;
+            this.f2 = f2;
         }
 
         @Override
         AlgorithmStep next() {
             counter++;
-            if (super.f1 >= super.f2) {
-                super.fromX = super.x1;
+            if (this.f1 >= this.f2) {
+                super.fromX = this.x1;
                 super.bigDelta = super.toX - super.fromX;
                 if (super.bigDelta <= 2.0d * super.epsilon)
                     return new Finish(super.fromX, super.toX, super.epsilon);
                 else {
-                    super.x1 = super.x2;
-                    super.f1 = super.f2;
-                    super.x2 = super.fromX + GOLDEN_RATIO * super.bigDelta;
-                    super.f2 = FunctionUtil.calculateSingleVariableFunctionValueAtGivenX(terms, termTransformers, super.x2);
+                    this.x1 = this.x2;
+                    this.f1 = this.f2;
+                    this.x2 = super.fromX + GOLDEN_RATIO * super.bigDelta;
+                    this.f2 = FunctionUtil.calculateSingleVariableFunctionValueAtGivenX(terms, termTransformers, this.x2);
                 }
             } else {
-                super.toX = super.x2;
+                super.toX = this.x2;
                 super.bigDelta = super.toX - super.fromX;
                 if (super.bigDelta <= 2.0d * super.epsilon)
                     return new Finish(super.fromX, super.toX, super.epsilon);
                 else {
-                    super.x2 = super.x1;
-                    super.f2 = super.f1;
-                    super.x1 = super.toX - GOLDEN_RATIO * super.bigDelta;
-                    super.f1 = FunctionUtil.calculateSingleVariableFunctionValueAtGivenX(terms, termTransformers, super.x1);
+                    this.x2 = this.x1;
+                    this.f2 = this.f1;
+                    this.x1 = super.toX - GOLDEN_RATIO * super.bigDelta;
+                    this.f1 = FunctionUtil.calculateSingleVariableFunctionValueAtGivenX(terms, termTransformers, this.x1);
                 }
             }
-            return new Step2(super.fromX, super.toX, super.epsilon, super.x1, super.x2, super.f1, super.f2);
+            return new Step2(super.fromX, super.toX, super.epsilon, this.x1, this.x2, this.f1, this.f2);
+        }
+
+        @Override
+        boolean isFinished() {
+            return false;
         }
     }
 
     private final class Finish extends AlgorithmStep {
-        public Finish(double fromX, double toX, double epsilon) {
+        private Finish(double fromX, double toX, double epsilon) {
             super(fromX, toX, epsilon);
         }
 
         @Override
         AlgorithmStep next() {
             throw new IllegalStateException("Wrong algorithm step for calling this method.");
+        }
+
+        @Override
+        boolean isFinished() {
+            return true;
         }
     }
 }

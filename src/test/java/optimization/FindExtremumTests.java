@@ -6,11 +6,13 @@ package optimization;
 
 import algebra.Letter;
 import algebra.Term;
+import exception.MathException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class FindExtremumTests {
@@ -120,5 +122,31 @@ public class FindExtremumTests {
         );
         assertEquals(0.141, algorithm.getExtremum(.0d, Math.PI, 0.2d), 0.001);
         assertEquals(6, algorithm.getStepsCount());
+    }
+
+    @Test
+    void shouldFindExpectedIntervalForTheGivenFunctionAndInitialX() {
+        SwannAlgorithm swannAlgorithm = SwannAlgorithm.of(
+                x -> (3 * Math.pow(x, 2) + (12 / Math.pow(x, 3)) - 5), 0.1d);
+        double[] intervalWithMinimum;
+        try {
+            intervalWithMinimum = swannAlgorithm.getInterval(1.25d);
+        } catch (MathException e) {
+            throw new RuntimeException(e);
+        }
+        assertArrayEquals(new double[]{ 1.25d, 1.55d}, intervalWithMinimum);
+        try {
+            intervalWithMinimum = swannAlgorithm.getInterval(0.25d);
+        } catch (MathException e) {
+            throw new RuntimeException(e);
+        }
+        assertArrayEquals(new double[]{ .75d, 3.15d}, intervalWithMinimum, 1e-15);
+
+        try {
+            intervalWithMinimum = swannAlgorithm.getInterval(5.25d);
+        } catch (MathException e) {
+            throw new RuntimeException(e);
+        }
+        assertArrayEquals(new double[]{ -4.45d, 5.15d}, intervalWithMinimum, 1e-15);
     }
 }
