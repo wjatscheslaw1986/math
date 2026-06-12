@@ -78,7 +78,7 @@ public final class MatrixCalc {
      * the original matrix object
      *
      * @param matrixLeft   - the matrix on the left of the multiplication equation
-     * @param matrixRight- the matrix on the right of the multiplication equation
+     * @param matrixRight  - the matrix on the right of the multiplication equation
      * @return a new matrix object which is a result of multiplication
      * @throws MatrixException - if the matrix is malformed
      */
@@ -101,10 +101,10 @@ public final class MatrixCalc {
      * The method multiplies the two argument matrices The method does not modify
      * the original matrix object
      *
-     * @param matrixLeft   - the matrix on the left of the multiplication equation
-     * @param matrixRight- the matrix on the right of the multiplication equation
+     * @param matrixLeft the matrix on the left of the multiplication equation
+     * @param matrixRight the matrix on the right of the multiplication equation
      * @return a new matrix object which is a result of multiplication
-     * @throws MatrixException - if the matrix is malformed
+     * @throws MatrixException if the matrix is malformed
      */
     public static Term[][] multiply(Term[][] matrixLeft, Term[][] matrixRight) throws MatrixException {
         if (!Validation.canMultiply(matrixLeft, matrixRight))
@@ -126,8 +126,8 @@ public final class MatrixCalc {
      * The method multiplies a given vector (from the left side of the expression)
      * on a given matrix (on the right side of the expression).
      *
-     * @param vector   - the given vector on the left side of the expression
-     * @param matrixRight- the given matrix on the right side of the expression
+     * @param vector the given vector on the left side of the expression
+     * @param matrixRight the given matrix on the right side of the expression
      * @return the resulting matrix
      * @throws MatrixException - if the given multiplicand and the given multiplier cannot be multiplied together.
      */

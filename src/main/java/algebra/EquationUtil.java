@@ -103,7 +103,7 @@ public class EquationUtil {
             if (i != variableIndex) {
                 builder.value(1.0d);
             } else {
-                builder.value(null);
+                builder.value(Double.NaN);
             }
             terms.add(builder.build());
         }
@@ -144,7 +144,7 @@ public class EquationUtil {
         var hits = 0;
         Term variable = null;
         for (Term eqTerm : equation.terms())
-            if (Objects.isNull(eqTerm.getValue())) {
+            if (Double.isNaN(eqTerm.getValue())) {
                 variable = eqTerm;
                 hits++;
             }
@@ -152,7 +152,7 @@ public class EquationUtil {
         double sum = .0d;
 
         for (Term eqTerm : equation.terms()) {
-            if (Objects.isNull(eqTerm.getValue()))
+            if (Double.isNaN(eqTerm.getValue()))
                 continue;
             sum = sum + eqTerm.getCoefficient() * eqTerm.getValue();
         }

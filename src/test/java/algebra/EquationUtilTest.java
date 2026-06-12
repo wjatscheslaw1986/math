@@ -85,7 +85,7 @@ public class EquationUtilTest {
     void given_single_variable_linear_equation_as_Equation_find_its_solution() {
         double[] coefficients = new double[]{.0d, .0d, 4.0d, .0d, .0d, .05d, .0d, .0d, 8.05d};
         Equation equation = toSingleVariableEquation(coefficients, 2);
-        assertNull(equation.getTermByIndex(2).getValue());
+        assertTrue(Double.isNaN(equation.getTermByIndex(2).getValue()));
         EquationUtil.solveSingleVariableLinearEquation(equation);
         assertNotNull(equation.getTermByIndex(2).getValue());
         assertEquals(2d, equation.getTermByIndex(2).getValue());
@@ -103,7 +103,7 @@ public class EquationUtilTest {
         assertEquals(35, sum.getCoefficient());
         assertEquals("a0", sum.getLetter().toString());
         assertEquals(1.0d, sum.getPower());
-        assertNull(sum.getValue());
+        assertTrue(Double.isNaN(sum.getValue()));
 
         given1 = Term.builder().coefficient(15).letter("b").build();
         given2 = Term.builder().coefficient(-20).letter("b").build();
@@ -111,7 +111,7 @@ public class EquationUtilTest {
         assertEquals(-5, sum.getCoefficient());
         assertEquals("b0", sum.getLetter().toString());
         assertEquals(1.0d, sum.getPower());
-        assertNull(sum.getValue());
+        assertTrue(Double.isNaN(sum.getValue()));
         assertEquals(sum.getCoefficient(), TermUtil.sum(given2, given1).getCoefficient());
 
         given1 = Term.builder().coefficient(15).letter("a").build();

@@ -176,7 +176,7 @@ public final class LinearEquationSystemUtil {
                             term.setCoefficient(coefficients[k]);
                         }
                 }
-                eq.terms().addFirst(Term.builder().value(null).coefficient(coefficients[0]).letter(Letter.of("x", pivotIndex)).build());
+                eq.terms().addFirst(Term.builder().value(Double.NaN).coefficient(coefficients[0]).letter(Letter.of("x", pivotIndex)).build());
                 solveSingleVariableLinearEquation(eq);
             }
             eq.terms().sort((m1, m2) -> (-1) * m1.compareTo(m2));

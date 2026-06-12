@@ -12,19 +12,19 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.DoubleUnaryOperator;
 
-public class ExtremumByDivisionInHalfAlgorithm {
+public class BolzanoSearch {
 
     private final List<Term> terms;
-    private int counter;
     private final List<DoubleUnaryOperator> equationTermTransformers;
+    private int counter = 0;
 
-    private ExtremumByDivisionInHalfAlgorithm(final List<Term> terms) {
+    private BolzanoSearch(final List<Term> terms) {
         this.terms = Objects.requireNonNull(terms);
-        final DoubleUnaryOperator transformer = DoubleUnaryOperator.identity();
-        this.equationTermTransformers = Collections.nCopies(terms.size(), transformer);
+        final DoubleUnaryOperator defaultTransformer = DoubleUnaryOperator.identity();
+        this.equationTermTransformers = Collections.nCopies(terms.size(), defaultTransformer);
     }
 
-    private ExtremumByDivisionInHalfAlgorithm(final List<Term> terms, final List<DoubleUnaryOperator> transformers) {
+    private BolzanoSearch(final List<Term> terms, final List<DoubleUnaryOperator> transformers) {
         this.terms = Objects.requireNonNull(terms);
         if (terms.size() != transformers.size()) {
             throw new IllegalArgumentException("Number of terms and transformers don't match");
@@ -32,16 +32,16 @@ public class ExtremumByDivisionInHalfAlgorithm {
         this.equationTermTransformers = transformers;
     }
 
-    public static ExtremumByDivisionInHalfAlgorithm of(final List<Term> terms) {
-        return new ExtremumByDivisionInHalfAlgorithm(terms);
+    public static BolzanoSearch of(final List<Term> terms) {
+        return new BolzanoSearch(terms);
     }
 
-    public static ExtremumByDivisionInHalfAlgorithm of(final List<Term> terms, final List<DoubleUnaryOperator> transformers) {
-        return new ExtremumByDivisionInHalfAlgorithm(terms, transformers);
+    public static BolzanoSearch of(final List<Term> terms, final List<DoubleUnaryOperator> transformers) {
+        return new BolzanoSearch(terms, transformers);
     }
 
-    public int getStepsCount() {
-        return counter;
+    protected int getStepsCount() {
+        return this.counter;
     }
 
     public double getExtremumX(final double fromX, final double toX, final double epsilon, final double delta) {
@@ -58,6 +58,7 @@ public class ExtremumByDivisionInHalfAlgorithm {
         private final double epsilon;
         private final double delta;
 
+
         private AlgorithmStep(double fromX, double toX, double epsilon, double delta) {
             if (fromX < 0 || toX < 0 || epsilon < 0 || delta < 0)
                 throw new IllegalArgumentException("All arguments must be non-negative");
@@ -70,6 +71,7 @@ public class ExtremumByDivisionInHalfAlgorithm {
             this.epsilon = epsilon;
             this.delta = delta;
         }
+
 
         abstract AlgorithmStep next();
 
@@ -87,18 +89,17 @@ public class ExtremumByDivisionInHalfAlgorithm {
 
         @Override
         AlgorithmStep next() {
-            counter++;
+            BolzanoSearch.this.counter++;
             if (super.toX - super.fromX <= 2.0d * super.epsilon)
                 return new Finish(super.fromX, super.toX, super.epsilon, super.delta);
-            double center = (super.fromX + super.toX) / 2.0;
-            var x1 = center - (super.delta / 2.0);
-            var x2 = center + (super.delta / 2.0);
-            var f1 = FunctionUtil.calculateSingleVariableFunctionValueAtGivenX(terms, equationTermTransformers, x1);
-            var f2 = FunctionUtil.calculateSingleVariableFunctionValueAtGivenX(terms, equationTermTransformers, x2);
-            if (f1 >= f2)
-                return new Step1(x1, super.toX, super.epsilon, super.delta);
-            if (f1 < f2)
-                return new Step1(super.fromX, x2, super.epsilon, super.delta);
+            var center = (super.fromX + super.toX) / 2.0;
+            var f_center = FunctionUtil.calculateSingleVariableFunctionValueAtGivenX(terms, equationTermTransformers, center);
+            if (Math.abs(f_center) < super.delta)
+                return new Finish(super.fromX, super.toX, super.epsilon, super.delta);
+            if (f_center >= super.delta)
+                return new Step1(super.fromX, center, super.epsilon, super.delta);
+            if (f_center < -super.delta)
+                return new Step1(center, super.toX, super.epsilon, super.delta);
             throw new RuntimeException("unreachable");
         }
     }

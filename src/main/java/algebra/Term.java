@@ -7,6 +7,7 @@ import series.SeriesPart;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.function.DoubleUnaryOperator;
 
 import static algebra.TermUtil.isConstant;
 
@@ -20,13 +21,20 @@ public class Term implements Comparable<Term>, SeriesPart {
     private final Letter letter;
     private double power;
     private double coefficient;
-    private Double value = null;
+    private Double value = Double.NaN;
+    private DoubleUnaryOperator valueTransformer;
+
+    private Term(final double pow, final double coeff, final Letter name, final Double val, final DoubleUnaryOperator transformer) {
+        this(pow, coeff, name, val);
+        this.valueTransformer = transformer;
+    }
 
     private Term(final double pow, final double coeff, final Letter name, final Double val) {
         this.power = pow;
         this.coefficient = coeff;
         this.letter = Objects.requireNonNull(name);
         this.value = val;
+        this.valueTransformer = DoubleUnaryOperator.identity();
     }
 
     public double getPower() {
@@ -159,6 +167,7 @@ public class Term implements Comparable<Term>, SeriesPart {
         private double power;
         private double coefficient;
         private Double value;
+        private DoubleUnaryOperator valueTransformer;
 
         /*
          * Create it with builder()
@@ -167,7 +176,8 @@ public class Term implements Comparable<Term>, SeriesPart {
             this.power = 1.0;
             this.coefficient = 0.0;
             this.letter = Letter.of("x", 0);
-            this.value = null;
+            this.value = Double.NaN;
+            this.valueTransformer = DoubleUnaryOperator.identity();
         }
 
         public Builder power(double power) {
@@ -195,8 +205,13 @@ public class Term implements Comparable<Term>, SeriesPart {
             return this;
         }
 
+        public Builder valueTransformer(DoubleUnaryOperator transformer) {
+            this.valueTransformer = transformer;
+            return this;
+        }
+
         public Term build() {
-            return new Term(this.power, this.coefficient, this.letter, this.value);
+            return new Term(this.power, this.coefficient, this.letter, this.value, this.valueTransformer);
         }
     }
 

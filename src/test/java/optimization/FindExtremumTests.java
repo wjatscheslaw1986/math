@@ -11,6 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.function.DoubleUnaryOperator;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -67,6 +68,39 @@ public class FindExtremumTests {
         );
         assertEquals(0.13, algorithm.getExtremumX(.0d, Math.PI, 0.2d, 0.08d), 0.01);
         assertEquals(5, algorithm.getStepsCount());
+    }
+
+    @Test
+    void shouldReturnExpectedMinimumWhenBolzanoSearchAppliedToDerivativeOfFunction() {
+        DoubleUnaryOperator derivativeOfFunciton = x -> 6*x - (36 / Math.pow(x, 4));
+        var algorithm = BolzanoSearch.of(
+                List.of(Term.asVariableX(1.0d)),
+                List.of(derivativeOfFunciton)
+        );
+        assertEquals(1.4375, algorithm.getExtremumX(.5d, 2.5d, 0.1d, 0.1d), 0.01);
+        assertEquals(5, algorithm.getStepsCount());
+
+        assertEquals(
+
+                BolzanoSearch.of(
+                List.of(Term.asVariableX(1.0d)),
+                List.of(derivativeOfFunciton)).getExtremumX(.5d, 2.5d, 0.01d, 0.01d),
+
+                ExtremumByDivisionInHalfAlgorithm.of(
+                        List.of(
+                                Term.builder()
+                                        .power(2.0d)
+                                        .coefficient(3.0d)
+                                        .build(),
+                                Term.builder()
+                                        .power(-3.0d)
+                                        .coefficient(12.0d)
+                                        .build(),
+                                Term.asRealConstant(-5)
+                        )
+                ).getExtremumX(.5d, 2.5d, 0.01d, 0.01d),
+                0.01d
+                );
     }
 
     @Test
