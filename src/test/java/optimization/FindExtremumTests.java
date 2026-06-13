@@ -22,7 +22,7 @@ public class FindExtremumTests {
     @DisplayName("Compare the extremum (min) for a given function, on a given range, to an expected one")
     void givenFunctionAndRange_whenSearchForExtremumByDivisionInHalf_thenExpectedResults() {
         var letter = Letter.of("x", 0);
-        var algorithm = ExtremumByDivisionInHalfAlgorithm.of(
+        var algorithm = DichotomyMethod.of(
                 List.of(
                         Term.builder()
                                 .letter(letter)
@@ -40,7 +40,7 @@ public class FindExtremumTests {
         assertEquals(1.4378125, algorithm.getExtremumX(0.5d, 2.5d, 0.1d, 0.01d));
         assertEquals(5, algorithm.getStepsCount());
 
-        algorithm = ExtremumByDivisionInHalfAlgorithm.of(
+        algorithm = DichotomyMethod.of(
                 List.of(
                         Term.builder()
                                 .letter(letter)
@@ -62,7 +62,7 @@ public class FindExtremumTests {
         assertEquals(0.5671875, algorithm.getExtremumX(0.5d, 2.5d, 0.1d, 0.01d));
         assertEquals(5, algorithm.getStepsCount());
 
-        algorithm = ExtremumByDivisionInHalfAlgorithm.of(
+        algorithm = DichotomyMethod.of(
                 List.of(Term.asVariableX(1.0d)),
                 List.of(x -> 4 * x * Math.sin(x))
         );
@@ -86,7 +86,7 @@ public class FindExtremumTests {
                 List.of(Term.asVariableX(1.0d)),
                 List.of(derivativeOfFunciton)).getExtremumX(.5d, 2.5d, 0.01d, 0.01d),
 
-                ExtremumByDivisionInHalfAlgorithm.of(
+                DichotomyMethod.of(
                         List.of(
                                 Term.builder()
                                         .power(2.0d)
@@ -107,7 +107,7 @@ public class FindExtremumTests {
     @DisplayName("Compare the extremum (min) for a given function, on a given range, to an expected one")
     void givenFunctionAndRange_whenSearchForExtremumWithByGoldenRation_thenExpectedResults() {
         var letter = Letter.of("x", 0);
-        var algorithm = ExtremumByGoldenRatioAlgorithm.of(
+        var algorithm = GoldenRatioMethod.of(
                 List.of(
                         Term.builder()
                                 .letter(letter)
@@ -125,7 +125,7 @@ public class FindExtremumTests {
         assertEquals(1.466, algorithm.getExtremum(0.5d, 2.5d, 0.1d), .001d);
         assertEquals(6, algorithm.getStepsCount());
 
-        algorithm = ExtremumByGoldenRatioAlgorithm.of(
+        algorithm = GoldenRatioMethod.of(
                 List.of(
                         Term.builder()
                                 .letter(letter)
@@ -150,7 +150,7 @@ public class FindExtremumTests {
         assertEquals(0.429d, algorithm.getExtremum(.0d, 4.0d, 0.1d), .001d);
         assertEquals(14, algorithm.getStepsCount());
 
-        algorithm = ExtremumByGoldenRatioAlgorithm.of(
+        algorithm = GoldenRatioMethod.of(
                 List.of(Term.asVariableX(1.0d)),
                 List.of(x -> 4 * x * Math.sin(x))
         );

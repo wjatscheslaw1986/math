@@ -12,19 +12,19 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.DoubleUnaryOperator;
 
-public class ExtremumByDivisionInHalfAlgorithm {
+public class DichotomyMethod {
 
     private final List<Term> terms;
     private int counter;
     private final List<DoubleUnaryOperator> equationTermTransformers;
 
-    private ExtremumByDivisionInHalfAlgorithm(final List<Term> terms) {
+    private DichotomyMethod(final List<Term> terms) {
         this.terms = Objects.requireNonNull(terms);
         final DoubleUnaryOperator transformer = DoubleUnaryOperator.identity();
         this.equationTermTransformers = Collections.nCopies(terms.size(), transformer);
     }
 
-    private ExtremumByDivisionInHalfAlgorithm(final List<Term> terms, final List<DoubleUnaryOperator> transformers) {
+    private DichotomyMethod(final List<Term> terms, final List<DoubleUnaryOperator> transformers) {
         this.terms = Objects.requireNonNull(terms);
         if (terms.size() != transformers.size()) {
             throw new IllegalArgumentException("Number of terms and transformers don't match");
@@ -32,12 +32,12 @@ public class ExtremumByDivisionInHalfAlgorithm {
         this.equationTermTransformers = transformers;
     }
 
-    public static ExtremumByDivisionInHalfAlgorithm of(final List<Term> terms) {
-        return new ExtremumByDivisionInHalfAlgorithm(terms);
+    public static DichotomyMethod of(final List<Term> terms) {
+        return new DichotomyMethod(terms);
     }
 
-    public static ExtremumByDivisionInHalfAlgorithm of(final List<Term> terms, final List<DoubleUnaryOperator> transformers) {
-        return new ExtremumByDivisionInHalfAlgorithm(terms, transformers);
+    public static DichotomyMethod of(final List<Term> terms, final List<DoubleUnaryOperator> transformers) {
+        return new DichotomyMethod(terms, transformers);
     }
 
     public int getStepsCount() {
@@ -76,7 +76,7 @@ public class ExtremumByDivisionInHalfAlgorithm {
         private double optimumX() {
             if (this.getClass() == Finish.class)
                 return (this.fromX + this.toX) / 2;
-            else throw new IllegalStateException("Wrong algorithm step for calling this method.");
+            else throw new IllegalStateException("Wrong a lgorithm step for calling this method.");
         }
     }
 

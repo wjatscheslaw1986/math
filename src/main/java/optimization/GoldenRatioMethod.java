@@ -12,20 +12,20 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.DoubleUnaryOperator;
 
-public class ExtremumByGoldenRatioAlgorithm {
+public class GoldenRatioMethod {
     private static final double GOLDEN_RATIO = (Math.sqrt(5.0) - 1.0) / 2.0;
     private final List<Term> terms;
     private int counter;
     private final List<DoubleUnaryOperator> termTransformers;
 
-    private ExtremumByGoldenRatioAlgorithm(final List<Term> terms) {
+    private GoldenRatioMethod(final List<Term> terms) {
         this.counter = 0;
         this.terms = Objects.requireNonNull(terms);
         final DoubleUnaryOperator transformer = DoubleUnaryOperator.identity();
         this.termTransformers = Collections.nCopies(terms.size(), transformer);
     }
 
-    private ExtremumByGoldenRatioAlgorithm(final List<Term> terms, final List<DoubleUnaryOperator> transformers) {
+    private GoldenRatioMethod(final List<Term> terms, final List<DoubleUnaryOperator> transformers) {
         if (terms.size() != transformers.size()) {
             throw new IllegalArgumentException("Number of terms and transformers don't match");
         }
@@ -33,12 +33,12 @@ public class ExtremumByGoldenRatioAlgorithm {
         this.termTransformers = transformers;
     }
 
-    public static ExtremumByGoldenRatioAlgorithm of(final List<Term> terms) {
-        return new ExtremumByGoldenRatioAlgorithm(terms);
+    public static GoldenRatioMethod of(final List<Term> terms) {
+        return new GoldenRatioMethod(terms);
     }
 
-    public static ExtremumByGoldenRatioAlgorithm of(final List<Term> terms, final List<DoubleUnaryOperator> transformers) {
-        return new ExtremumByGoldenRatioAlgorithm(terms, transformers);
+    public static GoldenRatioMethod of(final List<Term> terms, final List<DoubleUnaryOperator> transformers) {
+        return new GoldenRatioMethod(terms, transformers);
     }
 
     public int getStepsCount() {
