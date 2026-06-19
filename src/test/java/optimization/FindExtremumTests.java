@@ -159,6 +159,7 @@ public class FindExtremumTests {
     }
 
     @Test
+    @DisplayName("Swann's algorithm should return the expected interval")
     void shouldFindExpectedIntervalForTheGivenFunctionAndInitialX() {
         SwannAlgorithm swannAlgorithm = SwannAlgorithm.of(
                 x -> (3 * Math.pow(x, 2) + (12 / Math.pow(x, 3)) - 5), 0.1d);
@@ -182,5 +183,18 @@ public class FindExtremumTests {
             throw new RuntimeException(e);
         }
         assertArrayEquals(new double[]{ -4.45d, 5.15d}, intervalWithMinimum, 1e-15);
+    }
+
+    @Test
+    @DisplayName("Newton-Raphson should get the expected min for the 3*x^4+(x-1)²")
+    void shouldFindExpectedRootForTheGivenFunctionAndIntervalAndAccuracy() throws MathException {
+        // The given function is f(x) = (3 * Math.pow(x, 4)) + (Math.pow((x - 1), 2)).
+
+        DoubleUnaryOperator df = x -> (12 * Math.pow(x, 3)) + (2 * (x - 1));
+        DoubleUnaryOperator d2f = x -> 36 * Math.pow(x, 2) + 2;
+        double[] interval = {.0d, 4.0d};
+        var delta = .01d;
+        assertEquals(0.451, NewtonRaphson.findEquationRoot(
+                interval,df,d2f,delta, 10), .01);
     }
 }

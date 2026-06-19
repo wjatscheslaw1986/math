@@ -7,6 +7,7 @@ package functional;
 import algebra.Letter;
 import algebra.Term;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.function.DoubleUnaryOperator;
 
@@ -65,5 +66,14 @@ public final class FunctionUtil {
                     : (terms.get(i).getCoefficient() * Math.pow(transformers.get(i).applyAsDouble(independentVariableValue), terms.get(i).getPower())));
         }
         return sum;
+    }
+
+    /**
+     * Convenience overload that uses identity function as a default transformer for each term.
+     *
+     * @see #calculateSingleVariableFunctionValueAtGivenX(List, List, double)
+     */
+    public static double calculateSingleVariableFunctionValueAtGivenX(List<Term> terms, double independentVariableValue) {
+        return calculateSingleVariableFunctionValueAtGivenX(terms, Collections.nCopies(terms.size(), DoubleUnaryOperator.identity()), independentVariableValue);
     }
 }
