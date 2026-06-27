@@ -37,7 +37,9 @@ public class DichotomyMethod {
         return currentStep.optimumX();
     }
 
-    private abstract sealed class AlgorithmStep permits Step1, Finish {
+    private abstract sealed class AlgorithmStep
+            implements FinishingAlgorithm<AlgorithmStep>
+            permits Step1, Finish {
         private final double fromX;
         private final double toX;
         private final double epsilon;
@@ -56,12 +58,10 @@ public class DichotomyMethod {
             this.delta = delta;
         }
 
-        abstract AlgorithmStep next();
-
         private double optimumX() {
-            if (this.getClass() == Finish.class)
+            if (this.isFinished())
                 return (this.fromX + this.toX) / 2;
-            else throw new IllegalStateException("Wrong a lgorithm step for calling this method.");
+            else throw new IllegalStateException(BAD_STEP);
         }
     }
 
@@ -71,7 +71,7 @@ public class DichotomyMethod {
         }
 
         @Override
-        AlgorithmStep next() {
+        public AlgorithmStep next() {
             counter++;
             if (super.toX - super.fromX <= 2.0d * super.epsilon)
                 return new Finish(super.fromX, super.toX, super.epsilon, super.delta);
@@ -86,6 +86,11 @@ public class DichotomyMethod {
                 return new Step1(super.fromX, x2, super.epsilon, super.delta);
             throw new RuntimeException("unreachable");
         }
+
+        @Override
+        public boolean isFinished() {
+            return true;
+        }
     }
 
     private final class Finish extends AlgorithmStep {
@@ -94,8 +99,13 @@ public class DichotomyMethod {
         }
 
         @Override
-        AlgorithmStep next() {
-            throw new IllegalStateException("Wrong algorithm step for calling this method.");
+        public AlgorithmStep next() {
+            throw new IllegalStateException(BAD_STEP);
+        }
+
+        @Override
+        public boolean isFinished() {
+            return true;
         }
     }
 }

@@ -11,9 +11,8 @@ import java.util.Objects;
 /**
  * An equation.
  *
- * @param terms the left side of the equation
+ * @param terms    the left side of the equation
  * @param equalsTo the right side of the equation
- *
  * @author Viacheslav Mikhailov
  */
 public record Equation(List<Term> terms, Term equalsTo) {
@@ -21,7 +20,7 @@ public record Equation(List<Term> terms, Term equalsTo) {
     /**
      * Factory method.
      *
-     * @param terms the left side of the equation
+     * @param terms    the left side of the equation
      * @param equalsTo the right side of the equation
      * @return the equation
      */
@@ -69,7 +68,7 @@ public record Equation(List<Term> terms, Term equalsTo) {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Equation equation = (Equation) o;
-        return (Arrays.equals(this.terms.toArray(),equation.terms.toArray())
+        return (Arrays.equals(this.terms.toArray(), equation.terms.toArray())
                 && Objects.equals(equalsTo, equation.equalsTo));
     }
 

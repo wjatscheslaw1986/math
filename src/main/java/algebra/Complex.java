@@ -14,7 +14,7 @@ public record Complex(Double real, Double imaginary) {
     /**
      * Static factory method.
      *
-     * @param real the real part
+     * @param real      the real part
      * @param imaginary the imaginary part
      * @return the complex number
      */

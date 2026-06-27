@@ -174,7 +174,8 @@ public class EquationUtil {
             case QUADRATIC -> QuadraticEquationSolver.solve(groupedByPowerTermsEquation);
             case CUBIC -> CubicEquationSolver.solve(groupedByPowerTermsEquation);
             // TODO QUARTIC ->
-            default -> throw new IllegalArgumentException(String.format("The equation type %s is not supported.", equationType.name()));
+            default ->
+                    throw new IllegalArgumentException(String.format("The equation type %s is not supported.", equationType.name()));
         };
     }
 
@@ -235,13 +236,13 @@ public class EquationUtil {
         Terms[][] diagonalPolynomnialMatrix = doubleArrayToTermsArrayForCharacteristicPolynomial(matrix);
         Terms sumOfSums = Terms.of(new ArrayList<>());
         for (int col = 0; col < diagonalPolynomnialMatrix[0].length; col++) {
-                var mmbrz = Terms.of(List.of(
-                        diagonalPolynomnialMatrix[0][col].multiply(
-                        Terms.of(toCharacteristicPolynomial(MatrixUtil.excludeColumnAndRow(matrix, 1, col + 1)).terms()
-                                .stream().map(SeriesPart.class::cast).collect(Collectors.toList())))));
-                if (col % 2 != 0) mmbrz = mmbrz.multiply(Term.asRealConstant(-1.0d));
+            var mmbrz = Terms.of(List.of(
+                    diagonalPolynomnialMatrix[0][col].multiply(
+                            Terms.of(toCharacteristicPolynomial(MatrixUtil.excludeColumnAndRow(matrix, 1, col + 1)).terms()
+                                    .stream().map(SeriesPart.class::cast).collect(Collectors.toList())))));
+            if (col % 2 != 0) mmbrz = mmbrz.multiply(Term.asRealConstant(-1.0d));
             sumOfSums = (Terms) sumOfSums.add(mmbrz);
-            }
+        }
         return Equation.of(distinct(sumOfSums.asList().stream().sorted().toList()), Term.asRealConstant(.0d));
     }
 }

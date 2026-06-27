@@ -40,7 +40,7 @@ public final class Narayana {
      * Generate first <i>n</i> permutations for a given size of a sequence of indices starting at 0, at once.
      *
      * @param size the size given
-     * @param n the number of the first permutations to generate.
+     * @param n    the number of the first permutations to generate.
      * @return all the permutations for the given size
      */
     public static List<int[]> generate(final int size, final int n) {
@@ -84,8 +84,8 @@ public final class Narayana {
     /**
      * Count generated permutations.
      * <p>
-     *     It is a number of ways to click <b>n</b> distinct keys, each exactly 1 time.
-     *     I.e. only the order makes distinct permutations.
+     * It is a number of ways to click <b>n</b> distinct keys, each exactly 1 time.
+     * I.e. only the order makes distinct permutations.
      * </p>
      *
      * @param n cardinality
@@ -107,7 +107,7 @@ public final class Narayana {
          * Constructor.
          *
          * @param sequenceLength cardinality
-         * @param n first <i>n</i> elements limit
+         * @param n              first <i>n</i> elements limit
          */
         private NarayanaFirstNPermutations(final int sequenceLength, int n) {
             final var gen = new NarayanaPermutationsGenerator(sequenceLength);

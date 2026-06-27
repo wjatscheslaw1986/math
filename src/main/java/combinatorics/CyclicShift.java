@@ -16,7 +16,7 @@ import static combinatorics.CombinatoricsUtil.getPrintIntArrayFunction;
 /**
  * A utility class for generating all possible permutations of indices for an array of a
  * given length.
- * 
+ *
  * @author Viacheslav Mikhailov
  */
 public final class CyclicShift {
@@ -27,7 +27,7 @@ public final class CyclicShift {
 
     /**
      * Print permutations for a size of array to the given OutputStream.
-     * 
+     *
      * @param size a size of an array of indices, starting with 0;
      * @param out  an implementation of the OutputStream
      */
@@ -47,7 +47,7 @@ public final class CyclicShift {
 
     /**
      * Generate permutations for a size of array.
-     * 
+     *
      * @param size a size of array of indices, starting with 0;
      * @return list of arrays of all possible permutations of values in the array of the given size.
      */
@@ -59,7 +59,7 @@ public final class CyclicShift {
 
     /*
      * Generate permutations for a size of array.
-     * 
+     *
      * @param size a size of array of indices, starting with 0;
      * @param func an operation to perform on each permutation
      */

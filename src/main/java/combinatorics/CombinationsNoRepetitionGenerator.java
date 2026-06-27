@@ -29,6 +29,20 @@ public class CombinationsNoRepetitionGenerator extends IndexSequenceGenerator {
             setHasNext(true);
     }
 
+    /**
+     * Cuts off all the elements from the given array starting with the
+     * given <i>index</i>, inclusive.
+     *
+     * @param array given
+     * @param index the index since which we throw away elements from the given array
+     * @return the shortened array
+     */
+    private static int[] cutFrom(final int[] array, final int index) {
+        final int[] subArray = new int[index];
+        System.arraycopy(array, 0, subArray, 0, index);
+        return subArray;
+    }
+
     @Override
     public int[] next() {
         var result = cutFrom(lastCombination, k);
@@ -42,19 +56,5 @@ public class CombinationsNoRepetitionGenerator extends IndexSequenceGenerator {
             setHasNext(false);
         }
         return result;
-    }
-
-    /**
-     * Cuts off all the elements from the given array starting with the
-     * given <i>index</i>, inclusive.
-     *
-     * @param array given
-     * @param index the index since which we throw away elements from the given array
-     * @return the shortened array
-     */
-    private static int[] cutFrom(final int[] array, final int index) {
-        final int[] subArray = new int[index];
-        System.arraycopy(array, 0, subArray, 0, index);
-        return subArray;
     }
 }

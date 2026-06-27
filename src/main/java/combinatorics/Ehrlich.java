@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * A utility class for generating all possible permutations without repetitions
  * of indices for a given generic array, using Gideon Ehrlich's algorithm.
- * 
+ *
  * @author Viacheslav Mikhailov
  */
 public final class Ehrlich {
@@ -38,13 +38,13 @@ public final class Ehrlich {
      * starting at 0, all at once.
      *
      * @param cardinality the given size of the sequence of indices
-     * @param n the number of the first permutations to return
+     * @param n           the number of the first permutations to return
      * @return n permutations for the given size of a sequence of indices
      */
     public static List<int[]> generate(final int cardinality, final int n) {
         final var permutations = new ArrayList<int[]>();
         final var generator = new EhrlichPermutationsGenerator(cardinality);
-        while (generator.hasNext() &&  permutations.size() < n) {
+        while (generator.hasNext() && permutations.size() < n) {
             permutations.add(generator.next());
         }
         return permutations;

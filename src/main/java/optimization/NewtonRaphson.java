@@ -9,16 +9,16 @@ import exception.MathException;
 import java.util.function.DoubleUnaryOperator;
 
 public class NewtonRaphson {
+    public static final String INTERVAL_MUST_CONTAIN_AT_LEAST_TWO_ELEMENTS = "Interval must contain at least two elements";
+    public static final String FUNCTION_AND_DERIVATIVE_MUST_NOT_BE_NULL = "Function and derivative must not be null";
+    public static final String ACCURACY_MUST_BE_POSITIVE = "Accuracy must be positive";
+    public static final String MAX_ITERATIONS_MUST_BE_POSITIVE = "maxIterations must be positive";
     private static final double DEFAULT_ACCURACY = 1e-10;
     private static final int DEFAULT_MAX_ITERATIONS = 100;
     private static final double THRESHOLD_VALUE = 1e-12;
     private static final String DERIVATIVE_NEAR_ZERO_AT_INITIAL_GUESS_X_8_F = "Derivative near zero at initial guess x = %.8f";
     private static final String DERIVATIVE_NEAR_ZERO_AT_X_8_F_ITERATION_D = "Derivative near zero at x = %.8f (iteration %d)";
     private static final String NEWTON_S_METHOD_FAILED_TO_CONVERGE_AFTER_D_ITERATIONS = "Newton's method failed to converge after %d iterations. Last x = %.10f";
-    public static final String INTERVAL_MUST_CONTAIN_AT_LEAST_TWO_ELEMENTS = "Interval must contain at least two elements";
-    public static final String FUNCTION_AND_DERIVATIVE_MUST_NOT_BE_NULL = "Function and derivative must not be null";
-    public static final String ACCURACY_MUST_BE_POSITIVE = "Accuracy must be positive";
-    public static final String MAX_ITERATIONS_MUST_BE_POSITIVE = "maxIterations must be positive";
 
     /**
      * Implements the Newton-Raphson (Newton's) method to find a root of the equation
@@ -57,7 +57,6 @@ public class NewtonRaphson {
      * @throws NullPointerException     if {@code function} or {@code derivative} is null
      * @throws MathException            if the derivative is near zero at any evaluation point,
      *                                  or if the method fails to converge within {@code maxIterations}
-     *
      * @see #findEquationRoot(double[], DoubleUnaryOperator, DoubleUnaryOperator)
      */
     public static double findEquationRoot(final double[] interval,

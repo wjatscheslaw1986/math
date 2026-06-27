@@ -79,14 +79,14 @@ public class QuarticEquationSolver {
 
         List<Complex> yRoots = new ArrayList<>();
         yRoots.addAll(EquationUtil.solvePolynomial(Equation.of(List.of(
-                Term.builder().letter("x").power(2.0d).coefficient(aQuad.real()).build(),
-                Term.builder().letter("x").power(1.0d).coefficient(sOver2.real()).build(),
-                Term.builder().letter("x").power(.0d).coefficient(ComplexUtil.add(m, qOver2s).real()).build()),
+                        Term.builder().letter("x").power(2.0d).coefficient(aQuad.real()).build(),
+                        Term.builder().letter("x").power(1.0d).coefficient(sOver2.real()).build(),
+                        Term.builder().letter("x").power(.0d).coefficient(ComplexUtil.add(m, qOver2s).real()).build()),
                 Term.asRealConstant(.0d))).roots());
         yRoots.addAll(EquationUtil.solvePolynomial(Equation.of(List.of(
-                Term.builder().letter("x").power(2.0d).coefficient(aQuad.real()).build(),
-                Term.builder().letter("x").power(1.0d).coefficient(ComplexUtil.negate(sOver2).real()).build(),
-                Term.builder().letter("x").power(.0d).coefficient(ComplexUtil.subtract(m, qOver2s).real()).build()),
+                        Term.builder().letter("x").power(2.0d).coefficient(aQuad.real()).build(),
+                        Term.builder().letter("x").power(1.0d).coefficient(ComplexUtil.negate(sOver2).real()).build(),
+                        Term.builder().letter("x").power(.0d).coefficient(ComplexUtil.subtract(m, qOver2s).real()).build()),
                 Term.asRealConstant(.0d))).roots());
 
         // Back-substitute: x = y - b/(4a)

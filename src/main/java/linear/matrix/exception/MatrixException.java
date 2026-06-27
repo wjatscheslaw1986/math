@@ -7,6 +7,7 @@ package linear.matrix.exception;
 public class MatrixException extends Exception {
 
     final String message;
+
     public MatrixException(String message) {
         this.message = message;
     }

@@ -20,7 +20,7 @@ public final class OrderStatisticCalc {
     /**
      * Find the k-th order statistic for the given unordered array of elements.
      *
-     * @param k index of the element in the sorted sequence of the elements
+     * @param k        index of the element in the sorted sequence of the elements
      * @param elements the given unordered array of elements
      * @return the order statistic
      */

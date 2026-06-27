@@ -23,7 +23,7 @@ public final class JohnsonTrotter {
      * Generate permutations of indices, for a set of <b>n</b> first array indices,
      * starting at 0, returning them as a list of permutations.
      * <p>
-     *     No repetitions of indices are allowed.
+     * No repetitions of indices are allowed.
      * </p>
      *
      * @param n length of an array of sequential indices, starting at 0 (also, cardinality)
@@ -42,7 +42,7 @@ public final class JohnsonTrotter {
      * Generate first <i>n</i> permutations for a given cardinality of a sequence of indices starting at 0, at once.
      *
      * @param cardinality count of distinct elements in the set of indices
-     * @param n the number of the first permutations to generate.
+     * @param n           the number of the first permutations to generate.
      * @return all the permutations for the given size
      */
     public static List<int[]> generate(final int cardinality, final int n) {
@@ -93,8 +93,8 @@ public final class JohnsonTrotter {
     /**
      * Count generated permutations.
      * <p>
-     *     It is a number of ways to click <b>n</b> distinct keys, each exactly 1 time.
-     *     I.e. only the order makes distinct permutations.
+     * It is a number of ways to click <b>n</b> distinct keys, each exactly 1 time.
+     * I.e. only the order makes distinct permutations.
      * </p>
      *
      * @param n cardinality
@@ -116,7 +116,7 @@ public final class JohnsonTrotter {
          * Constructor.
          *
          * @param sequenceLength cardinality
-         * @param n first <i>n</i> elements limit
+         * @param n              first <i>n</i> elements limit
          */
         private JohnsonTrotterFirstNPermutations(final int sequenceLength, int n) {
             final var gen = new JohnsonTrotterPermutationsGenerator(sequenceLength);

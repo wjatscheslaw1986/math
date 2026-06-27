@@ -118,8 +118,8 @@ public final class TermUtil {
      * @param m1 the first Term (dividend)
      * @param m2 the second Term (divisor)
      * @return a new Term representing the quotient
-     * @throws IllegalArgumentException if both are variable terms with different letters
-     * @throws ArithmeticException if division by zero occurs
+     * @throws IllegalArgumentException      if both are variable terms with different letters
+     * @throws ArithmeticException           if division by zero occurs
      * @throws UnsupportedOperationException if dividing a constant by a variable term
      */
     public static Term divide(Term m1, Term m2) {
@@ -138,8 +138,8 @@ public final class TermUtil {
      * Calculates a sum of multiplications, known as opening of the brackets.
      * A Cartesian product operation.
      *
-     * @param <T> the term type
-     * @param firstSeries the first bracket with sum of terms
+     * @param <T>          the term type
+     * @param firstSeries  the first bracket with sum of terms
      * @param secondSeries the second bracket with sum of terms
      * @return the result of opening the brackets
      */
@@ -165,7 +165,8 @@ public final class TermUtil {
         Terms[][] termsArray = new Terms[matrix.length][matrix[0].length];
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix[i].length; j++) {
-                if (i == j) termsArray[i][j] = Terms.of(List.of(Term.asRealConstant(matrix[i][j]), Term.asVariableX(-1.0d)));
+                if (i == j)
+                    termsArray[i][j] = Terms.of(List.of(Term.asRealConstant(matrix[i][j]), Term.asVariableX(-1.0d)));
                 else termsArray[i][j] = Terms.of(List.of(Term.asRealConstant(matrix[i][j])));
             }
         }

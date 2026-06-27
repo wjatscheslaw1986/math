@@ -6,7 +6,8 @@ package geometry;
 
 public final class GeometryCalc {
 
-    private GeometryCalc() {}
+    private GeometryCalc() {
+    }
 
     public static boolean areCirclesIntersect(double x1, double y1, double x2, double y2, double radius1, double radius2) {
         double dx = x2 - x1;

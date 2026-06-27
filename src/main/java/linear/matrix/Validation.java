@@ -157,7 +157,7 @@ public final class Validation {
     /**
      * Checks if the given matrix is invertible.
      * <p>
-     *     A matrix is invertible only in case it is a square one, a not degenerate one (i.e. has a full rank).
+     * A matrix is invertible only in case it is a square one, a not degenerate one (i.e. has a full rank).
      * </p>
      *
      * @param matrix the given matrix
@@ -172,8 +172,8 @@ public final class Validation {
     /**
      * Checks if the given matrix is invertible.
      * <p>
-     *     A matrix is invertible only in case
-     *     it is not degenerate (i.e. all pivots of the LU decomposition after partial pivoting are non-zero).
+     * A matrix is invertible only in case
+     * it is not degenerate (i.e. all pivots of the LU decomposition after partial pivoting are non-zero).
      * </p>
      *
      * @param matrix the given matrix

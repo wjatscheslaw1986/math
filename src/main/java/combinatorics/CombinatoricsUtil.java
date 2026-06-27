@@ -20,11 +20,11 @@ public final class CombinatoricsUtil {
     /**
      * Print generated combinations to an OutputStream implementation.
      * <p>
-     *     The formatting is the default <i>Arrays::toString</i>.
+     * The formatting is the default <i>Arrays::toString</i>.
      * </p>
      *
      * @param generator combinations generator;
-     * @param out  an implementation of OutputStream
+     * @param out       an implementation of OutputStream
      */
     public static void print(final IndexSequenceGenerator generator, final OutputStream out) {
         printf(generator, out, Arrays::toString);
@@ -37,12 +37,12 @@ public final class CombinatoricsUtil {
     /**
      * Print generated combinations to an OutputStream implementation.
      * <p>
-     *     The formatting is set with the <i>format</i> function argument.
+     * The formatting is set with the <i>format</i> function argument.
      * </p>
      *
      * @param generator the combinations' generator;
-     * @param out    the implementation of OutputStream
-     * @param format the formatter
+     * @param out       the implementation of OutputStream
+     * @param format    the formatter
      */
     public static void printf(final IndexSequenceGenerator generator, final OutputStream out, final Function<int[], String> format) {
         while (generator.hasNext()) {
@@ -70,7 +70,7 @@ public final class CombinatoricsUtil {
     /**
      * A function to print an object array to {@link OutputStream}.
      *
-     * @param o the output stream
+     * @param o   the output stream
      * @param <T> object type
      * @return the printing function
      */

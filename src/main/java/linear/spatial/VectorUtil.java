@@ -25,11 +25,11 @@ public final class VectorUtil {
      * Express the vector in a new basis.
      *
      * @param vector the given vector
-     * @param basis the given basis
+     * @param basis  the given basis
      * @return the vector with new coordinates, as they render in the given basis
      */
     public static Vector transformToBasis(final Vector vector, final Vector... basis) {
-        if(!isBasis(Objects.requireNonNull(basis)))
+        if (!isBasis(Objects.requireNonNull(basis)))
             throw new IllegalArgumentException("Not a basis");
         var equationSystem = new CramerLinearEquationSystem(LinearEquationSystemUtil::resolveUsingCramerMethod, toLinearEquationSystem(vector, basis));
         return Vector.of(equationSystem.getResolved());
@@ -45,7 +45,7 @@ public final class VectorUtil {
             }
         }
         for (int i = 0; i < vector.coordinates().length; i++) {
-            equationSystem[i][basis.length] =  vector.coordinates()[i];
+            equationSystem[i][basis.length] = vector.coordinates()[i];
         }
         return equationSystem;
     }
@@ -53,7 +53,7 @@ public final class VectorUtil {
     /**
      * Converts Vector[] to double[][] datatype.
      *
-     * @param basis the given {@link Vector} array
+     * @param basis    the given {@link Vector} array
      * @param vertical if true, then the given vectors are columns in the resulting matrix. If false, then the given vectors are rows.
      * @return the double precision matrix
      */
@@ -75,7 +75,7 @@ public final class VectorUtil {
     /**
      * Converts Eigenvector[] to double[][] datatype.
      *
-     * @param basis the given {@link Eigenvector} array
+     * @param basis    the given {@link Eigenvector} array
      * @param vertical if true, then the given vectors are columns in the resulting matrix. If false, then the given vectors are rows.
      * @return the double precision matrix
      */
@@ -111,8 +111,8 @@ public final class VectorUtil {
      * Mutually swap two elements of a double array found by their indices.
      *
      * @param vector given
-     * @param i index
-     * @param j index
+     * @param i      index
+     * @param j      index
      */
     public static void swap(final double[] vector, final int i, final int j) {
         final double temp = vector[i];
@@ -124,8 +124,8 @@ public final class VectorUtil {
      * Mutually swap two elements of the given array, by the indices given.
      *
      * @param vector given
-     * @param i index
-     * @param j index
+     * @param i      index
+     * @param j      index
      */
     public static void swap(final int[] vector, final int i, final int j) {
         final int temp = vector[i];

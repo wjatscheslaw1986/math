@@ -15,9 +15,9 @@ public final class ElementaryTransformationUtil {
      * Swaps rows of the matrix. Does not change the original matrix object, but
      * returns a new one instead.
      *
-     * @param matrix  - original matrix
-     * @param row1 - row 1 index
-     * @param row2 - row 2 index
+     * @param matrix - original matrix
+     * @param row1   - row 1 index
+     * @param row2   - row 2 index
      * @return matrix with switched columns
      */
     public static double[][] swapRows(final double[][] matrix, final int row1, final int row2) {
@@ -34,9 +34,9 @@ public final class ElementaryTransformationUtil {
      * Swaps columns of the matrix. Does not change the original matrix object,
      * but returns a new one instead.
      *
-     * @param matrix  - original matrix
-     * @param col1 - column 1 index
-     * @param col2 - column 2 index
+     * @param matrix - original matrix
+     * @param col1   - column 1 index
+     * @param col2   - column 2 index
      * @return matrix with switched columns
      */
     public static double[][] swapColumns(final double[][] matrix, final int col1, final int col2) {

@@ -13,7 +13,7 @@ public class VariationsWithRepetitionsGenerator extends IndexSequenceGenerator {
     private final int setPower;
 
     public VariationsWithRepetitionsGenerator(int cardinality, int lengthOfEachVariation) {
-        if (cardinality < 0 ||  lengthOfEachVariation < 0) {
+        if (cardinality < 0 || lengthOfEachVariation < 0) {
             throw new ArrayIndexOutOfBoundsException("Number of elements must be non-negative.");
         }
         if (lengthOfEachVariation > cardinality) {

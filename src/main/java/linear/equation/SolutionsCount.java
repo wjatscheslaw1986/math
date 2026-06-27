@@ -10,5 +10,5 @@ package linear.equation;
  * @author Viacheslav Mikhailov
  */
 public enum SolutionsCount {
-    ZERO,SINGLE,INFINITE
+    ZERO, SINGLE, INFINITE
 }

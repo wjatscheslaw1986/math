@@ -35,7 +35,7 @@ public final class MatrixUtil {
      */
     public static LUDecomposition luDecompose(double[][] matrix) {
         double[][] l = createIdentityForSize(matrix.length, matrix.length);
-        double[][] u = new  double[matrix.length][matrix.length];
+        double[][] u = new double[matrix.length][matrix.length];
         for (int i = 0; i < matrix.length; i++)
             System.arraycopy(matrix[i], 0, u[i], 0, matrix.length);
         for (int col = 0; col < matrix.length; col++) {
@@ -131,7 +131,7 @@ public final class MatrixUtil {
      * @param cols amount of columns of the result matrix
      * @return the identity matrix
      */
-    public static double[][] createIdentityForSize(int rows,  int cols) {
+    public static double[][] createIdentityForSize(int rows, int cols) {
         var result = new double[rows][cols];
         for (int i = 0; i < rows; i++)
             result[i][i] = 1;
@@ -262,7 +262,7 @@ public final class MatrixUtil {
      * Remove Nth row from this matrix.
      * <p>This method does not modify the given matrix.</p>
      *
-     * @param n the ordinal of the row, counting downwards
+     * @param n      the ordinal of the row, counting downwards
      * @param matrix given
      * @return the modified matrix
      */
@@ -288,10 +288,8 @@ public final class MatrixUtil {
      * This method returns a matrix 1 column lesser than the original one, excluding
      * one column.
      *
-     * @param matrix - the original matrix
-     *
+     * @param matrix       - the original matrix
      * @param columnNumber - number (index + 1) of a column to exclude
-     *
      * @return a matrix one row one column less in size. The column to exclude are
      * provided as an argument
      */
@@ -342,7 +340,7 @@ public final class MatrixUtil {
                 row++;
                 continue;
             }
-            for (int col = 0, submatrixCol = 0; col < matrix[0].length;) {
+            for (int col = 0, submatrixCol = 0; col < matrix[0].length; ) {
                 if (col + 1 == columnNumber) {
                     col++;
                     continue;
@@ -388,8 +386,8 @@ public final class MatrixUtil {
     /**
      * Returns the column by its index of the given matrix, counting from left to right.
      *
-     * @param matrix        the given matrix
-     * @param column  index of the column to return
+     * @param matrix the given matrix
+     * @param column index of the column to return
      * @return the column as an array
      */
     public static double[] getColumn(double[][] matrix, int column) {
@@ -408,10 +406,10 @@ public final class MatrixUtil {
      * This method substitutes one column of a given matrix with a given vector,
      * at a certain position 'index'.
      *
-     * @param matrix  the original matrix
-     * @param column  the given vector
-     * @param index   column index
-     * @return        new matrix of same size but with one of its columns substituted by <i>column</i>
+     * @param matrix the original matrix
+     * @param column the given vector
+     * @param index  column index
+     * @return new matrix of same size but with one of its columns substituted by <i>column</i>
      */
     public static double[][] substituteColumn(final double[][] matrix, final double[] column, final int index) {
         if (matrix[0].length <= index)
@@ -428,7 +426,7 @@ public final class MatrixUtil {
      * This method <b>does modify</b> the argument, so be careful.
      *
      * @param decimalPlaces decimal places right to the dot to round up to
-     * @param matrix the given matrix
+     * @param matrix        the given matrix
      */
     public static void roundValues(int decimalPlaces, double[]... matrix) {
         for (int r = 0; r < matrix.length; r++) {

@@ -13,10 +13,16 @@ import java.util.List;
  */
 public interface SeriesPart {
     int size();
+
     SeriesPart add(SeriesPart seriesPart);
+
     void remove(SeriesPart seriesPart);
+
     SeriesPart getChild(int index);
+
     List<SeriesPart> getSeriesParts();
+
     SeriesPart multiply(SeriesPart seriesPart);
+
     SeriesPart copy();
 }

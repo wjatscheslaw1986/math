@@ -13,8 +13,6 @@ import static functional.FunctionUtil.calculateSingleVariableFunctionValueAtGive
 
 public class SecantMethod {
 
-    public static final String WRONG_ALGORITHM_STEP = "Wrong algorithm step for calling this method.";
-    public static final String NUMBER_OF_TERMS_AND_TRANSFORMERS_DON_T_MATCH = "Number of terms and transformers don't match";
     public static final String Ε_AND_Δ_MUST_BE_NON_NEGATIVE = "ε and δ must be non-negative";
     public static final String Ε_MUST_BE_LESS_THAN_THE_RANGE_FROM_F_TO_F = "ε must be less than the range from %f to %f";
     public static final String TOO_CLOSE = "Derivative values too close";
@@ -62,7 +60,9 @@ public class SecantMethod {
         return currentStep.optimumX();
     }
 
-    private abstract sealed class AlgorithmStep permits Step, Finish {
+    private abstract sealed class AlgorithmStep
+            implements FinishingAlgorithm<AlgorithmStep>
+            permits Step, Finish {
         final double fromX;
         final double toX;
         final double ε;
@@ -85,14 +85,10 @@ public class SecantMethod {
             this.x_extrema = x;
         }
 
-        abstract AlgorithmStep next();
-
-        abstract boolean isFinished();
-
         private double optimumX() {
             if (this.isFinished())
                 return this.x_extrema;
-            else throw new IllegalStateException(WRONG_ALGORITHM_STEP);
+            else throw new IllegalStateException(BAD_STEP);
         }
     }
 
@@ -105,7 +101,7 @@ public class SecantMethod {
         }
 
         @Override
-        AlgorithmStep next() {
+        public AlgorithmStep next() {
             SecantMethod.this.counter++;
 
             if (Math.abs(super.toX - super.fromX) <= 2 * super.ε)
@@ -144,7 +140,7 @@ public class SecantMethod {
         }
 
         @Override
-        boolean isFinished() {
+        public boolean isFinished() {
             return false;
         }
     }
@@ -155,13 +151,13 @@ public class SecantMethod {
         }
 
         @Override
-        boolean isFinished() {
+        public boolean isFinished() {
             return true;
         }
 
         @Override
-        AlgorithmStep next() {
-            throw new IllegalStateException(WRONG_ALGORITHM_STEP);
+        public AlgorithmStep next() {
+            throw new IllegalStateException(BAD_STEP);
         }
     }
 }

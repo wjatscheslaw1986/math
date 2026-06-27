@@ -33,6 +33,6 @@ public final class LinearEquationSolver {
 
         var b = equation.terms().get(1).getCoefficient() - equation.equalsTo().getCoefficient();
 
-        return EquationRoots.of(List.of(Complex.of(-b/a, .0d)), Double.NaN);
+        return EquationRoots.of(List.of(Complex.of(-b / a, .0d)), Double.NaN);
     }
 }

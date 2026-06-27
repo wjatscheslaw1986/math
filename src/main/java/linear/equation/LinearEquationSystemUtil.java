@@ -39,7 +39,7 @@ public final class LinearEquationSystemUtil {
      * beforehand to make sure you aren't getting wrong results.</p>
      *
      * @param coefficients matrix made of left part of the equations
-     * @param freeTerms  a vector made of right part of the equations
+     * @param freeTerms    a vector made of right part of the equations
      * @return a vector of variable values (answers) for the equations, regarding their order in the equation.
      */
     public static double[] resolveUsingCramerMethod(final double[][] coefficients, final double[] freeTerms) {
@@ -57,7 +57,7 @@ public final class LinearEquationSystemUtil {
      * beforehand to be sure you aren't getting wrong results.</p>
      *
      * @param coefficients a square matrix of coefficients of the left parts of each equation
-     * @param freeTerms  a vector of free terms (i.e. right parts of each equation)
+     * @param freeTerms    a vector of free terms (i.e. right parts of each equation)
      * @return a vector of variable values (answers) for the equations, regarding their order in the equation.
      */
     public static double[] resolveUsingReverseMatrixMethod(double[][] coefficients, double[] freeTerms) {
@@ -69,9 +69,9 @@ public final class LinearEquationSystemUtil {
     /**
      * Resolve given linear equations system using Jordan-Gauss method.
      * <p>
-     *     <b>IMPORTANT:</b> this method modifies the argument as it performs
-     *     its job. Use {@link MatrixUtil#copy} on the argument you pass to this method if
-     *     you need it for further calculations.
+     * <b>IMPORTANT:</b> this method modifies the argument as it performs
+     * its job. Use {@link MatrixUtil#copy} on the argument you pass to this method if
+     * you need it for further calculations.
      * </p>
      *
      * @param augmentedMatrix linear equations matrix including both sides of each equation
@@ -165,16 +165,16 @@ public final class LinearEquationSystemUtil {
                 System.arraycopy(ref[i], pivotIndex, coefficients, 0, coefficients.length);
                 int k = 1;
                 for (; k < coefficients.length; k++) {
-                        var term = eq.getTermByLetter(Letter.of("x", k + pivotIndex));
-                        if (Objects.isNull(term)) {
-                            var termBuilder = Term.builder().coefficient(coefficients[k])
-                                    .letter(Letter.of("x", k + pivotIndex));
-                            if (freeVariableIndices[k + pivotIndex]) termBuilder.value(fmvCombination[k + pivotIndex]);
-                            else termBuilder.value(eq.getTermByIndex(k + pivotIndex).getValue());
-                            eq.terms().add(termBuilder.build());
-                        } else {
-                            term.setCoefficient(coefficients[k]);
-                        }
+                    var term = eq.getTermByLetter(Letter.of("x", k + pivotIndex));
+                    if (Objects.isNull(term)) {
+                        var termBuilder = Term.builder().coefficient(coefficients[k])
+                                .letter(Letter.of("x", k + pivotIndex));
+                        if (freeVariableIndices[k + pivotIndex]) termBuilder.value(fmvCombination[k + pivotIndex]);
+                        else termBuilder.value(eq.getTermByIndex(k + pivotIndex).getValue());
+                        eq.terms().add(termBuilder.build());
+                    } else {
+                        term.setCoefficient(coefficients[k]);
+                    }
                 }
                 eq.terms().addFirst(Term.builder().value(Double.NaN).coefficient(coefficients[0]).letter(Letter.of("x", pivotIndex)).build());
                 solveSingleVariableLinearEquation(eq);
@@ -197,7 +197,7 @@ public final class LinearEquationSystemUtil {
      * its value should be found by solving a corresponding single variable linear equation.
      * </p>
      *
-     * @param ref the row echelon form of a matrix
+     * @param ref       the row echelon form of a matrix
      * @param basisSize number of free terms in each of the linear equations
      * @return an array of term flags for the equation
      */
@@ -231,7 +231,7 @@ public final class LinearEquationSystemUtil {
      * <p>The matrix <b>must</b> be in a row echelon form, for the return of this function to be meaningful.</p>
      *
      * @param rowEchelonFormMatrix the row echelon form of a matrix
-     * @param row the row index
+     * @param row                  the row index
      * @return an index of the pivot element for the given row in the given matrix
      */
     public static int findPivotIndex(double[][] rowEchelonFormMatrix, int row) {
@@ -294,14 +294,14 @@ public final class LinearEquationSystemUtil {
      * has value 1, while the rest of them have value 0.
      *
      * @param freeTermsFlagMask logical flags mask for an equation as an array.
-     *                            TRUE if the element has the same index as the free term in the equation,
-     *                            FALSE otherwise.
+     *                          TRUE if the element has the same index as the free term in the equation,
+     *                          FALSE otherwise.
      * @return a list of combinations of free term values for fundamental solution system
      */
     public static List<Double[]> getFreeTermsValuesCombinations(final Boolean[] freeTermsFlagMask) {
         final List<Integer> freeTermIndexAddresses = new ArrayList<>();
         final List<Double[]> basisVectors = new ArrayList<>();
-        for(int i = 0; i < freeTermsFlagMask.length; i++) {
+        for (int i = 0; i < freeTermsFlagMask.length; i++) {
             if (freeTermsFlagMask[i]) {
                 freeTermIndexAddresses.add(i);
             }

@@ -9,7 +9,7 @@ import java.util.Objects;
  * A letter of a {@link Term} of an {@link Equation}.
  *
  * @param symbol the letter to signify the term of an equation
- * @param index the index sign usually beneath the letter
+ * @param index  the index sign usually beneath the letter
  * @author Viacheslav Mikhailov
  */
 public record Letter(String symbol, int index) implements Comparable<Letter> {
@@ -18,7 +18,7 @@ public record Letter(String symbol, int index) implements Comparable<Letter> {
      * A static factory method.
      *
      * @param symbol the letter
-     * @param index the index sign
+     * @param index  the index sign
      * @return the letter which is the signification for the equation term
      */
     public static Letter of(final String symbol, final int index) {

@@ -8,7 +8,7 @@ package linear.spatial;
  * This class is a wrapper that aggregates both the given eigenvector and its
  * corresponding eigenvalue.
  *
- * @param eigenvalue the corresponding eigenvalue
+ * @param eigenvalue  the corresponding eigenvalue
  * @param eigenvector the given eigenvector
  */
 public record Eigenvector(double eigenvalue, Vector eigenvector) {

@@ -21,24 +21,12 @@ public class CramerLinearEquationSystem {
     private final double[] freeTerms;
     private final double[] resolved;
 
-    public double[][] getCoefficients() {
-        return coefficients;
-    }
-
-    public double[] getFreeTerms() {
-        return freeTerms;
-    }
-
-    public double[] getResolved() {
-        return resolved;
-    }
-
     /**
      * Solve the given Cramer Linear Equation System.
      * The last column of the given matrix is the column of free terms (after the 'equals' math symbol).
      *
      * @param method the solving algorithm
-     * @param rows the given equations. The last element of each 'row' is the right side of the equation
+     * @param rows   the given equations. The last element of each 'row' is the right side of the equation
      */
     public CramerLinearEquationSystem(final BiFunction<double[][], double[], double[]> method, final double[]... rows) {
         this.freeTerms = new double[rows.length];
@@ -59,5 +47,17 @@ public class CramerLinearEquationSystem {
 
         this.resolved = method.apply(coefficients, freeTerms);
         MatrixUtil.eliminateEpsilon(this.resolved);
+    }
+
+    public double[][] getCoefficients() {
+        return coefficients;
+    }
+
+    public double[] getFreeTerms() {
+        return freeTerms;
+    }
+
+    public double[] getResolved() {
+        return resolved;
     }
 }

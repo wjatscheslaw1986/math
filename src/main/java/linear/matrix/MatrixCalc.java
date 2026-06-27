@@ -33,7 +33,7 @@ public final class MatrixCalc {
 
     /**
      * The method multiplies the argument matrix on a 64-bit floating point number.
-     *
+     * <p>
      * The method does not modify the given argument matrix.
      *
      * @param matrix     - the original matrix object
@@ -54,7 +54,7 @@ public final class MatrixCalc {
     /**
      * Multiply the given matrix (on the left) on a vector-column
      * (a single column matrix, on the right).
-     *
+     * <p>
      * The method does not modify the given argument matrix.
      *
      * @param matrix - the given matrix
@@ -77,8 +77,8 @@ public final class MatrixCalc {
      * The method multiplies the two argument matrices The method does not modify
      * the original matrix object
      *
-     * @param matrixLeft   - the matrix on the left of the multiplication equation
-     * @param matrixRight  - the matrix on the right of the multiplication equation
+     * @param matrixLeft  - the matrix on the left of the multiplication equation
+     * @param matrixRight - the matrix on the right of the multiplication equation
      * @return a new matrix object which is a result of multiplication
      * @throws MatrixException - if the matrix is malformed
      */
@@ -101,7 +101,7 @@ public final class MatrixCalc {
      * The method multiplies the two argument matrices The method does not modify
      * the original matrix object
      *
-     * @param matrixLeft the matrix on the left of the multiplication equation
+     * @param matrixLeft  the matrix on the left of the multiplication equation
      * @param matrixRight the matrix on the right of the multiplication equation
      * @return a new matrix object which is a result of multiplication
      * @throws MatrixException if the matrix is malformed
@@ -126,7 +126,7 @@ public final class MatrixCalc {
      * The method multiplies a given vector (from the left side of the expression)
      * on a given matrix (on the right side of the expression).
      *
-     * @param vector the given vector on the left side of the expression
+     * @param vector      the given vector on the left side of the expression
      * @param matrixRight the given matrix on the right side of the expression
      * @return the resulting matrix
      * @throws MatrixException - if the given multiplicand and the given multiplier cannot be multiplied together.
@@ -139,7 +139,7 @@ public final class MatrixCalc {
      * The method multiplies a given vector (from the left side of the expression)
      * on a given matrix (on the right side of the expression).
      *
-     * @param vector - the given vector on the left side of the expression
+     * @param vector        - the given vector on the left side of the expression
      * @param termsMatrices - the given matrix on the right side of the expression
      * @return the resulting matrix
      * @throws MatrixException - if the given multiplicand and the given multiplier cannot be multiplied together.
@@ -244,19 +244,20 @@ public final class MatrixCalc {
      */
     public static double detTriangular(final double[][] matrix) {
         return IntStream.range(0, matrix.length).mapToObj(i -> matrix[i][i])
-                .reduce((a, b) -> a*b).orElse(Double.NaN);
+                .reduce((a, b) -> a * b).orElse(Double.NaN);
     }
 
     /**
      * The method calculates an inverse matrix for the given one.
-     *
+     * <p>
      * The method does not modify the original matrix object.
      *
-     * @param matrix   the given matrix
+     * @param matrix the given matrix
      * @return a new matrix which is an inverse matrix for the one passed as an argument
      */
     public static double[][] inverse(final double[][] matrix) {
-        if (!isInvertible(matrix)) throw new IllegalArgumentException("You cannot find an inverse matrix for a degenerate one!");
+        if (!isInvertible(matrix))
+            throw new IllegalArgumentException("You cannot find an inverse matrix for a degenerate one!");
         return multiply(transpose(cofactors(matrix)), 1.0d / det(matrix));
     }
 
@@ -328,9 +329,9 @@ public final class MatrixCalc {
     /**
      * Calculate rank of a given matrix.
      *
-     * @see <a href="https://cp-algorithms.com/linear_algebra/rank-matrix.html">Source</a>
      * @param originalMatrix the given matrix for finding its rank
      * @return rank
+     * @see <a href="https://cp-algorithms.com/linear_algebra/rank-matrix.html">Source</a>
      */
     public static int rank(final double[][] originalMatrix) {
         final double[][] matrix = copy(originalMatrix);

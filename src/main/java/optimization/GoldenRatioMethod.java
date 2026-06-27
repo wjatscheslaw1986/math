@@ -14,9 +14,10 @@ import java.util.function.DoubleUnaryOperator;
 
 public class GoldenRatioMethod {
     private static final double GOLDEN_RATIO = (Math.sqrt(5.0) - 1.0) / 2.0;
+
     private final List<Term> terms;
-    private int counter;
     private final List<DoubleUnaryOperator> termTransformers;
+    private int counter;
 
     private GoldenRatioMethod(final List<Term> terms) {
         this.counter = 0;
@@ -59,25 +60,24 @@ public class GoldenRatioMethod {
         return currentStep.optimum();
     }
 
-    private abstract sealed class AlgorithmStep permits Finish, Step1, Step2 {
+    private abstract sealed class AlgorithmStep
+            implements FinishingAlgorithm<AlgorithmStep>
+            permits Finish, Step1, Step2 {
         private final double epsilon;
         private double fromX;
         private double toX;
         private double bigDelta;
+
         private AlgorithmStep(double fromX, double toX, double epsilon) {
             this.fromX = fromX;
             this.toX = toX;
             this.epsilon = epsilon;
         }
 
-        abstract AlgorithmStep next();
-
-        abstract boolean isFinished();
-
         private double optimum() {
             if (this.isFinished())
                 return (this.fromX + this.toX) / 2;
-            else throw new IllegalStateException("Wrong algorithm step for calling this method.");
+            else throw new IllegalStateException(BAD_STEP);
         }
     }
 
@@ -87,7 +87,7 @@ public class GoldenRatioMethod {
         }
 
         @Override
-        AlgorithmStep next() {
+        public AlgorithmStep next() {
             counter++;
             super.bigDelta = super.toX - super.fromX;
             if (super.bigDelta <= 2.0d * super.epsilon)
@@ -100,7 +100,7 @@ public class GoldenRatioMethod {
         }
 
         @Override
-        boolean isFinished() {
+        public boolean isFinished() {
             return false;
         }
     }
@@ -108,7 +108,7 @@ public class GoldenRatioMethod {
     private final class Step2 extends AlgorithmStep {
         private double x1 = .0d, x2 = .0d, f1 = .0d, f2 = .0d;
 
-        private Step2(double fromX, double toX, double epsilon, double x1, double x2,  double f1,  double f2) {
+        private Step2(double fromX, double toX, double epsilon, double x1, double x2, double f1, double f2) {
             super(fromX, toX, epsilon);
             this.x1 = x1;
             this.x2 = x2;
@@ -117,7 +117,7 @@ public class GoldenRatioMethod {
         }
 
         @Override
-        AlgorithmStep next() {
+        public AlgorithmStep next() {
             counter++;
             if (this.f1 >= this.f2) {
                 super.fromX = this.x1;
@@ -146,7 +146,7 @@ public class GoldenRatioMethod {
         }
 
         @Override
-        boolean isFinished() {
+        public boolean isFinished() {
             return false;
         }
     }
@@ -157,12 +157,12 @@ public class GoldenRatioMethod {
         }
 
         @Override
-        AlgorithmStep next() {
-            throw new IllegalStateException("Wrong algorithm step for calling this method.");
+        public AlgorithmStep next() {
+            throw new IllegalStateException(BAD_STEP);
         }
 
         @Override
-        boolean isFinished() {
+        public boolean isFinished() {
             return true;
         }
     }

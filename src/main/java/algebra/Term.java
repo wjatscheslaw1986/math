@@ -37,6 +37,43 @@ public class Term implements Comparable<Term>, SeriesPart {
         this.valueTransformer = DoubleUnaryOperator.identity();
     }
 
+    /**
+     * @return Builder
+     */
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    /**
+     * Return a real constant {@link Term}.
+     *
+     * @param value the real value of the constant
+     * @return a term of a real coefficient
+     */
+    public static Term asRealConstant(double value) {
+        return Term.builder()
+                .value(Double.NaN)
+                .power(.0d)
+                .letter(Letter.of("x", 0))
+                .coefficient(value)
+                .build();
+    }
+
+    /**
+     * Return a {@link Term} of 'x' variable with power of 1 with the given coefficient.
+     *
+     * @param coefficient the given coefficient
+     * @return the variable
+     */
+    public static Term asVariableX(double coefficient) {
+        return Term.builder()
+                .value(Double.NaN)
+                .power(1.0d)
+                .letter("x")
+                .coefficient(coefficient)
+                .build();
+    }
+
     public double getPower() {
         return power;
     }
@@ -159,13 +196,6 @@ public class Term implements Comparable<Term>, SeriesPart {
         else throw new IllegalArgumentException("Cannot multiply terms with different letters");
     }
 
-    /**
-     * @return Builder
-     */
-    public static Builder builder() {
-        return new Builder();
-    }
-
     public Term withTransformer(DoubleUnaryOperator transformer) {
         return Term.builder()
                 .valueTransformer(transformer)
@@ -176,6 +206,34 @@ public class Term implements Comparable<Term>, SeriesPart {
                 .build();
     }
 
+    /**
+     * Return a deep copy of this instance.
+     *
+     * @return the new Term instance
+     */
+    @Override
+    public Term copy() {
+        return new Term(this.power, this.coefficient, this.letter.copy(), this.value);
+    }
+
+    /**
+     * Returns textual representation of this equation term.
+     *
+     * @return the textual representation of this term.
+     */
+    @Override
+    public String toString() {
+        if (this.power == .0d) {
+            return String.valueOf(this.coefficient);
+        }
+        var sb = new StringBuilder()
+                .append(this.coefficient)
+                .append(this.letter);
+        if (this.power != 1.0d) {
+            sb.append("^").append(this.power);
+        }
+        return sb.toString();
+    }
 
     public static class Builder {
         private Letter letter;
@@ -228,64 +286,5 @@ public class Term implements Comparable<Term>, SeriesPart {
         public Term build() {
             return new Term(this.power, this.coefficient, this.letter, this.value, this.valueTransformer);
         }
-    }
-
-    /**
-     * Return a real constant {@link Term}.
-     *
-     * @param value the real value of the constant
-     * @return a term of a real coefficient
-     */
-    public static Term asRealConstant(double value) {
-        return Term.builder()
-                .value(Double.NaN)
-                .power(.0d)
-                .letter(Letter.of("x", 0))
-                .coefficient(value)
-                .build();
-    }
-
-    /**
-     * Return a {@link Term} of 'x' variable with power of 1 with the given coefficient.
-     *
-     * @param coefficient the given coefficient
-     * @return the variable
-     */
-    public static Term asVariableX(double coefficient) {
-        return Term.builder()
-                .value(Double.NaN)
-                .power(1.0d)
-                .letter("x")
-                .coefficient(coefficient)
-                .build();
-    }
-
-    /**
-     * Return a deep copy of this instance.
-     *
-     * @return the new Term instance
-     */
-    @Override
-    public Term copy() {
-        return new Term(this.power, this.coefficient, this.letter.copy(), this.value);
-    }
-
-    /**
-     * Returns textual representation of this equation term.
-     *
-     * @return the textual representation of this term.
-     */
-    @Override
-    public String toString() {
-        if (this.power == .0d) {
-            return String.valueOf(this.coefficient);
-        }
-        var sb = new StringBuilder()
-                .append(this.coefficient)
-                .append(this.letter);
-        if (this.power != 1.0d) {
-            sb.append("^").append(this.power);
-        }
-        return sb.toString();
     }
 }

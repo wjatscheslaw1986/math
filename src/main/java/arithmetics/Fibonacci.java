@@ -35,9 +35,7 @@ public class Fibonacci {
      * @param n the ordinal (0-based index) of the Fibonacci number to retrieve
      * @return the nth Fibonacci number as a {@code long}
      * @throws IllegalArgumentException if {@code n < 0}
-     *
      * @see <a href="https://en.wikipedia.org/wiki/Fibonacci_number#Binet%27s_formula">Binet's formula on Wikipedia</a>
-     *
      * @since 0.0.1
      */
     public static long getNthFibonacci(long n) {

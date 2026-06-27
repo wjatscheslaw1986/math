@@ -39,7 +39,7 @@ public final class VariationsWithRepetitions {
     /**
      * Count generated variations.
      * <p>
-     *     It is a number of ways to type <b>k</b> times any letter of an alphabet of <b>n</b> letters.
+     * It is a number of ways to type <b>k</b> times any letter of an alphabet of <b>n</b> letters.
      * </p>
      *
      * @param n cardinality

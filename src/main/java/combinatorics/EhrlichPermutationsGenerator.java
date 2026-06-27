@@ -13,9 +13,9 @@ import static combinatorics.CombinatoricsUtil.getArrayOfIndicesForSize;
 
 public class EhrlichPermutationsGenerator extends IndexSequenceGenerator {
 
-    private final int[] lastPermutation;
     final int[] bTable;
     final int[] cTable;
+    private final int[] lastPermutation;
 
     public EhrlichPermutationsGenerator(int size) {
         if (size < 0) {
@@ -37,11 +37,11 @@ public class EhrlichPermutationsGenerator extends IndexSequenceGenerator {
         int k = 1;
         while (cTable[k] == k) cTable[k++] = 0;
         if (k != lastPermutation.length) {
-        cTable[k]++;
-        VectorUtil.swap(lastPermutation, 0, bTable[k]);
-        int j = 1;
-        --k;
-        while (j < k) VectorUtil.swap(bTable, k--, j++);
+            cTable[k]++;
+            VectorUtil.swap(lastPermutation, 0, bTable[k]);
+            int j = 1;
+            --k;
+            while (j < k) VectorUtil.swap(bTable, k--, j++);
         } else {
             setHasNext(false);
         }

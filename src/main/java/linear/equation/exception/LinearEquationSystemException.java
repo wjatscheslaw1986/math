@@ -11,6 +11,7 @@ import java.io.Serial;
 public class LinearEquationSystemException extends Exception {
     @Serial
     private static final long serialVersionUID = 1L;
+
     public LinearEquationSystemException(String textual) {
         super(textual);
     }

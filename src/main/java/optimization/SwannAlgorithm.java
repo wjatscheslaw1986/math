@@ -10,9 +10,9 @@ import java.util.Objects;
 import java.util.function.DoubleUnaryOperator;
 
 public class SwannAlgorithm {
-    private int counter;
     private final DoubleUnaryOperator function;
     private final double t;
+    private int counter;
 
     private SwannAlgorithm(final DoubleUnaryOperator func, final double searchStepSize) {
         if (searchStepSize <= 0)
@@ -38,9 +38,9 @@ public class SwannAlgorithm {
         return counter;
     }
 
-    private abstract sealed class AlgorithmStep permits InitStep, SearchStep, Finish {
-        abstract AlgorithmStep next() throws MathException;
-        abstract boolean isFinished();
+    private abstract sealed class AlgorithmStep
+            implements FinishingAlgorithm<AlgorithmStep>
+            permits InitStep, SearchStep, Finish {
         abstract double[] interval();
     }
 
@@ -54,7 +54,7 @@ public class SwannAlgorithm {
         }
 
         @Override
-        AlgorithmStep next() throws MathException {
+        public AlgorithmStep next() {
             double f_center = SwannAlgorithm.this.function.applyAsDouble(x0);
             double f_left = SwannAlgorithm.this.function.applyAsDouble(x0 - SwannAlgorithm.this.t);
             double f_right = SwannAlgorithm.this.function.applyAsDouble(x0 + SwannAlgorithm.this.t);
@@ -69,18 +69,18 @@ public class SwannAlgorithm {
                 // Minimum is already trapped!
                 return new Finish(x0 - SwannAlgorithm.this.t, x0 + SwannAlgorithm.this.t);
             } else {
-                throw new MathException("Function is not unimodal or step size is too large.");
+                throw new IllegalArgumentException("Function is not unimodal or step size is too large.");
             }
         }
 
         @Override
-        boolean isFinished() {
+        public boolean isFinished() {
             return false;
         }
 
         @Override
         public double[] interval() {
-            throw new UnsupportedOperationException("Wrong algorithm step for calling this method.");
+            throw new UnsupportedOperationException(BAD_STEP);
         }
     }
 
@@ -99,7 +99,7 @@ public class SwannAlgorithm {
         }
 
         @Override
-        AlgorithmStep next() {
+        public AlgorithmStep next() {
             counter++;
             // Calculate next step: x_{k+1} = x_k + 2^k * h
             double nextX = currX + Math.pow(2, counter) * step;
@@ -117,13 +117,13 @@ public class SwannAlgorithm {
         }
 
         @Override
-        boolean isFinished() {
+        public boolean isFinished() {
             return false;
         }
 
         @Override
         public double[] interval() {
-            throw new UnsupportedOperationException("Wrong algorithm step for calling this method.");
+            throw new UnsupportedOperationException(BAD_STEP);
         }
     }
 
@@ -139,12 +139,12 @@ public class SwannAlgorithm {
         }
 
         @Override
-        AlgorithmStep next() {
-            throw new IllegalStateException("Wrong algorithm step for calling this method.");
+        public AlgorithmStep next() {
+            throw new IllegalStateException(BAD_STEP);
         }
 
         @Override
-        boolean isFinished() {
+        public boolean isFinished() {
             return true;
         }
 

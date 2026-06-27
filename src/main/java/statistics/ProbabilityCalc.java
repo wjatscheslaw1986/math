@@ -26,8 +26,8 @@ public final class ProbabilityCalc {
      * </p>
      *
      * @param pAcondB conditional probability of that some event A has happened if the event B had happened
-     * @param pA probability of the event A
-     * @param pB probability of the event B
+     * @param pA      probability of the event A
+     * @param pB      probability of the event B
      * @return
      */
     public static double bayes(double pAcondB, double pB, double pA) {

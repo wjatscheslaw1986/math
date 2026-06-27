@@ -42,7 +42,7 @@ public final class VectorCalc {
      * Transform the given vector with the given transformation.
      * Both the vector and the transformation must be expressed in the same basis.
      *
-     * @param vector the given vector
+     * @param vector         the given vector
      * @param transformation the given transformation
      * @return transformed vector in the same basis
      */
@@ -120,7 +120,7 @@ public final class VectorCalc {
     /**
      * The method multiplies the given vector by the given real number.
      * The method does not modify the given vector, but produces a new one instead.
-     * 
+     *
      * @param vector - the given vector
      * @param number - the given real number
      * @return a new vector which is a product of multiplication
@@ -181,7 +181,8 @@ public final class VectorCalc {
      * @return a new Vector object which is a product of the summation
      */
     public static double[] sum(double[] vector1, double[] vector2) {
-        if (vector1.length != vector2.length) throw new IllegalArgumentException("In order to sum both vectors must have same number of coordinates.");
+        if (vector1.length != vector2.length)
+            throw new IllegalArgumentException("In order to sum both vectors must have same number of coordinates.");
         double[] coordinatesSum = new double[vector1.length];
         for (int i = 0; i < vector1.length; i++)
             coordinatesSum[i] = vector1[i] + vector2[i];
@@ -251,7 +252,7 @@ public final class VectorCalc {
      * @return the norm of the given vector
      */
     public static double length(double[] vector) {
-        return Math.sqrt(Arrays.stream(vector).map(d -> d*d).sum());
+        return Math.sqrt(Arrays.stream(vector).map(d -> d * d).sum());
     }
 
     /**
@@ -271,7 +272,7 @@ public final class VectorCalc {
         }
         sumOfSquares = accumulator.reduceLanes(VectorOperators.ADD);
         for (; i < vector.length; i++)
-            sumOfSquares += vector[i]*vector[i];
+            sumOfSquares += vector[i] * vector[i];
         return Math.sqrt(sumOfSquares);
     }
 
@@ -297,7 +298,7 @@ public final class VectorCalc {
      * This method calculates the length of the given vector.
      *
      * @param startPoint vector start point coordinates
-     * @param endPoint vector end point coordinates
+     * @param endPoint   vector end point coordinates
      * @return the length of the given vector
      */
     public static double length(double[] startPoint, double[] endPoint) {
@@ -309,18 +310,19 @@ public final class VectorCalc {
      * This method calculates the length of the given vector.
      *
      * @param startPoint vector start point coordinates
-     * @param endPoint vector end point coordinates
+     * @param endPoint   vector end point coordinates
      * @return the length of the given vector
      */
     public static double lengthUsingVectorAPINoMasking(double[] startPoint, double[] endPoint) {
         return lengthUsingVectorAPINoMasking(toVector(startPoint, endPoint));
     }
+
     /**
      * The given vector is represented with its start and end point coordinates in current basis.
      * This method calculates the length of the given vector.
      *
      * @param startPoint vector start point coordinates
-     * @param endPoint vector end point coordinates
+     * @param endPoint   vector end point coordinates
      * @return the length of the given vector
      */
     public static double lengthUsingVectorAPI(double[] startPoint, double[] endPoint) {
@@ -333,7 +335,7 @@ public final class VectorCalc {
      * given vector.
      *
      * @param startPoint vector start point coordinates
-     * @param endPoint vector end point coordinates
+     * @param endPoint   vector end point coordinates
      * @return an array of <i>cos</i> for each angle between the corresponding basis vector and the
      * given vector
      */

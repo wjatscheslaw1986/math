@@ -21,7 +21,7 @@ public final class RoundingUtil {
     /**
      * Rounding to N decimal places after the floating point.
      *
-     * @param value the given value
+     * @param value    the given value
      * @param decimals number of decimal places after the dot.
      * @return the rounded number
      */
@@ -34,7 +34,7 @@ public final class RoundingUtil {
      * Rounding every element of the given matrix to N decimal places after
      * the floating point.
      *
-     * @param matrix the given matrix
+     * @param matrix   the given matrix
      * @param decimals number of decimal places after the dot.
      * @return the matrix with rounded elements
      */
@@ -47,8 +47,8 @@ public final class RoundingUtil {
                 } else if (isEffectivelyZero(matrix[i][j])) {
                     matrix[i][j] = 0.0d;
                 }
-            matrix[i][j] = roundToNDecimals(matrix[i][j], decimals);
-        }
+                matrix[i][j] = roundToNDecimals(matrix[i][j], decimals);
+            }
         return matrix;
     }
 
