@@ -5,7 +5,6 @@ package linear.matrix;
 
 import algebra.Term;
 import approximation.RoundingUtil;
-import linear.matrix.exception.MatrixException;
 
 /**
  * A utility class for matrices.

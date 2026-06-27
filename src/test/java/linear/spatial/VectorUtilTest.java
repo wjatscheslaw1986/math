@@ -12,7 +12,8 @@ import java.util.List;
 
 import static linear.equation.SolutionsCount.INFINITE;
 import static linear.equation.SolutionsCount.SINGLE;
-import static linear.spatial.VectorUtil.*;
+import static linear.spatial.VectorUtil.toLinearEquationSystem;
+import static linear.spatial.VectorUtil.transformToBasis;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**

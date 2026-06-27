@@ -63,8 +63,7 @@ public class FindExtremumTests {
         assertEquals(5, algorithm.getStepsCount());
 
         algorithm = DichotomyMethod.of(
-                List.of(Term.asVariableX(1.0d)),
-                List.of(x -> 4 * x * Math.sin(x))
+                List.of(Term.asVariableX(1.0d).withTransformer(x -> 4 * x * Math.sin(x)))
         );
         assertEquals(0.13, algorithm.getExtremumX(.0d, Math.PI, 0.2d, 0.08d), 0.01);
         assertEquals(5, algorithm.getStepsCount());
@@ -74,8 +73,7 @@ public class FindExtremumTests {
     void shouldReturnExpectedMinimumWhenBolzanoSearchAppliedToDerivativeOfFunction() {
         DoubleUnaryOperator derivativeOfFunciton = x -> 6*x - (36 / Math.pow(x, 4));
         var algorithm = BolzanoSearch.of(
-                List.of(Term.asVariableX(1.0d)),
-                List.of(derivativeOfFunciton)
+                List.of(Term.asVariableX(1.0d).withTransformer(derivativeOfFunciton))
         );
         assertEquals(1.4375, algorithm.getExtremumX(.5d, 2.5d, 0.1d, 0.1d), 0.01);
         assertEquals(5, algorithm.getStepsCount());
@@ -83,8 +81,8 @@ public class FindExtremumTests {
         assertEquals(
 
                 BolzanoSearch.of(
-                List.of(Term.asVariableX(1.0d)),
-                List.of(derivativeOfFunciton)).getExtremumX(.5d, 2.5d, 0.01d, 0.01d),
+                List.of(Term.asVariableX(1.0d).withTransformer(derivativeOfFunciton)))
+                        .getExtremumX(.5d, 2.5d, 0.01d, 0.01d),
 
                 DichotomyMethod.of(
                         List.of(

@@ -65,6 +65,10 @@ public class Term implements Comparable<Term>, SeriesPart {
         this.value = value;
     }
 
+    public DoubleUnaryOperator getTransformer() {
+        return this.valueTransformer;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
@@ -161,6 +165,17 @@ public class Term implements Comparable<Term>, SeriesPart {
     public static Builder builder() {
         return new Builder();
     }
+
+    public Term withTransformer(DoubleUnaryOperator transformer) {
+        return Term.builder()
+                .valueTransformer(transformer)
+                .power(this.getPower())
+                .coefficient(this.getCoefficient())
+                .letter(this.getLetter())
+                .value(this.getValue())
+                .build();
+    }
+
 
     public static class Builder {
         private Letter letter;

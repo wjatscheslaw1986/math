@@ -24,20 +24,8 @@ public class BolzanoSearch {
         this.equationTermTransformers = Collections.nCopies(terms.size(), defaultTransformer);
     }
 
-    private BolzanoSearch(final List<Term> terms, final List<DoubleUnaryOperator> transformers) {
-        this.terms = Objects.requireNonNull(terms);
-        if (terms.size() != transformers.size()) {
-            throw new IllegalArgumentException("Number of terms and transformers don't match");
-        }
-        this.equationTermTransformers = transformers;
-    }
-
     public static BolzanoSearch of(final List<Term> terms) {
         return new BolzanoSearch(terms);
-    }
-
-    public static BolzanoSearch of(final List<Term> terms, final List<DoubleUnaryOperator> transformers) {
-        return new BolzanoSearch(terms, transformers);
     }
 
     protected int getStepsCount() {
@@ -93,7 +81,7 @@ public class BolzanoSearch {
             if (super.toX - super.fromX <= 2.0d * super.epsilon)
                 return new Finish(super.fromX, super.toX, super.epsilon, super.delta);
             var center = (super.fromX + super.toX) / 2.0;
-            var f_center = FunctionUtil.calculateSingleVariableFunctionValueAtGivenX(terms, equationTermTransformers, center);
+            var f_center = FunctionUtil.calculateSingleVariableFunctionValueAtGivenX(terms, center);
             if (Math.abs(f_center) < super.delta)
                 return new Finish(super.fromX, super.toX, super.epsilon, super.delta);
             if (f_center >= super.delta)

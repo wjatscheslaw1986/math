@@ -7,7 +7,6 @@ package optimization;
 import algebra.Term;
 import functional.FunctionUtil;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.DoubleUnaryOperator;
@@ -16,28 +15,14 @@ public class DichotomyMethod {
 
     private final List<Term> terms;
     private int counter;
-    private final List<DoubleUnaryOperator> equationTermTransformers;
 
     private DichotomyMethod(final List<Term> terms) {
         this.terms = Objects.requireNonNull(terms);
         final DoubleUnaryOperator transformer = DoubleUnaryOperator.identity();
-        this.equationTermTransformers = Collections.nCopies(terms.size(), transformer);
-    }
-
-    private DichotomyMethod(final List<Term> terms, final List<DoubleUnaryOperator> transformers) {
-        this.terms = Objects.requireNonNull(terms);
-        if (terms.size() != transformers.size()) {
-            throw new IllegalArgumentException("Number of terms and transformers don't match");
-        }
-        this.equationTermTransformers = transformers;
     }
 
     public static DichotomyMethod of(final List<Term> terms) {
         return new DichotomyMethod(terms);
-    }
-
-    public static DichotomyMethod of(final List<Term> terms, final List<DoubleUnaryOperator> transformers) {
-        return new DichotomyMethod(terms, transformers);
     }
 
     public int getStepsCount() {
@@ -93,8 +78,8 @@ public class DichotomyMethod {
             double center = (super.fromX + super.toX) / 2.0;
             var x1 = center - (super.delta / 2.0);
             var x2 = center + (super.delta / 2.0);
-            var f1 = FunctionUtil.calculateSingleVariableFunctionValueAtGivenX(terms, equationTermTransformers, x1);
-            var f2 = FunctionUtil.calculateSingleVariableFunctionValueAtGivenX(terms, equationTermTransformers, x2);
+            var f1 = FunctionUtil.calculateSingleVariableFunctionValueAtGivenX(terms, x1);
+            var f2 = FunctionUtil.calculateSingleVariableFunctionValueAtGivenX(terms, x2);
             if (f1 >= f2)
                 return new Step1(x1, super.toX, super.epsilon, super.delta);
             if (f1 < f2)

@@ -6,13 +6,10 @@ package optimization;
 
 import algebra.Term;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.DoubleUnaryOperator;
 
 import static functional.FunctionUtil.calculateSingleVariableFunctionValueAtGivenX;
-
 
 public class SecantMethod {
 
@@ -20,31 +17,17 @@ public class SecantMethod {
     public static final String NUMBER_OF_TERMS_AND_TRANSFORMERS_DON_T_MATCH = "Number of terms and transformers don't match";
     public static final String Ε_AND_Δ_MUST_BE_NON_NEGATIVE = "ε and δ must be non-negative";
     public static final String Ε_MUST_BE_LESS_THAN_THE_RANGE_FROM_F_TO_F = "ε must be less than the range from %f to %f";
-    public static final String BAD_INTERVAL = "Bad interval";
     public static final String TOO_CLOSE = "Derivative values too close";
     private final List<Term> terms;
-    private final List<DoubleUnaryOperator> equationTermTransformers;
     private int counter = 0;
 
     private SecantMethod(final List<Term> terms) {
         this.terms = List.copyOf(Objects.requireNonNull(terms));
-        this.equationTermTransformers = Collections.nCopies(terms.size(), DoubleUnaryOperator.identity());
     }
 
-    private SecantMethod(final List<Term> terms, final List<DoubleUnaryOperator> transformers) {
-        this.terms = List.copyOf(Objects.requireNonNull(terms));
-        if (terms.size() != transformers.size()) {
-            throw new IllegalArgumentException(NUMBER_OF_TERMS_AND_TRANSFORMERS_DON_T_MATCH);
-        }
-        this.equationTermTransformers = List.copyOf(transformers); // defensive copy
-    }
 
     public static SecantMethod of(final List<Term> terms) {
         return new SecantMethod(terms);
-    }
-
-    public static SecantMethod of(final List<Term> terms, final List<DoubleUnaryOperator> transformers) {
-        return new SecantMethod(terms, transformers);
     }
 
     protected int getStepsCount() {
@@ -130,12 +113,10 @@ public class SecantMethod {
 
             double df_a = calculateSingleVariableFunctionValueAtGivenX(
                     terms,
-                    equationTermTransformers,
                     super.fromX);
 
             double df_b = calculateSingleVariableFunctionValueAtGivenX(
                     terms,
-                    equationTermTransformers,
                     super.toX);
 
             if (Math.abs(df_a) <= super.δ)
@@ -154,7 +135,6 @@ public class SecantMethod {
 
             double df_x0 = calculateSingleVariableFunctionValueAtGivenX(
                     terms,
-                    equationTermTransformers,
                     x0);
 
             if (Math.abs(df_x0) <= super.δ || Math.abs(super.toX - super.fromX) <= super.ε)

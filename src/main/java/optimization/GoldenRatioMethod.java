@@ -94,8 +94,8 @@ public class GoldenRatioMethod {
                 return new Finish(super.fromX, super.toX, super.epsilon);
             var x1 = super.toX - GOLDEN_RATIO * super.bigDelta;
             var x2 = super.fromX + GOLDEN_RATIO * super.bigDelta;
-            var f1 = FunctionUtil.calculateSingleVariableFunctionValueAtGivenX(terms, termTransformers, x1);
-            var f2 = FunctionUtil.calculateSingleVariableFunctionValueAtGivenX(terms, termTransformers, x2);
+            var f1 = FunctionUtil.calculateSingleVariableFunctionValueAtGivenX(terms, x1);
+            var f2 = FunctionUtil.calculateSingleVariableFunctionValueAtGivenX(terms, x2);
             return new Step2(super.fromX, super.toX, super.epsilon, x1, x2, f1, f2);
         }
 
@@ -128,7 +128,7 @@ public class GoldenRatioMethod {
                     this.x1 = this.x2;
                     this.f1 = this.f2;
                     this.x2 = super.fromX + GOLDEN_RATIO * super.bigDelta;
-                    this.f2 = FunctionUtil.calculateSingleVariableFunctionValueAtGivenX(terms, termTransformers, this.x2);
+                    this.f2 = FunctionUtil.calculateSingleVariableFunctionValueAtGivenX(terms, this.x2);
                 }
             } else {
                 super.toX = this.x2;
@@ -139,7 +139,7 @@ public class GoldenRatioMethod {
                     this.x2 = this.x1;
                     this.f2 = this.f1;
                     this.x1 = super.toX - GOLDEN_RATIO * super.bigDelta;
-                    this.f1 = FunctionUtil.calculateSingleVariableFunctionValueAtGivenX(terms, termTransformers, this.x1);
+                    this.f1 = FunctionUtil.calculateSingleVariableFunctionValueAtGivenX(terms, this.x1);
                 }
             }
             return new Step2(super.fromX, super.toX, super.epsilon, this.x1, this.x2, this.f1, this.f2);

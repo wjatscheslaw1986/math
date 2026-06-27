@@ -7,9 +7,7 @@ package functional;
 import algebra.Letter;
 import algebra.Term;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.function.DoubleUnaryOperator;
 
 /**
  * Utilities to calculate math functions.
@@ -44,11 +42,9 @@ public final class FunctionUtil {
      * returns {@code 0.0} if the term list is empty
      * @throws IllegalArgumentException if the terms contain different variable letters
      */
-    public static double calculateSingleVariableFunctionValueAtGivenX(List<Term> terms, List<DoubleUnaryOperator> transformers, double independentVariableValue) {
+    public static double calculateSingleVariableFunctionValueAtGivenX(List<Term> terms, double independentVariableValue) {
         if (terms.isEmpty())
             return .0d;
-        if (terms.size() != transformers.size())
-            throw new IllegalArgumentException("Number of terms and transformers don't match");
         Letter firstTermLetter = null;
         for (Term term : terms) {
             if (firstTermLetter == null) {
@@ -60,20 +56,11 @@ public final class FunctionUtil {
                 throw new IllegalArgumentException("Variable letters must be the same");
         }
         double sum = 0.0;
-        for (int i = 0; i < transformers.size(); i++) {
+        for (int i = 0; i < terms.size(); i++) {
             sum += (terms.get(i).getPower() == .0d
                     ? terms.get(i).getCoefficient()
-                    : (terms.get(i).getCoefficient() * Math.pow(transformers.get(i).applyAsDouble(independentVariableValue), terms.get(i).getPower())));
+                    : (terms.get(i).getCoefficient() * Math.pow(terms.get(i).getTransformer().applyAsDouble(independentVariableValue), terms.get(i).getPower())));
         }
         return sum;
-    }
-
-    /**
-     * Convenience overload that uses identity function as a default transformer for each term.
-     *
-     * @see #calculateSingleVariableFunctionValueAtGivenX(List, List, double)
-     */
-    public static double calculateSingleVariableFunctionValueAtGivenX(List<Term> terms, double independentVariableValue) {
-        return calculateSingleVariableFunctionValueAtGivenX(terms, Collections.nCopies(terms.size(), DoubleUnaryOperator.identity()), independentVariableValue);
     }
 }

@@ -3,6 +3,7 @@
  */
 
 package optimization;
+
 import algebra.Term;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -11,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static functional.FunctionUtil.calculateSingleVariableFunctionValueAtGivenX;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Comprehensive JUnit tests for {@link SecantMethod}.
