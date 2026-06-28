@@ -45,7 +45,7 @@ class SecantMethodTest {
 
             SecantMethod solver = SecantMethod.of(derivative);
 
-            double minimumX = solver.getExtremumX(0.1, 1.0, 1e-10, 1e-9);
+            double minimumX = solver.getExtremumX(0.1, 1.0, 1e-10, 1e-9, 10000);
 
             assertEquals(0.450698825, minimumX,1e-9);
             assertEquals(0.425516477, calculateSingleVariableFunctionValueAtGivenX(function, minimumX), 1e-9);

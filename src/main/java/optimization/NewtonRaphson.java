@@ -17,7 +17,7 @@ public class NewtonRaphson {
     private static final int DEFAULT_MAX_ITERATIONS = 100;
     private static final double THRESHOLD_VALUE = 1e-12;
     private static final String DERIVATIVE_NEAR_ZERO_AT_INITIAL_GUESS_X_8_F = "Derivative near zero at initial guess x = %.8f";
-    private static final String DERIVATIVE_NEAR_ZERO_AT_X_8_F_ITERATION_D = "Derivative near zero at x = %.8f (iteration %d)";
+    private static final String DERIVATIVE_NEAR_ZERO_AT_X_AT_NTH_ITERATION = "Derivative near zero at x = %.8f (iteration %d)";
     private static final String NEWTON_S_METHOD_FAILED_TO_CONVERGE_AFTER_D_ITERATIONS = "Newton's method failed to converge after %d iterations. Last x = %.10f";
 
     /**
@@ -108,7 +108,7 @@ public class NewtonRaphson {
                 // TODO: Consider implementing a fallback (e.g., bisection or hybrid method)
                 // when derivative is near zero to improve robustness.
                 throw new MathException(
-                        String.format(DERIVATIVE_NEAR_ZERO_AT_X_8_F_ITERATION_D, x, iteration));
+                        String.format(DERIVATIVE_NEAR_ZERO_AT_X_AT_NTH_ITERATION, x, iteration));
 
             // Adaptive step size limiting (prevents divergence due to large steps)
             double currentMaxStep = Math.max(maxStep, Math.abs(x) * 0.5d); // adaptive max step is relative to current x

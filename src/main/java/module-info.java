@@ -3,6 +3,7 @@
  */
 module math {
     requires jdk.incubator.vector;
+    requires java.desktop;
     exports algebra;
     exports combinatorics;
     exports approximation;

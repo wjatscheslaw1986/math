@@ -7,39 +7,22 @@ package optimization;
 import algebra.Term;
 import functional.FunctionUtil;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.DoubleUnaryOperator;
 
 public class GoldenRatioMethod {
     private static final double GOLDEN_RATIO = (Math.sqrt(5.0) - 1.0) / 2.0;
 
     private final List<Term> terms;
-    private final List<DoubleUnaryOperator> termTransformers;
     private int counter;
 
     private GoldenRatioMethod(final List<Term> terms) {
         this.counter = 0;
         this.terms = Objects.requireNonNull(terms);
-        final DoubleUnaryOperator transformer = DoubleUnaryOperator.identity();
-        this.termTransformers = Collections.nCopies(terms.size(), transformer);
-    }
-
-    private GoldenRatioMethod(final List<Term> terms, final List<DoubleUnaryOperator> transformers) {
-        if (terms.size() != transformers.size()) {
-            throw new IllegalArgumentException("Number of terms and transformers don't match");
-        }
-        this.terms = Objects.requireNonNull(terms);
-        this.termTransformers = transformers;
     }
 
     public static GoldenRatioMethod of(final List<Term> terms) {
         return new GoldenRatioMethod(terms);
-    }
-
-    public static GoldenRatioMethod of(final List<Term> terms, final List<DoubleUnaryOperator> transformers) {
-        return new GoldenRatioMethod(terms, transformers);
     }
 
     public int getStepsCount() {

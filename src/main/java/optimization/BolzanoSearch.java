@@ -63,7 +63,7 @@ public class BolzanoSearch {
         }
 
         private double optimumX() {
-            if (this.getClass() == Finish.class)
+            if (this.isFinished())
                 return (this.fromX + this.toX) / 2;
             else throw new IllegalStateException(BAD_STEP);
         }
